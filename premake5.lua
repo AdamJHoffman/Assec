@@ -32,8 +32,8 @@ workspace "Assec"
 		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-		-- pchheader "acpch.h"
-		-- pchsource "Assec/src/acpch.cpp"
+		pchheader "acpch.h"
+		pchsource "Assec/src/acpch.cpp"
 
 		files
 		{

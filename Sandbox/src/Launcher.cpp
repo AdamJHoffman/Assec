@@ -1,8 +1,8 @@
 #include <iostream>
+#include <include/Assec.h>
 
-int multiply(int a, int b);
-
-int main() 
+int main()
 {
-	std::cout << multiply(1, 3) << std::endl;
+	assec::init();
+	assec::cleanup();
 }
