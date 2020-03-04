@@ -1110,4 +1110,7 @@
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Assec.cpp" />
+  </ItemGroup>
 </Project>
