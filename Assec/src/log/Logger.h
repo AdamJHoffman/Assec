@@ -12,7 +12,7 @@ namespace assec
 
 		Logger(const char* name);
 		~Logger();
-		inline std::shared_ptr<spdlog::logger>& getLogger() { return this->m_logger; }
+		inline const std::shared_ptr<spdlog::logger>& getLogger() const { return this->m_logger; }
 
 	private:
 		std::shared_ptr<spdlog::logger> m_logger;

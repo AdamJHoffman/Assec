@@ -15,19 +15,19 @@ namespace assec
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
-#define EVENT_CLASS_TYPE(type) virtual const char* toString() const override { return #type; }
+#define EVENT_CLASS_TYPE(type)	virtual const char* toString() const override { return #type; }\
+								virtual const EventType& getEventType() const override { return type; }
 
 	class Event
 	{
 	public:
-		Event(Window& window, EventType& type) : m_Window(window), m_type(type), m_Handled(true) {}
+		Event(Window& window) : m_Window(window), m_Handled(true) {}
 		inline Window& getWindow() { return this->m_Window; }
-		inline EventType& getEventType() { return this->m_type; }
+		virtual const EventType& getEventType() const = 0;
 		virtual const char* toString() const = 0;
 		bool m_Handled;
 	private:
 		Window& m_Window;
-		EventType& m_type;
 	};
 
 	class Dispatcher
@@ -49,8 +49,8 @@ namespace assec
 		Event& m_Event;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	inline std::ostream& operator<<(std::ostream& os, const Event& event)
 	{
-		return os << e.toString();
+		return os << event.toString();
 	}
 }

@@ -1185,6 +1185,7 @@
     <ClInclude Include="src\log\Logger.h" />
     <ClInclude Include="src\graphics\Window.h" />
     <ClInclude Include="src\event\Event.h" />
+    <ClInclude Include="src\graphics\openGL\OpenGLWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1194,6 +1195,6 @@
       <Filter>src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\log\Logger.cpp" />
-    <ClCompile Include="src\graphics\Window.cpp" />
+    <ClCompile Include="src\graphics\openGL\OpenGLWindow.cpp" />
   </ItemGroup>
 </Project>

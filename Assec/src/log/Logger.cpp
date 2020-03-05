@@ -3,6 +3,7 @@
 
 namespace assec
 {
+
 	Logger::Logger(const char* name) : m_logger(spdlog::stdout_color_mt(name))
 	{
 		this->m_logger->set_pattern("[%H:%M:%S] [%n] : %v");
