@@ -140,7 +140,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\OpenGLConfig.h" />
+    <ClInclude Include="src\event\EngineEvents.h" />
     <ClInclude Include="src\event\Event.h" />
+    <ClInclude Include="src\event\KeyEvents.h" />
+    <ClInclude Include="src\event\MouseEvents.h" />
     <ClInclude Include="src\event\WindowEvents.h" />
     <ClInclude Include="src\graphics\GraphicsContext.h" />
     <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h" />

@@ -15,6 +15,10 @@
 #include "log/Logger.h"
 #include "event/Event.h"
 #include "event/WindowEvents.h"
+#include "event/KeyEvents.h"
+#include "event/MouseEvents.h"
+#include "graphics/WindowManager.h"
+#include "event/EngineEvents.h"
 
 #ifdef AC_PLATFORM_WINDOWS
 #include <Windows.h>

@@ -1190,6 +1190,10 @@
     <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h" />
     <ClInclude Include="src\graphics\WindowManager.h" />
     <ClInclude Include="src\event\WindowEvents.h" />
+    <ClInclude Include="src\core\OpenGLConfig.h" />
+    <ClInclude Include="src\event\KeyEvents.h" />
+    <ClInclude Include="src\event\MouseEvents.h" />
+    <ClInclude Include="src\event\EngineEvents.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">

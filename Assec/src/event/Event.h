@@ -13,9 +13,9 @@ namespace assec::events
 	{
 		None = 0,
 		WindowClose, WindowFocus, WindowLostFocus, WindowResize, WindowContentScale, WindowMove, WindowMinimize, WindowMaximize, WindowRestore, WindowRefresh,
-		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased, KeyRepeated,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
+		AppTick, AppUpdate, AppRender, PathDropped,
+		KeyPressed, KeyReleased, KeyRepeated, CharTyped,
+		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled, CursorEntered, CursorExited
 	};
 
 	class Event
@@ -48,9 +48,4 @@ namespace assec::events
 	private:
 		Event& m_Event;
 	};
-
-	inline std::ostream& operator<<(std::ostream& os, const Event& event)
-	{
-		return os << event.toString();
-	}
 }

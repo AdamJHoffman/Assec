@@ -1,5 +1,6 @@
 #pragma once
 #include "graphics/GraphicsContext.h"
+#include "core/OpenGLConfig.h"
 
 namespace assec::graphics
 {

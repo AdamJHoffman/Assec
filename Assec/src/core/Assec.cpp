@@ -19,18 +19,11 @@ namespace assec
 
 	void init()
 	{
-		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwSetErrorCallback([](int error, const char* message)
-			{
-				ASSEC_CORE_CRITICAL("GLFW error thrown: error: {0}, message: {1}", error, message);
-			});
+
 	}
 
 	void cleanup()
 	{
-		//glfwTerminate();
+		glfwTerminate();
 	}
 }
