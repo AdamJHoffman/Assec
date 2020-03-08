@@ -1,6 +1,4 @@
-#pragma once
-
-#define _CRT_SECURE_NO_WARNINGS
+﻿#pragma once
 
 #include <iostream>
 #include <memory>
@@ -14,8 +12,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include <log/Logger.h>
+#include "log/Logger.h"
+#include "event/Event.h"
+#include "event/WindowEvents.h"
 
 #ifdef AC_PLATFORM_WINDOWS
-	#include <Windows.h>
+#include <Windows.h>
 #endif

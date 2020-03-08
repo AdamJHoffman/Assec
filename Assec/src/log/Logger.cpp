@@ -10,4 +10,6 @@ namespace assec
 		this->m_logger->set_level(spdlog::level::trace);
 	}
 	Logger::~Logger() {}
+	std::shared_ptr<Logger> Logger::CORE_LOGGER = std::make_shared<Logger>("CORE");
+	std::shared_ptr<Logger> Logger::CLIENT_LOGGER = std::make_shared<Logger>("CLIENT");
 }

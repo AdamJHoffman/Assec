@@ -141,7 +141,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\event\Event.h" />
+    <ClInclude Include="src\event\WindowEvents.h" />
+    <ClInclude Include="src\graphics\GraphicsContext.h" />
+    <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h" />
     <ClInclude Include="src\graphics\openGL\OpenGLWindow.h" />
+    <ClInclude Include="src\graphics\WindowManager.h" />
     <ClInclude Include="src\log\Logger.h" />
     <ClInclude Include="src\acpch.h" />
     <ClInclude Include="src\core\Config.h" />
@@ -529,7 +533,9 @@
     <ClInclude Include="src\graphics\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\openGL\OpenGLGraphicsContext.cpp" />
     <ClCompile Include="src\graphics\openGL\OpenGLWindow.cpp" />
+    <ClCompile Include="src\graphics\WindowManager.cpp" />
     <ClCompile Include="src\log\Logger.cpp" />
     <ClCompile Include="src\acpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

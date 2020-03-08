@@ -1,33 +1,33 @@
-#pragma once
+﻿#pragma once
 
 #include "acpch.h"
-#include "graphics/Window.h"
 
-namespace assec
+namespace assec::events
 {
+
+#define EVENT_CLASS_TYPE(type)	static EventType getStaticType() { return  type;}\
+								virtual EventType getEventType() const override { return getStaticType(); }\
+								virtual const char* toString() const override { return #type; }
 
 	enum class EventType
 	{
 		None = 0,
-		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
+		WindowClose, WindowFocus, WindowLostFocus, WindowResize, WindowContentScale, WindowMove, WindowMinimize, WindowMaximize, WindowRestore, WindowRefresh,
 		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased, KeyTyped,
+		KeyPressed, KeyReleased, KeyRepeated,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
-
-#define EVENT_CLASS_TYPE(type)	virtual const char* toString() const override { return #type; }\
-								virtual const EventType& getEventType() const override { return type; }
 
 	class Event
 	{
 	public:
-		Event(Window& window) : m_Window(window), m_Handled(true) {}
-		inline Window& getWindow() { return this->m_Window; }
-		virtual const EventType& getEventType() const = 0;
+		Event(void* window) : m_Window(window), m_Handled(true) {}
+		inline void* getWindow() { return this->m_Window; }
+		virtual EventType getEventType() const = 0;
 		virtual const char* toString() const = 0;
 		bool m_Handled;
 	private:
-		Window& m_Window;
+		void* m_Window;
 	};
 
 	class Dispatcher
@@ -35,16 +35,16 @@ namespace assec
 		template<typename T> using EventFn = std::function<bool(T&)>;
 	public:
 		Dispatcher(Event& event) : m_Event(event) {}
-		~Dispatcher() {}
+
 		template<typename T> bool dispatch(EventFn<T> function)
 		{
-			if (this->m_Event.getEventType() == T.getEventType())
+			if (m_Event.getEventType() == T::getStaticType())
 			{
-				this->m_Event.m_Handled = func(*(T*)&m_Event);
+				m_Event.m_Handled = function(*(T*)&m_Event);
+				return true;
 			}
 			return false;
 		}
-
 	private:
 		Event& m_Event;
 	};

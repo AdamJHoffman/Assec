@@ -1186,6 +1186,10 @@
     <ClInclude Include="src\graphics\Window.h" />
     <ClInclude Include="src\event\Event.h" />
     <ClInclude Include="src\graphics\openGL\OpenGLWindow.h" />
+    <ClInclude Include="src\graphics\GraphicsContext.h" />
+    <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h" />
+    <ClInclude Include="src\graphics\WindowManager.h" />
+    <ClInclude Include="src\event\WindowEvents.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1196,5 +1200,7 @@
     </ClCompile>
     <ClCompile Include="src\log\Logger.cpp" />
     <ClCompile Include="src\graphics\openGL\OpenGLWindow.cpp" />
+    <ClCompile Include="src\graphics\openGL\OpenGLGraphicsContext.cpp" />
+    <ClCompile Include="src\graphics\WindowManager.cpp" />
   </ItemGroup>
 </Project>
