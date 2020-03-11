@@ -1,10 +1,12 @@
 ﻿#pragma once
 
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <utility>
 #include <algorithm>
 #include <functional>
+#include <chrono>
 
 #include <string>
 #include <sstream>
@@ -19,6 +21,13 @@
 #include "event/MouseEvents.h"
 #include "graphics/WindowManager.h"
 #include "event/EngineEvents.h"
+
+#include "layers/LayerStack.h"
+#include "layers/Layer.h"
+#include "layers/gameobjects/GameObject.h"
+#include "layers/gameobjects/components/Component.h"
+
+#include "core/Config.h"
 
 #ifdef AC_PLATFORM_WINDOWS
 #include <Windows.h>

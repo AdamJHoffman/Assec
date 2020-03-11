@@ -128,16 +128,16 @@ workspace "Assec"
 		}
 
 		filter "configurations:Debug"
-			defines "DEBUG"
+			defines "AC_DEBUG"
 			runtime "Debug"
 			symbols "on"
 
 		filter "configurations:Release"
-			defines "RELEASE"
+			defines "AC_RELEASE"
 			runtime "Release"
 			optimize "on"
 
 		filter "configurations:Dist"
-			defines "DIST"
+			defines "AC_DIST"
 			runtime "Release"
 			optimize "on"

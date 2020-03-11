@@ -5,7 +5,7 @@
 
 namespace assec::graphics
 {
-	using EventCallBackFn = std::function<void(std::shared_ptr<events::Event>)>;
+	using EventCallBackFn = std::function<void(ref<events::Event>)>;
 
 	struct WindowData
 	{

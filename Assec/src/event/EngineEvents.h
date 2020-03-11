@@ -1,8 +1,35 @@
-#pragma once
+﻿#pragma once
 #include "Event.h"
 
 namespace assec::events
 {
+	class AppTickEvent : public Event
+	{
+	public:
+		AppTickEvent(void* window, float delta) : Event::Event(window), m_Delta(delta) {}
+		~AppTickEvent() {}
+		EVENT_CLASS_TYPE(EventType::AppTick);
+		float m_Delta;
+	};
+
+	class AppUpdateEvent : public Event
+	{
+	public:
+		AppUpdateEvent(void* window, float delta) : Event::Event(window), m_Delta(delta) {}
+		~AppUpdateEvent() {}
+		EVENT_CLASS_TYPE(EventType::AppUpdate);
+		float m_Delta;
+	};
+
+	class AppRenderEvent : public Event
+	{
+	public:
+		AppRenderEvent(void* window, float delta) : Event::Event(window), m_Delta(delta) {}
+		~AppRenderEvent() {}
+		EVENT_CLASS_TYPE(EventType::AppRender);
+		float m_Delta;
+	};
+
 	class PathDroppedEvent : public Event
 	{
 	public:

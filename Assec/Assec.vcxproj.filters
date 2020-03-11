@@ -7,8 +7,23 @@
     <Filter Include="src\core">
       <UniqueIdentifier>{C55F2ECF-B12C-89DA-DA45-7782C671BE68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\event">
+      <UniqueIdentifier>{5E2A22B5-CA94-D62B-13D3-87D17F7CB480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphics">
+      <UniqueIdentifier>{2DF282EC-1955-1291-C2DA-4A47AE1CDE13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphics\openGL">
+      <UniqueIdentifier>{E1DA1276-4D3C-F083-D6A9-3636420A2743}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\include">
       <UniqueIdentifier>{A0AF70A7-0C65-E99C-9559-E373010EE0A0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\log">
+      <UniqueIdentifier>{9E1930A9-0AF9-AE44-1311-3A1B7F6F15A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{BA5238CF-A61F-93DA-CF38-8182BB64C868}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
@@ -39,8 +54,53 @@
     <ClInclude Include="src\core\Config.h">
       <Filter>src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\Core.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\OpenGLConfig.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\EngineEvents.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\Event.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\KeyEvents.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\MouseEvents.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\WindowEvents.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\GraphicsContext.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Window.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\WindowManager.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h">
+      <Filter>src\graphics\openGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\openGL\OpenGLWindow.h">
+      <Filter>src\graphics\openGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\include\Assec.h">
       <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\log\Logger.h">
+      <Filter>src\log</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\MemoryManager.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Profiler.h">
+      <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\common.hpp">
       <Filter>vendor\glm\glm</Filter>
@@ -1182,18 +1242,10 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\log\Logger.h" />
-    <ClInclude Include="src\graphics\Window.h" />
-    <ClInclude Include="src\event\Event.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLWindow.h" />
-    <ClInclude Include="src\graphics\GraphicsContext.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h" />
-    <ClInclude Include="src\graphics\WindowManager.h" />
-    <ClInclude Include="src\event\WindowEvents.h" />
-    <ClInclude Include="src\core\OpenGLConfig.h" />
-    <ClInclude Include="src\event\KeyEvents.h" />
-    <ClInclude Include="src\event\MouseEvents.h" />
-    <ClInclude Include="src\event\EngineEvents.h" />
+    <ClInclude Include="src\layers\Layer.h" />
+    <ClInclude Include="src\layers\LayerStack.h" />
+    <ClInclude Include="src\layers\gameobjects\GameObject.h" />
+    <ClInclude Include="src\layers\gameobjects\components\Component.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1202,9 +1254,21 @@
     <ClCompile Include="src\core\Assec.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\log\Logger.cpp" />
-    <ClCompile Include="src\graphics\openGL\OpenGLWindow.cpp" />
-    <ClCompile Include="src\graphics\openGL\OpenGLGraphicsContext.cpp" />
-    <ClCompile Include="src\graphics\WindowManager.cpp" />
+    <ClCompile Include="src\graphics\WindowManager.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\openGL\OpenGLGraphicsContext.cpp">
+      <Filter>src\graphics\openGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\openGL\OpenGLWindow.cpp">
+      <Filter>src\graphics\openGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\log\Logger.cpp">
+      <Filter>src\log</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\Layer.cpp" />
+    <ClCompile Include="src\layers\LayerStack.cpp" />
+    <ClCompile Include="src\layers\gameobjects\GameObject.cpp" />
+    <ClCompile Include="src\layers\gameobjects\components\Component.cpp" />
   </ItemGroup>
 </Project>
