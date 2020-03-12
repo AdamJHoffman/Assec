@@ -9,8 +9,8 @@ namespace assec::layersystem
 	public:
 		Layer(bool enabled = true);
 		~Layer();
-		inline const std::vector<ref<GameObject>> getGameObject() { return this->m_GameObjects; }
-		void onEvent(events::Event& event) const;
+		inline std::vector<ref<GameObject>>& getGameObjects() { return this->m_GameObjects; }
+		void onEvent(events::Event& event);
 		void onAttach();
 		void onDetach();
 		bool m_Enabled;

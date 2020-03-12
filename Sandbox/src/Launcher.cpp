@@ -1,8 +1,15 @@
-#include "include/Assec.h"
+﻿#include "include/Assec.h"
 
 namespace client
 {
-	auto windowManager = std::make_shared<assec::graphics::WindowManager>();
+	auto layerStack = assec::layersystem::LayerStack();
+	void onEvent(assec::events::Event& event)
+	{
+		TIME_FUNCTION;
+		AC_CLIENT_TRACE(event.toString());
+		layerStack.onEvent(event);
+	}
+	auto windowManager = std::make_shared<assec::graphics::WindowManager>(onEvent);
 	void init()
 	{
 		assec::init();

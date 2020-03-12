@@ -7,7 +7,7 @@ namespace assec::graphics
 	class WindowManager
 	{
 	public:
-		WindowManager();
+		WindowManager(std::function<void(events::Event&)> eventCallBackFn);
 		~WindowManager();
 		void prepare();
 		void finish();
@@ -18,6 +18,7 @@ namespace assec::graphics
 		void handleEvents();
 		std::vector<assec::ref<events::Event>> m_Events;
 		std::vector<assec::ref<Window>> m_Windows;
+		std::function<void(events::Event&)> m_EventCallBack;
 	};
 
 }

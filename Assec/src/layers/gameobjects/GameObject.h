@@ -7,32 +7,41 @@ namespace assec::layersystem
 	{
 	public:
 		GameObject(bool enabeld = true);
-		virtual ~GameObject();
-		inline const std::vector<ref<Component>> getGameObject() { return this->m_Components; }
-		void onWindowClose(events::WindowCloseEvent& event);
-		void onWindowFocus(events::WindowFocusEvent& event);
-		void onWindowLostFocus(events::WindowFocusEvent& event);
-		void onWindowResize(events::WindowResizeEvent& event);
-		void onWindowContentScale(events::WindowContentScaleEvent& event);
-		void onWindowMove(events::WindowMoveEvent& event);
-		void onWindowMinimize(events::WindowMinimizeEvent& event);
-		void onWindowMaximize(events::WindowMaximizeEvent& event);
-		void onWindowRestore(events::WindowRestoreEvent& event);
-		void onWindowRefresh(events::WindowRefreshEvent& event);
-		void onAppTick(events::AppTickEvent& event);
-		void onAppUpdate(events::AppUpdateEvent& event);
-		void onAppRender(events::AppRenderEvent& event);
-		void onPathDropped(events::PathDroppedEvent& event);
-		void onKeyPressed(events::KeyPressedEvent& event);
-		void onKeyReleased(events::KeyReleasedEvent& event);
-		void onKeyRepeated(events::KeyRepeatedEvent& event);
-		void onCharTyped(events::Event& event);
-		void onMouseButtonPressed(events::MouseButtonPressedEvent& event);
-		void onMouseButtonReleased(events::MouseButtonReleasedEvent& event);
-		void onMouseMoved(events::MouseMovedEvent& event);
-		void onMouseScrolled(events::MouseScrolledEvent& event);
-		void onCursorEntered(events::CursorEnteredEvent& event);
-		void onCursorExited(events::CursorExitedEvent& event);
+		~GameObject();
+		inline const std::vector<ref<Component>>& getComponents() { return this->m_Components; }
+		inline void addComponent(const ref<Component> component) { this->m_Components.push_back(component); }
+		template<typename T>
+		const bool hasComponent() const;
+		template<typename T>
+		const ref<T> getComponent() const;
+		template<typename T>
+		void removeComponent();
+		void onAttach();
+		void onDetach();
+		bool onWindowClose(events::WindowCloseEvent& event);
+		bool onWindowFocus(events::WindowFocusEvent& event);
+		bool onWindowFocusLost(events::WindowFocusLostEvent& event);
+		bool onWindowResize(events::WindowResizeEvent& event);
+		bool onWindowContentScale(events::WindowContentScaleEvent& event);
+		bool onWindowMove(events::WindowMoveEvent& event);
+		bool onWindowMinimize(events::WindowMinimizeEvent& event);
+		bool onWindowMaximize(events::WindowMaximizeEvent& event);
+		bool onWindowRestore(events::WindowRestoreEvent& event);
+		bool onWindowRefresh(events::WindowRefreshEvent& event);
+		bool onAppTick(events::AppTickEvent& event);
+		bool onAppUpdate(events::AppUpdateEvent& event);
+		bool onAppRender(events::AppRenderEvent& event);
+		bool onPathDropped(events::PathDroppedEvent& event);
+		bool onKeyPressed(events::KeyPressedEvent& event);
+		bool onKeyReleased(events::KeyReleasedEvent& event);
+		bool onKeyRepeated(events::KeyRepeatedEvent& event);
+		bool onCharTyped(events::Event& event);
+		bool onMouseButtonPressed(events::MouseButtonPressedEvent& event);
+		bool onMouseButtonReleased(events::MouseButtonReleasedEvent& event);
+		bool onMouseMoved(events::MouseMovedEvent& event);
+		bool onMouseScrolled(events::MouseScrolledEvent& event);
+		bool onCursorEntered(events::CursorEnteredEvent& event);
+		bool onCursorExited(events::CursorExitedEvent& event);
 		bool m_Enabled;
 	private:
 		std::vector<ref<Component>> m_Components;

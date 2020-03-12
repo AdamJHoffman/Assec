@@ -7,39 +7,59 @@ namespace assec::layersystem
 	LayerStack::~LayerStack() {}
 	void LayerStack::addLayer(ref<Layer> layer)
 	{
+		TIME_FUNCTION;
 		this->m_Layers.emplace(this->m_Layers.begin() + this->m_LayerInsertIndex, layer);
 		this->m_LayerInsertIndex++;
-		layer->onAttach();
+		if (layer->m_Enabled)
+		{
+			layer->onDetach();
+		}
 	}
 	void LayerStack::addOverlay(ref<Layer> layer)
 	{
+		TIME_FUNCTION;
 		this->m_Layers.emplace_back(layer);
-		layer->onAttach();
+		if (layer->m_Enabled)
+		{
+			layer->onAttach();
+		}
 	}
 	void LayerStack::removeLayer(ref<Layer> layer)
 	{
+		TIME_FUNCTION;
 		auto found = std::find(this->m_Layers.begin(), this->m_Layers.end(), layer);
 		if (found != this->m_Layers.end())
 		{
 			this->m_Layers.erase(found);
 			this->m_LayerInsertIndex--;
-			layer->onDetach();
+			if (layer->m_Enabled)
+			{
+				layer->onDetach();
+			}
 		}
 	}
 	void LayerStack::removeOverlay(ref<Layer> layer)
 	{
+		TIME_FUNCTION;
 		auto found = std::find(this->m_Layers.begin(), this->m_Layers.end(), layer);
 		if (found != this->m_Layers.end())
 		{
 			this->m_Layers.erase(found);
-			layer->onDetach();
+			if (layer->m_Enabled)
+			{
+				layer->onDetach();
+			}
 		}
 	}
 	void LayerStack::onEvent(events::Event& event) const
 	{
+		TIME_FUNCTION;
 		for (auto layer : this->m_Layers)
 		{
-			layer->onEvent(event);
+			if (layer->m_Enabled)
+			{
+				layer->onEvent(event);
+			}
 		}
 	}
 }

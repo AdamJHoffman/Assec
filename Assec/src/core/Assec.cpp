@@ -25,12 +25,6 @@ namespace assec
 		return std::make_shared<graphics::OpenGLWindow>(width, height, title, monitor, share, eventCallBack);
 	}
 
-	void onEvent(events::Event& event)
-	{
-		TIME_FUNCTION;
-		Logger::CORE_LOGGER->getLogger()->info(event.toString());
-	}
-
 	void init()
 	{
 		TIME_FUNCTION;

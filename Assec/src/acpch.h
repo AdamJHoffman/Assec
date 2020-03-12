@@ -27,6 +27,7 @@
 #include "layers/gameobjects/GameObject.h"
 #include "layers/gameobjects/components/Component.h"
 
+#include "core/Core.h"
 #include "core/Config.h"
 
 #ifdef AC_PLATFORM_WINDOWS

@@ -11,6 +11,5 @@ namespace assec
 {
 	ref<graphics::Window> createWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, graphics::EventCallBackFn eventCallBack);
 	void init();
-	void onEvent(events::Event& event);
 	void cleanup();
 }
