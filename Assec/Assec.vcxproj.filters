@@ -19,6 +19,15 @@
     <Filter Include="src\include">
       <UniqueIdentifier>{A0AF70A7-0C65-E99C-9559-E373010EE0A0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\layers">
+      <UniqueIdentifier>{6C614A68-5819-8CB5-C120-6511ADF726A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\layers\gameobjects">
+      <UniqueIdentifier>{9F2EBEEE-8B28-E740-7495-7D51602E4DAD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\layers\gameobjects\components">
+      <UniqueIdentifier>{74766B7C-E0E4-C0FB-29CE-7BFB957BB697}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\log">
       <UniqueIdentifier>{9E1930A9-0AF9-AE44-1311-3A1B7F6F15A6}</UniqueIdentifier>
     </Filter>
@@ -75,7 +84,13 @@
     <ClInclude Include="src\event\WindowEvents.h">
       <Filter>src\event</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\Buffer.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
     <ClInclude Include="src\graphics\GraphicsContext.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\VertexArray.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\Window.h">
@@ -84,7 +99,13 @@
     <ClInclude Include="src\graphics\WindowManager.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\openGL\OpenGLBuffer.h">
+      <Filter>src\graphics\openGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h">
+      <Filter>src\graphics\openGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\openGL\OpenGLVertexArray.h">
       <Filter>src\graphics\openGL</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\openGL\OpenGLWindow.h">
@@ -92,6 +113,18 @@
     </ClInclude>
     <ClInclude Include="src\include\Assec.h">
       <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\Layer.h">
+      <Filter>src\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\LayerStack.h">
+      <Filter>src\layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\gameobjects\GameObject.h">
+      <Filter>src\layers\gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\gameobjects\components\Component.h">
+      <Filter>src\layers\gameobjects\components</Filter>
     </ClInclude>
     <ClInclude Include="src\log\Logger.h">
       <Filter>src\log</Filter>
@@ -1242,10 +1275,8 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\layers\Layer.h" />
-    <ClInclude Include="src\layers\LayerStack.h" />
-    <ClInclude Include="src\layers\gameobjects\GameObject.h" />
-    <ClInclude Include="src\layers\gameobjects\components\Component.h" />
+    <ClInclude Include="src\graphics\Shader.h" />
+    <ClInclude Include="src\graphics\openGL\OpenGLShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1257,18 +1288,33 @@
     <ClCompile Include="src\graphics\WindowManager.cpp">
       <Filter>src\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\openGL\OpenGLBuffer.cpp">
+      <Filter>src\graphics\openGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\graphics\openGL\OpenGLGraphicsContext.cpp">
+      <Filter>src\graphics\openGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\openGL\OpenGLVertexArray.cpp">
       <Filter>src\graphics\openGL</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\openGL\OpenGLWindow.cpp">
       <Filter>src\graphics\openGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\layers\Layer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\LayerStack.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\gameobjects\GameObject.cpp">
+      <Filter>src\layers\gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\layers\gameobjects\components\Component.cpp">
+      <Filter>src\layers\gameobjects\components</Filter>
+    </ClCompile>
     <ClCompile Include="src\log\Logger.cpp">
       <Filter>src\log</Filter>
     </ClCompile>
-    <ClCompile Include="src\layers\Layer.cpp" />
-    <ClCompile Include="src\layers\LayerStack.cpp" />
-    <ClCompile Include="src\layers\gameobjects\GameObject.cpp" />
-    <ClCompile Include="src\layers\gameobjects\components\Component.cpp" />
+    <ClCompile Include="src\graphics\openGL\OpenGLShader.cpp" />
   </ItemGroup>
 </Project>

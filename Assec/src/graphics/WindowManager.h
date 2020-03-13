@@ -14,6 +14,7 @@ namespace assec::graphics
 		const bool empty() const;
 		const void addWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share);
 		const void addEvent(ref<events::Event> event);
+		inline std::vector<ref<Window>> getWindows() const { return this->m_Windows; }
 	private:
 		void handleEvents();
 		std::vector<assec::ref<events::Event>> m_Events;

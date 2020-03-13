@@ -27,6 +27,10 @@
 #include "layers/gameobjects/GameObject.h"
 #include "layers/gameobjects/components/Component.h"
 
+#include "graphics/Buffer.h"
+#include "graphics/VertexArray.h"
+#include "graphics/Shader.h"
+
 #include "core/Core.h"
 #include "core/Config.h"
 

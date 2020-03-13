@@ -48,8 +48,8 @@ namespace assec::graphics
 	const void OpenGLWindow::terminate() const
 	{
 		TIME_FUNCTION;
-		glfwDestroyWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 		delete this->m_WindowData.m_GraphicsContext;
+		glfwDestroyWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
 	const void OpenGLWindow::validate() const
 	{

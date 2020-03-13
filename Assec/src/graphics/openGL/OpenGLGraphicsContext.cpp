@@ -1,6 +1,9 @@
-#include "acpch.h"
+﻿#include "acpch.h"
 #include "core/Core.h"
 #include "OpenGLGraphicsContext.h"
+#include "OpenGLBuffer.h"
+#include "OpenGLVertexArray.h"
+#include "OpenGLShader.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -17,5 +20,30 @@ namespace assec::graphics
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Renderer: {0}", glGetString(GL_RENDERER));
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Version: {0}", glGetString(GL_VERSION));
 
+	}
+	const ref<VertexBuffer> OpenGLGraphicsContext::createVertexBuffer(const void* vertices, const size_t& size, const int& usage) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLVertexBuffer>(vertices, size, usage);
+	}
+	const ref<IndexBuffer> OpenGLGraphicsContext::createIndexBuffer(const void* indices, const size_t& size, const int& usage) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLIndexBuffer>(indices, size, usage);
+	}
+	const ref<VertexArray> OpenGLGraphicsContext::createVertexArray(const void* vertices, const size_t& verticesSize, const void* indices, const size_t& indicesSize, const int& usage, graphics::VertexBuffer::VertexBufferLayout& layout) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLVertexArray>(vertices, verticesSize, indices, indicesSize, usage, layout);
+	}
+	const ref<Shader> OpenGLGraphicsContext::createShader(const char* source, DataType& type) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLShader>(source, type);
+	}
+	const ref<ShaderProgram> OpenGLGraphicsContext::createShaderProgram(const char* vertexSource, const char* fragmentSource) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLShaderProgram>(vertexSource, fragmentSource);
 	}
 }

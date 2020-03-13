@@ -29,4 +29,14 @@ namespace assec
 
 	template<typename T>
 	using scope = std::unique_ptr<T>;
+
+	enum class DataType
+	{
+		NONE = 0,
+		FLOAT,
+		UNSIGNED_INT,
+
+		VERTEX_SHADER,
+		FRAGMENT_SHADER
+	};
 }

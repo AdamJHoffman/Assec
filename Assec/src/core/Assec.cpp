@@ -5,6 +5,10 @@
 #include "graphics/openGL/OpenGLWindow.h"
 #include "graphics/openGL/OpenGLGraphicsContext.h"
 
+#include "graphics/openGL/OpenGLBuffer.h"
+#include "graphics/openGL/OpenGLVertexArray.h"
+
+
 void* operator new(size_t size)
 {
 	assec::util::MemoryManager::getMemoryManager().m_Allocated += (uint32_t)size;
