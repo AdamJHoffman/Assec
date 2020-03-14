@@ -1,13 +1,13 @@
 ﻿#pragma once
-
+#include "util/Profiler.h"
 #include "acpch.h"
 
 namespace assec::events
 {
 
-#define EVENT_CLASS_TYPE(type)	static EventType getStaticType() { return  type;}\
-								virtual EventType getEventType() const override { return getStaticType(); }\
-								virtual const char* toString() const override { return #type; }
+#define EVENT_CLASS_TYPE(type)	static EventType getStaticType() { TIME_FUNCTION; return  type;}\
+								virtual EventType getEventType() const override { TIME_FUNCTION; return getStaticType(); }\
+								virtual const char* toString() const override { TIME_FUNCTION; return #type; }
 
 	enum class EventType
 	{
@@ -21,8 +21,9 @@ namespace assec::events
 	class Event
 	{
 	public:
-		Event(void* window) : m_Window(window), m_Handled(true) {}
-		inline void* getWindow() { return this->m_Window; }
+		Event(void* window) : m_Window(window), m_Handled(true) { TIME_FUNCTION; }
+		virtual ~Event() { TIME_FUNCTION; }
+		inline void* getWindow() { TIME_FUNCTION; return this->m_Window; }
 		virtual EventType getEventType() const = 0;
 		virtual const char* toString() const = 0;
 		bool m_Handled;
@@ -38,6 +39,7 @@ namespace assec::events
 
 		template<typename T> bool dispatch(EventFn<T> function)
 		{
+			TIME_FUNCTION;
 			if (m_Event.getEventType() == T::getStaticType())
 			{
 				m_Event.m_Handled = function(*(T*)&m_Event);

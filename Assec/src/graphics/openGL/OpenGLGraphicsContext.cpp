@@ -4,13 +4,14 @@
 #include "OpenGLBuffer.h"
 #include "OpenGLVertexArray.h"
 #include "OpenGLShader.h"
+#include "OpenGLTexture.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace assec::graphics
 {
-	OpenGLGraphicsContext::OpenGLGraphicsContext() : GraphicsContext::GraphicsContext() {}
-	OpenGLGraphicsContext::~OpenGLGraphicsContext() {}
+	OpenGLGraphicsContext::OpenGLGraphicsContext() : GraphicsContext::GraphicsContext() { TIME_FUNCTION; }
+	OpenGLGraphicsContext::~OpenGLGraphicsContext() { TIME_FUNCTION; }
 	const void OpenGLGraphicsContext::init() const
 	{
 		TIME_FUNCTION;
@@ -20,6 +21,11 @@ namespace assec::graphics
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Renderer: {0}", glGetString(GL_RENDERER));
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Version: {0}", glGetString(GL_VERSION));
 
+	}
+	void OpenGLGraphicsContext::setActiveTexture(unsigned int texture) const
+	{
+		TIME_FUNCTION;
+		GLCall(glActiveTexture(GL_TEXTURE0 + texture));
 	}
 	const ref<VertexBuffer> OpenGLGraphicsContext::createVertexBuffer(const void* vertices, const size_t& size, const int& usage) const
 	{
@@ -36,7 +42,7 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		return std::make_shared<OpenGLVertexArray>(vertices, verticesSize, indices, indicesSize, usage, layout);
 	}
-	const ref<Shader> OpenGLGraphicsContext::createShader(const char* source, DataType& type) const
+	const ref<Shader> OpenGLGraphicsContext::createShader(const char* source, Type& type) const
 	{
 		TIME_FUNCTION;
 		return std::make_shared<OpenGLShader>(source, type);
@@ -45,5 +51,10 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		return std::make_shared<OpenGLShaderProgram>(vertexSource, fragmentSource);
+	}
+	const ref<Texture2D> OpenGLGraphicsContext::createTexture2D(unsigned int width, unsigned int height, const void* data, Texture::TextureProps props) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLTexture2D>(width, height, data, props);
 	}
 }

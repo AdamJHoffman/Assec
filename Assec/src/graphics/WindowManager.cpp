@@ -4,8 +4,8 @@
 
 namespace assec::graphics
 {
-	WindowManager::WindowManager(std::function<void(events::Event&)> eventCallBackFn) : m_Windows(std::vector<std::shared_ptr<Window>>()), m_Events(std::vector<ref<events::Event>>()), m_EventCallBack(eventCallBackFn) {}
-	WindowManager::~WindowManager() {}
+	WindowManager::WindowManager(std::function<void(events::Event&)> eventCallBackFn) : m_Windows(std::vector<std::shared_ptr<Window>>()), m_Events(std::vector<ref<events::Event>>()), m_EventCallBack(eventCallBackFn) { TIME_FUNCTION; }
+	WindowManager::~WindowManager() { TIME_FUNCTION; }
 	void WindowManager::prepare()
 	{
 		TIME_FUNCTION;

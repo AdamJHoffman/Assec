@@ -7,11 +7,11 @@ namespace assec::graphics
 	class OpenGLShader : public Shader
 	{
 	public:
-		OpenGLShader(const char* source, DataType type);
+		OpenGLShader(const char* source, Type type);
 		~OpenGLShader();
 		virtual void cleanup() const override;
 	protected:
-		virtual const unsigned int genShader(DataType& type) const override;
+		virtual const unsigned int genShader(Type& type) const override;
 	};
 
 	class OpenGLShaderProgram : public ShaderProgram
@@ -19,8 +19,11 @@ namespace assec::graphics
 	public:
 		OpenGLShaderProgram(const char* vertexSource, const char* fragmentSource);
 		virtual ~OpenGLShaderProgram();
+		virtual void cleanup() const override;
+		virtual void loadInt(std::string name, int value) override;
 		virtual void bind() const override;
 	protected:
 		virtual const unsigned int genShaderProgram() const override;
+		virtual int getLocation(const std::string& name) override;
 	};
 }

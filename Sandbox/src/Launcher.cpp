@@ -20,53 +20,46 @@ namespace client
 	void update()
 	{
 		TIME_FUNCTION;
-		const char* vertex = R"(
-			#version 460
-			
-			layout (location = 0) in vec3 a_position;
+		std::string vertex = assec::util::Loader::getLoader().loadFile("res/shaders/texture_shader/texture.vertex");
+		std::string fragment = assec::util::Loader::getLoader().loadFile("res/shaders/texture_shader/texture.fragment");
 
-			out vec4 p_color; 
-		
-			void main()
-			{
-				p_color = vec4(a_position, 1.0);
-				gl_Position = vec4(a_position, 1.0);
-			}	
-
-		)";
-		const char* fragment = R"(
-			#version 460
-			
-			in vec4 p_color;
-			out vec4 o_color;
-		
-			void main()
-			{
-				o_color = p_color + 0.5;
-			}	
-
-		)";
-		float vertices[3 * 3] = {
+		float vertices[4 * 3 + 4 * 2] = {
 				-0.5f, -0.5f, 0.0f,
 				 0.5f, -0.5f, 0.0f,
-				 0.0f,  0.5f, 0.0f
+				 0.5f,  0.5f, 0.0f,
+				-0.5f,  0.5f, 0.0f,
+
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+				1.0f, 1.0f,
+				0.0f, 1.0f
 		};
 
-		unsigned int indices[3] = {
-			0, 1, 2
+		unsigned int indices[6] = {
+			0, 1, 2,
+			0, 2, 3
 		};
-		auto attrib1 = assec::graphics::VertexBuffer::VertexBufferAttribute(assec::DataType::FLOAT, 3, false);
+		auto attrib1 = assec::graphics::VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false);
+		auto attrib2 = assec::graphics::VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 2, false);
 		auto layout = assec::graphics::VertexBuffer::VertexBufferLayout();
 		layout.m_Attributes.push_back(attrib1);
+		layout.m_Attributes.push_back(attrib2);
 
+		assec::util::Loader::TextureData data = assec::util::Loader::getLoader().loadImage("res/textures/rock_cliff/normal.jpg");
+
+		assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
+
+		assec::ref<assec::graphics::Texture> texture = windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->genTexture2D(data.m_Width, data.m_Height, data.m_Data, props);
 		assec::ref<assec::graphics::VertexArray> vertexArray = windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->genVertexArray(vertices, sizeof(vertices), indices, sizeof(indices), 0x88E4, layout);
-		assec::ref<assec::graphics::ShaderProgram> shader = windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->genShaderProgram(vertex, fragment);
+		assec::ref<assec::graphics::ShaderProgram> shader = windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->genShaderProgram(vertex.c_str(), fragment.c_str());
 		while (!windowManager->empty())
 		{
 			TIME_FUNCTION;
 			windowManager->prepare();
 
 			shader->bind();
+			windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->setActiveTexture(0);
+			texture->bind();
 
 			vertexArray->render();
 

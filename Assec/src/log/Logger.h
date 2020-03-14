@@ -4,6 +4,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/stdout_sinks.h>
 #include "core/Config.h"
+#include "util/Profiler.h"
 
 namespace assec
 {
@@ -15,7 +16,7 @@ namespace assec
 
 		Logger(const char* name);
 		~Logger();
-		inline const ref<spdlog::logger>& getLogger() const { return this->m_logger; }
+		inline const ref<spdlog::logger>& getLogger() const { TIME_FUNCTION; return this->m_logger; }
 	private:
 		ref<spdlog::logger> m_logger;
 	};

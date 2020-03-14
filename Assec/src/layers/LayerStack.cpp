@@ -3,8 +3,8 @@
 
 namespace assec::layersystem
 {
-	LayerStack::LayerStack() : m_Layers(std::vector<ref<Layer>>()), m_LayerInsertIndex(0) {}
-	LayerStack::~LayerStack() {}
+	LayerStack::LayerStack() : m_Layers(std::vector<ref<Layer>>()), m_LayerInsertIndex(0) { TIME_FUNCTION; }
+	LayerStack::~LayerStack() { TIME_FUNCTION; }
 	void LayerStack::addLayer(ref<Layer> layer)
 	{
 		TIME_FUNCTION;

@@ -16,21 +16,52 @@
 
 namespace assec
 {
-	static unsigned int toOpenGLType(DataType& type)
+	static unsigned int toOpenGLType(Type& type)
 	{
+		TIME_FUNCTION;
 		switch (type)
 		{
-		case DataType::FLOAT:
+		case Type::FLOAT:
 			return GL_FLOAT;
 			break;
-		case DataType::UNSIGNED_INT:
+		case Type::UNSIGNED_INT:
 			return GL_UNSIGNED_INT;
 			break;
-		case DataType::VERTEX_SHADER:
+		case Type::VERTEX_SHADER:
 			return GL_VERTEX_SHADER;
 			break;
-		case DataType::FRAGMENT_SHADER:
+		case Type::FRAGMENT_SHADER:
 			return GL_FRAGMENT_SHADER;
+			break;
+		case Type::REPEAT:
+			return GL_REPEAT;
+			break;
+		case Type::MIRRORED_REPEAT:
+			return GL_MIRRORED_REPEAT;
+			break;
+		case Type::CLAMP_TO_EDGE:
+			return GL_CLAMP_TO_EDGE;
+			break;
+		case Type::CLAMP_TO_BORDER:
+			return GL_CLAMP_TO_BORDER;
+			break;
+		case Type::LINEAR:
+			return GL_LINEAR;
+			break;
+		case Type::NEAREST:
+			return GL_NEAREST;
+			break;
+		case Type::NEAREST_MIPMAP_NEAREST:
+			return GL_NEAREST_MIPMAP_NEAREST;
+			break;
+		case Type::LINEAR_MIPMAP_NEAREST:
+			return GL_LINEAR_MIPMAP_NEAREST;
+			break;
+		case Type::NEAREST_MIPMAP_LINEAR:
+			return GL_NEAREST_MIPMAP_LINEAR;
+			break;
+		case Type::LINEAR_MIPMAP_LINEAR:
+			return GL_LINEAR_MIPMAP_LINEAR;
 			break;
 		default:
 			return NULL;

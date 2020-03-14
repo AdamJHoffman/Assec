@@ -52,6 +52,7 @@ workspace "Assec"
 		{
 			"%{prj.name}/src",
 			"%{prj.name}/vendor/spdlog/include",
+			"%{prj.name}/vendor/stb",
 			"%{IncludeDir.glfw}",
 			"%{IncludeDir.glad}",
 			"%{IncludeDir.imgui}",
@@ -110,6 +111,7 @@ workspace "Assec"
 		{
 			"Assec/src",
 			"%{wks.location}/Assec/vendor/spdlog/include",
+			"%{wks.location}/Assec/vendor/stb",
 			"%{IncludeDir.glm}",
 			"%{IncludeDir.imgui}"
 		}

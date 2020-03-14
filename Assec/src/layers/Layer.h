@@ -9,7 +9,7 @@ namespace assec::layersystem
 	public:
 		Layer(bool enabled = true);
 		~Layer();
-		inline std::vector<ref<GameObject>>& getGameObjects() { return this->m_GameObjects; }
+		inline std::vector<ref<GameObject>>& getGameObjects() { TIME_FUNCTION; return this->m_GameObjects; }
 		void onEvent(events::Event& event);
 		void onAttach();
 		void onDetach();

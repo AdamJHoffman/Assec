@@ -2,7 +2,7 @@
 
 #define AC_CORE_TRACE(...)		assec::Logger::CORE_LOGGER->getLogger()->trace(__VA_ARGS__)
 #define AC_CORE_INFO(...)		assec::Logger::CORE_LOGGER->getLogger()->info(__VA_ARGS__)
-#define AC_CORE_WARNING(...)	ssec::Logger::CORE_LOGGER->getLogger()->warn(__VA_ARGS__)
+#define AC_CORE_WARNING(...)	assec::Logger::CORE_LOGGER->getLogger()->warn(__VA_ARGS__)
 #define AC_CORE_CRITICAL(...)	assec::Logger::CORE_LOGGER->getLogger()->critical(__VA_ARGS__)
 
 #define AC_CLIENT_TRACE(...)	assec::Logger::CLIENT_LOGGER->getLogger()->trace(__VA_ARGS__)
@@ -30,13 +30,26 @@ namespace assec
 	template<typename T>
 	using scope = std::unique_ptr<T>;
 
-	enum class DataType
+	enum class Type
 	{
 		NONE = 0,
 		FLOAT,
 		UNSIGNED_INT,
 
 		VERTEX_SHADER,
-		FRAGMENT_SHADER
+		FRAGMENT_SHADER,
+
+		REPEAT,
+		MIRRORED_REPEAT,
+		CLAMP_TO_EDGE,
+		CLAMP_TO_BORDER,
+
+		LINEAR,
+		NEAREST,
+
+		NEAREST_MIPMAP_NEAREST,
+		LINEAR_MIPMAP_NEAREST,
+		NEAREST_MIPMAP_LINEAR,
+		LINEAR_MIPMAP_LINEAR,
 	};
 }

@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>PLATFORM_WINDOWS;AC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\glm;..\Assec\vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -95,7 +95,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>PLATFORM_WINDOWS;AC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\glm;..\Assec\vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -115,7 +115,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>PLATFORM_WINDOWS;AC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\glm;..\Assec\vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -137,6 +137,19 @@
     <ProjectReference Include="..\Assec\Assec.vcxproj">
       <Project>{143FD80C-8053-00BE-49D5-A31DB5A8FCEE}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\basic_shader\basic.fragment" />
+    <None Include="res\shaders\basic_shader\basic.vertex" />
+    <None Include="res\shaders\texture_shader\texture.fragment" />
+    <None Include="res\shaders\texture_shader\texture.vertex" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\rock_cliff\albedo.jpg" />
+    <Image Include="res\textures\rock_cliff\ambientOcclusion.jpg" />
+    <Image Include="res\textures\rock_cliff\displacement.jpg" />
+    <Image Include="res\textures\rock_cliff\normal.jpg" />
+    <Image Include="res\textures\rock_cliff\roughness.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

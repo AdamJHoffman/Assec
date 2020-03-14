@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "acpch.h"
 
 namespace assec::util
@@ -24,6 +24,7 @@ namespace assec::util
 			this->m_OutputStream.open(filepath);
 			this->writeHeader();
 			this->m_CurrentSession = new ProfilerSession{ name };
+			this->m_ProfileCount = 0;
 		}
 		void endSession()
 		{

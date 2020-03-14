@@ -8,12 +8,14 @@ namespace assec::graphics
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
+		TIME_FUNCTION;
 		AC_CORE_CRITICAL("GLFW Error ({0}): {1}", error, description);
 	}
 
 	OpenGLWindow::OpenGLWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, EventCallBackFn eventCallBack)
 		: Window::Window(width, height, title, eventCallBack, new OpenGLGraphicsContext(), this->createWindow(width, height, title, monitor, share))
 	{
+		TIME_FUNCTION;
 		this->validate();
 		this->makeCurrent();
 		this->m_WindowData.m_GraphicsContext->init();
@@ -38,6 +40,7 @@ namespace assec::graphics
 	}
 	OpenGLWindow::~OpenGLWindow()
 	{
+		TIME_FUNCTION;
 		this->terminate();
 	}
 	const void OpenGLWindow::setUserPointer() const

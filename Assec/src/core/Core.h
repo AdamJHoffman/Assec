@@ -2,6 +2,7 @@
 #include "event/Event.h"
 #include "util/MemoryManager.h"
 #include "util/Profiler.h"
+#include "util/Loader.h"
 #include "Config.h"
 
 void* operator new(size_t size);

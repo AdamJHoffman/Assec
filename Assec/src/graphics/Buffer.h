@@ -8,58 +8,63 @@ namespace assec::graphics
 	public:
 		struct VertexBufferAttribute
 		{
-			VertexBufferAttribute(DataType type, int count, bool normalized) : m_Type(type), m_Count(count), m_Normalized(normalized) {}
+			VertexBufferAttribute(Type type, int count, bool normalized) : m_Type(type), m_Count(count), m_Normalized(normalized) { TIME_FUNCTION; }
 			const int getSize()
 			{
+				TIME_FUNCTION;
+				int result = 0;
 				switch (this->m_Type)
 				{
-				case DataType::FLOAT:
-					return sizeof(float);
+				case Type::FLOAT:
+					result = sizeof(float);
 					break;
-				case DataType::UNSIGNED_INT:
-					return sizeof(unsigned int);
+				case Type::UNSIGNED_INT:
+					result = sizeof(unsigned int);
 					break;
 				default:
-					return 0;
+					result = 0;
 					break;
 				}
+				return result * this->m_Count;
 			}
-			DataType m_Type;
+			Type m_Type;
 			bool m_Normalized;
 			int m_Count;
 		};
 		struct VertexBufferLayout
 		{
-			VertexBufferLayout() : m_Attributes(std::vector<VertexBufferAttribute>()) {}
-			const int calculateStride() const
+			VertexBufferLayout() : m_Attributes(std::vector<VertexBufferAttribute>()) { TIME_FUNCTION; }
+			const int calculateVertexSize()
 			{
-				int stride = 0;
-				for (auto attribute : this->m_Attributes)
+				TIME_FUNCTION;
+				int result = 0;
+				for (auto attrib : this->m_Attributes)
 				{
-					stride += attribute.getSize() * attribute.m_Count;
+					result += attrib.getSize();
 				}
-				return stride;
+				return result;
 			}
 			std::vector<VertexBufferAttribute> m_Attributes;
 		};
-		virtual ~VertexBuffer() {}
+		virtual ~VertexBuffer() { TIME_FUNCTION; }
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
 		unsigned int m_RendererID;
 	protected:
-		VertexBuffer(unsigned int ID) : m_RendererID(ID) {}
+		VertexBuffer(unsigned int ID) : m_RendererID(ID) { TIME_FUNCTION; }
 		virtual const unsigned int genBuffer() const = 0;
 	};
 
 	class IndexBuffer
 	{
 	public:
-		virtual ~IndexBuffer() {}
+		virtual ~IndexBuffer() { TIME_FUNCTION; }
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
 		unsigned int m_RendererID;
+		size_t m_Count;
 	protected:
-		IndexBuffer(unsigned int ID) : m_RendererID(ID) {}
+		IndexBuffer(unsigned int ID, const size_t& count) : m_RendererID(ID), m_Count(count) { TIME_FUNCTION; }
 		virtual const unsigned int genBuffer() const = 0;
 	};
 }

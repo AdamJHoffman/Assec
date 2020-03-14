@@ -10,3 +10,6 @@
 [submodule "Assec/vendor/spdlog"]
 	path = Assec/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Assec/vendor/stb/stb"]
+	path = Assec/vendor/stb
+	url = https://github.com/nothings/stb

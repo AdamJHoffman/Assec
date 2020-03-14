@@ -3,8 +3,8 @@
 
 namespace assec::layersystem
 {
-	GameObject::GameObject(bool enabled) : m_Components(std::vector<ref<Component>>()), m_Enabled(enabled) {}
-	GameObject::~GameObject() {}
+	GameObject::GameObject(bool enabled) : m_Components(std::vector<ref<Component>>()), m_Enabled(enabled) { TIME_FUNCTION; }
+	GameObject::~GameObject() { TIME_FUNCTION; }
 	template<typename T>
 	const bool GameObject::hasComponent() const
 	{

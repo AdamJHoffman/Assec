@@ -8,7 +8,7 @@ namespace assec::layersystem
 	public:
 		LayerStack();
 		~LayerStack();
-		inline const std::vector<ref<Layer>> getLayers() { return this->m_Layers; }
+		inline const std::vector<ref<Layer>> getLayers() { TIME_FUNCTION; return this->m_Layers; }
 		void addLayer(ref<Layer> layer);
 		void removeLayer(ref<Layer> layer);
 		void addOverlay(ref<Layer> layer);

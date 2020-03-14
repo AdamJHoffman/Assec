@@ -90,6 +90,12 @@
     <ClInclude Include="src\graphics\GraphicsContext.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\Shader.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Texture.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
     <ClInclude Include="src\graphics\VertexArray.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
@@ -103,6 +109,12 @@
       <Filter>src\graphics\openGL</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h">
+      <Filter>src\graphics\openGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\openGL\OpenGLShader.h">
+      <Filter>src\graphics\openGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\openGL\OpenGLTexture.h">
       <Filter>src\graphics\openGL</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\openGL\OpenGLVertexArray.h">
@@ -128,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="src\log\Logger.h">
       <Filter>src\log</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Loader.h">
+      <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\util\MemoryManager.h">
       <Filter>src\util</Filter>
@@ -1275,14 +1290,15 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\Shader.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Assec.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\StbImageImplementation.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\WindowManager.cpp">
@@ -1292,6 +1308,12 @@
       <Filter>src\graphics\openGL</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\openGL\OpenGLGraphicsContext.cpp">
+      <Filter>src\graphics\openGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\openGL\OpenGLShader.cpp">
+      <Filter>src\graphics\openGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\openGL\OpenGLTexture.cpp">
       <Filter>src\graphics\openGL</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\openGL\OpenGLVertexArray.cpp">
@@ -1315,6 +1337,5 @@
     <ClCompile Include="src\log\Logger.cpp">
       <Filter>src\log</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\openGL\OpenGLShader.cpp" />
   </ItemGroup>
 </Project>

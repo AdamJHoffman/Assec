@@ -3,8 +3,8 @@
 
 namespace assec::layersystem
 {
-	Component::Component(bool enabled) : m_Enabled(enabled) {}
-	Component::~Component() {}
+	Component::Component(bool enabled) : m_Enabled(enabled) { TIME_FUNCTION; }
+	Component::~Component() { TIME_FUNCTION; }
 	void Component::onAttach()
 	{
 		TIME_FUNCTION;

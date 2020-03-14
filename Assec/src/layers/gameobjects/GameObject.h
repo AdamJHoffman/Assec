@@ -8,8 +8,8 @@ namespace assec::layersystem
 	public:
 		GameObject(bool enabeld = true);
 		~GameObject();
-		inline const std::vector<ref<Component>>& getComponents() { return this->m_Components; }
-		inline void addComponent(const ref<Component> component) { this->m_Components.push_back(component); }
+		inline const std::vector<ref<Component>>& getComponents() { TIME_FUNCTION; return this->m_Components; }
+		inline void addComponent(const ref<Component> component) { TIME_FUNCTION; this->m_Components.push_back(component); }
 		template<typename T>
 		const bool hasComponent() const;
 		template<typename T>

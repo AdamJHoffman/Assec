@@ -9,8 +9,7 @@ namespace assec::graphics
 
 	struct WindowData
 	{
-		WindowData(unsigned int& width, unsigned int& height, const char* title, EventCallBackFn eventCallBack, GraphicsContext* graphicsContext, void* window)
-			: m_Width(width), m_Height(height), m_Title(title), m_Open(true), m_EventCallBack(eventCallBack), m_GraphicsContext(graphicsContext), m_NativeWindow(window), m_SwapInterval(1) {}
+		WindowData(unsigned int& width, unsigned int& height, const char* title, EventCallBackFn eventCallBack, GraphicsContext* graphicsContext, void* window) : m_Width(width), m_Height(height), m_Title(title), m_Open(true), m_EventCallBack(eventCallBack), m_GraphicsContext(graphicsContext), m_NativeWindow(window), m_SwapInterval(1) { TIME_FUNCTION; }
 		unsigned int m_Width, m_Height;
 		std::string m_Title;
 		bool m_Open;
@@ -22,17 +21,16 @@ namespace assec::graphics
 
 	struct WindowSizeData
 	{
-		WindowSizeData(unsigned int& left, unsigned int& top, unsigned int& right, unsigned int& bottom) : m_Left(left), m_Top(top), m_Right(right), m_Bottom(bottom) {}
+		WindowSizeData(unsigned int& left, unsigned int& top, unsigned int& right, unsigned int& bottom) : m_Left(left), m_Top(top), m_Right(right), m_Bottom(bottom) { TIME_FUNCTION; }
 		unsigned int m_Left, m_Top, m_Right, m_Bottom;
 	};
 
 	class Window
 	{
 	public:
-		Window(unsigned int& width, unsigned int& height, const char* title, EventCallBackFn& eventCallBack, GraphicsContext* graphicsContext, void* window)
-			: m_WindowData(width, height, title, eventCallBack, graphicsContext, window) {}
-		virtual ~Window() {}
-		inline WindowData& getWindowData() const { return (WindowData&)this->m_WindowData; }
+		Window(unsigned int& width, unsigned int& height, const char* title, EventCallBackFn& eventCallBack, GraphicsContext* graphicsContext, void* window) : m_WindowData(width, height, title, eventCallBack, graphicsContext, window) { TIME_FUNCTION; }
+		virtual ~Window() { TIME_FUNCTION; }
+		inline WindowData& getWindowData() const { TIME_FUNCTION; return (WindowData&)this->m_WindowData; }
 		virtual const void setUserPointer() const = 0;
 		virtual const void terminate() const = 0;
 		virtual const void validate() const = 0;

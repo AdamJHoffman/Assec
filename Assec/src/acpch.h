@@ -30,6 +30,7 @@
 #include "graphics/Buffer.h"
 #include "graphics/VertexArray.h"
 #include "graphics/Shader.h"
+#include "graphics/Texture.h"
 
 #include "core/Core.h"
 #include "core/Config.h"

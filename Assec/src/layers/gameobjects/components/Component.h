@@ -1,13 +1,13 @@
 ﻿#pragma once
 
-#define COMPONENT_CLASS_TYPE(type)	static ComponentType getStaticType() { return  type;}\
-									virtual const ComponentType getComponentType() const override { return getStaticType(); }\
+#define COMPONENT_CLASS_TYPE(type)	static ComponentType getStaticType() { TIME_FUNCTION; return  type;}\
+									virtual const ComponentType getComponentType() const override { TIME_FUNCTION; return getStaticType(); }\
 
 namespace assec::layersystem
 {
 	enum ComponentType
 	{
-		None = 0, Test
+		None = 0
 	};
 	class Component
 	{

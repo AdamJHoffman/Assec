@@ -6,32 +6,32 @@ namespace assec::events
 	class WindowCloseEvent : public Event
 	{
 	public:
-		WindowCloseEvent(void* window) : Event::Event(window) {}
-		~WindowCloseEvent() {}
+		WindowCloseEvent(void* window) : Event::Event(window) { TIME_FUNCTION; }
+		~WindowCloseEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowClose);
 	};
 
 	class WindowFocusEvent : public Event
 	{
 	public:
-		WindowFocusEvent(void* window) : Event::Event(window) {}
-		~WindowFocusEvent() {}
+		WindowFocusEvent(void* window) : Event::Event(window) { TIME_FUNCTION; }
+		~WindowFocusEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowFocus);
 	};
 
 	class WindowFocusLostEvent : public Event
 	{
 	public:
-		WindowFocusLostEvent(void* window) : Event::Event(window) {}
-		~WindowFocusLostEvent() {}
+		WindowFocusLostEvent(void* window) : Event::Event(window) { TIME_FUNCTION; }
+		~WindowFocusLostEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowLostFocus);
 	};
 
 	class WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(void* window, unsigned int& width, unsigned int& height) : Event::Event(window), m_Width(width), m_Height(height) {}
-		~WindowResizeEvent() {}
+		WindowResizeEvent(void* window, unsigned int& width, unsigned int& height) : Event::Event(window), m_Width(width), m_Height(height) { TIME_FUNCTION; }
+		~WindowResizeEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowResize);
 		unsigned int m_Width, m_Height;
 	};
@@ -39,8 +39,8 @@ namespace assec::events
 	class WindowContentScaleEvent : public Event
 	{
 	public:
-		WindowContentScaleEvent(void* window, float xscale, float yscale) : Event::Event(window), m_Xscale(xscale), m_Yscale(yscale) {}
-		~WindowContentScaleEvent() {}
+		WindowContentScaleEvent(void* window, float xscale, float yscale) : Event::Event(window), m_Xscale(xscale), m_Yscale(yscale) { TIME_FUNCTION; }
+		~WindowContentScaleEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowContentScale);
 		float m_Xscale, m_Yscale;
 	};
@@ -48,8 +48,8 @@ namespace assec::events
 	class WindowMoveEvent : public Event
 	{
 	public:
-		WindowMoveEvent(void* window, int& x, int& y) : Event::Event(window), m_X(x), m_Y(y) {}
-		~WindowMoveEvent() {}
+		WindowMoveEvent(void* window, int& x, int& y) : Event::Event(window), m_X(x), m_Y(y) { TIME_FUNCTION; }
+		~WindowMoveEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowMove);
 		unsigned int m_X, m_Y;
 	};
@@ -57,32 +57,32 @@ namespace assec::events
 	class WindowMinimizeEvent : public Event
 	{
 	public:
-		WindowMinimizeEvent(void* window) : Event::Event(window) {}
-		~WindowMinimizeEvent() {}
+		WindowMinimizeEvent(void* window) : Event::Event(window) { TIME_FUNCTION; }
+		~WindowMinimizeEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowMinimize);
 	};
 
 	class WindowMaximizeEvent : public Event
 	{
 	public:
-		WindowMaximizeEvent(void* window) : Event::Event(window) {}
-		~WindowMaximizeEvent() {}
+		WindowMaximizeEvent(void* window) : Event::Event(window) { TIME_FUNCTION; }
+		~WindowMaximizeEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowMaximize);
 	};
 
 	class WindowRestoreEvent : public Event
 	{
 	public:
-		WindowRestoreEvent(void* window) : Event::Event(window) {}
-		~WindowRestoreEvent() {}
+		WindowRestoreEvent(void* window) : Event::Event(window) { TIME_FUNCTION; }
+		~WindowRestoreEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowRestore);
 	};
 
 	class WindowRefreshEvent : public Event
 	{
 	public:
-		WindowRefreshEvent(void* window) : Event::Event(window) {}
-		~WindowRefreshEvent() {}
+		WindowRefreshEvent(void* window) : Event::Event(window) { TIME_FUNCTION; }
+		~WindowRefreshEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowRefresh);
 	};
 
