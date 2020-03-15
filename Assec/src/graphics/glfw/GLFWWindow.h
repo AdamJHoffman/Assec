@@ -7,13 +7,13 @@
 
 namespace assec::graphics
 {
-	class OpenGLWindow : public Window
+	class GLFWWindow : public Window
 	{
 	public:
-		OpenGLWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, EventCallBackFn eventCallBack);
-		virtual ~OpenGLWindow();
+		GLFWWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, EventCallBackFn eventCallBack);
+		virtual ~GLFWWindow();
 		virtual const void setUserPointer() const override;
-		virtual const void terminate() const override;
+		virtual const void cleanup() const override;
 		virtual const void validate() const override;
 		virtual const void makeCurrent() const override;
 		virtual const void swapBuffers() const override;

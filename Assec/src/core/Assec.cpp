@@ -1,8 +1,6 @@
 ﻿#include "acpch.h"
 #include "Core.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include "graphics/openGL/OpenGLWindow.h"
+#include "graphics/glfw/GLFWWindowContext.h"
 #include "graphics/openGL/OpenGLGraphicsContext.h"
 
 #include "graphics/openGL/OpenGLBuffer.h"
@@ -23,22 +21,28 @@ void operator delete(void* object, size_t size)
 
 namespace assec
 {
-	ref<graphics::Window> assec::createWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, graphics::EventCallBackFn eventCallBack)
+	Assec::Assec() : AC_WINDOW_MANAGER(std::make_shared<graphics::WindowManager>(std::make_shared<graphics::GLFWWindowContext>(), [this](ref<events::Event> event) {return this->onEvent(event); })), AC_LAYER_STACK(std::make_shared<layersystem::LayerStack>()), AC_EVENT_QUEUE(std::make_shared<events::EventQueue>()), AC_INPUT_MANAGER(std::make_shared<InputManager>())
 	{
-		TIME_FUNCTION;
-		return std::make_shared<graphics::OpenGLWindow>(width, height, title, monitor, share, eventCallBack);
-	}
-
-	void init()
-	{
-		TIME_FUNCTION;
 		util::Profiler::getProfiler().beginSession("ASSEC");
 	}
-
-	void cleanup()
+	Assec::~Assec()
+	{
+		util::Profiler::getProfiler().endSession();
+	}
+	void Assec::onEvent(ref<events::Event> event)
 	{
 		TIME_FUNCTION;
-		util::Profiler::getProfiler().endSession();
-		glfwTerminate();
+		this->AC_INPUT_MANAGER->onEvent(*event);
+		this->AC_EVENT_QUEUE->m_Events.push_back(event);
+	}
+	void Assec::handleEvents()
+	{
+		TIME_FUNCTION;
+		for (auto event : AC_EVENT_QUEUE->m_Events)
+		{
+			AC_CORE_TRACE(event->toString());
+			AC_LAYER_STACK->onEvent(*event);
+		}
+		AC_EVENT_QUEUE->m_Events.clear();
 	}
 }

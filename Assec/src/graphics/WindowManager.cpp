@@ -4,8 +4,19 @@
 
 namespace assec::graphics
 {
-	WindowManager::WindowManager(std::function<void(events::Event&)> eventCallBackFn) : m_Windows(std::vector<std::shared_ptr<Window>>()), m_Events(std::vector<ref<events::Event>>()), m_EventCallBack(eventCallBackFn) { TIME_FUNCTION; }
-	WindowManager::~WindowManager() { TIME_FUNCTION; }
+	WindowManager::WindowManager(ref<WindowContext> windowContext, std::function<void(ref<events::Event>)> eventCallBackFn) : m_WindowContext(windowContext), m_Windows(std::vector<std::shared_ptr<Window>>()), m_EventCallBack(eventCallBackFn)
+	{
+		TIME_FUNCTION;
+		if (!this->m_WindowContext->m_Initialized)
+		{
+			this->m_WindowContext->init();
+		}
+	}
+	WindowManager::~WindowManager()
+	{
+		TIME_FUNCTION;
+		this->m_WindowContext->cleanup();
+	}
 	void WindowManager::prepare()
 	{
 		TIME_FUNCTION;
@@ -23,45 +34,35 @@ namespace assec::graphics
 			window->swapBuffers();
 			window->pollEvents();
 		}
-		this->handleEvents();
 	}
 	const bool WindowManager::empty() const
 	{
 		TIME_FUNCTION;
 		return !this->m_Windows.size();
 	}
-	const void WindowManager::addWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share)
+	const void WindowManager::addWindow(unsigned int width, unsigned int height, const char* title, void* monitor, void* share)
 	{
 		TIME_FUNCTION;
-		this->m_Windows.push_back(assec::createWindow(width, height, title, monitor, share, [this](std::shared_ptr<events::Event> event)
+		this->m_Windows.push_back(assec::Assec::getInstance().AC_WINDOW_MANAGER->m_WindowContext->createWindow(width, height, title, monitor, share, [this](std::shared_ptr<events::Event> event)
 			{
 				TIME_FUNCTION;
-				this->addEvent(event);
+				this->onEvent(event);
 			}));
 	}
-	const void WindowManager::addEvent(ref<events::Event> event)
+	const void WindowManager::onEvent(ref<events::Event> event)
 	{
 		TIME_FUNCTION;
-		this->m_Events.push_back(event);
-	}
-	void WindowManager::handleEvents()
-	{
-		TIME_FUNCTION;
-		for (auto event : this->m_Events)
-		{
-			events::Dispatcher dispatcher = events::Dispatcher(*event);
-			dispatcher.dispatch<events::WindowCloseEvent>([this](events::WindowCloseEvent& event)
-				{
-					TIME_FUNCTION;
-					this->m_Windows.erase(std::remove_if(this->m_Windows.begin(), this->m_Windows.end(), [](ref<Window> window)
-						{
-							TIME_FUNCTION;
-							return !window->getWindowData().m_Open;
-						}), this->m_Windows.end());
-					return false;
-				});
-			this->m_EventCallBack(*event);
-		}
-		this->m_Events.clear();
+		events::Dispatcher dispatcher = events::Dispatcher(*event);
+		dispatcher.dispatch<events::WindowCloseEvent>([this](events::WindowCloseEvent& event)
+			{
+				TIME_FUNCTION;
+				this->m_Windows.erase(std::remove_if(this->m_Windows.begin(), this->m_Windows.end(), [](ref<Window> window)
+					{
+						TIME_FUNCTION;
+						return !window->getWindowData().m_Open;
+					}), this->m_Windows.end());
+				return false;
+			});
+		this->m_EventCallBack(event);
 	}
 }

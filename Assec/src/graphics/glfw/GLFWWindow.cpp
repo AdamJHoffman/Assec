@@ -1,6 +1,6 @@
 ﻿#include "acpch.h"
 #include "core/Core.h"
-#include "OpenGLWindow.h"
+#include "GLFWWindow.h"
 
 namespace assec::graphics
 {
@@ -12,7 +12,7 @@ namespace assec::graphics
 		AC_CORE_CRITICAL("GLFW Error ({0}): {1}", error, description);
 	}
 
-	OpenGLWindow::OpenGLWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, EventCallBackFn eventCallBack)
+	GLFWWindow::GLFWWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, EventCallBackFn eventCallBack)
 		: Window::Window(width, height, title, eventCallBack, new OpenGLGraphicsContext(), this->createWindow(width, height, title, monitor, share))
 	{
 		TIME_FUNCTION;
@@ -38,181 +38,180 @@ namespace assec::graphics
 		this->setMouseScrolledCallback();
 		this->setPathDropCallback();
 	}
-	OpenGLWindow::~OpenGLWindow()
+	GLFWWindow::~GLFWWindow()
 	{
 		TIME_FUNCTION;
-		this->terminate();
 	}
-	const void OpenGLWindow::setUserPointer() const
+	const void GLFWWindow::setUserPointer() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowUserPointer((GLFWwindow*)this->m_WindowData.m_NativeWindow, (void*)this);
 	}
-	const void OpenGLWindow::terminate() const
+	const void GLFWWindow::cleanup() const
 	{
 		TIME_FUNCTION;
 		delete this->m_WindowData.m_GraphicsContext;
 		glfwDestroyWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::validate() const
+	const void GLFWWindow::validate() const
 	{
 		TIME_FUNCTION;
 		AC_CORE_ASSERT(!this->m_WindowData.m_NativeWindow == NULL, "Assertion failed: {0}", "failed to create GLFW window");
 		AC_CORE_INFO("successfully created GLFW window: ");
 		AC_CORE_INFO("	Version: {0}", glfwGetVersionString());
 	}
-	const void OpenGLWindow::makeCurrent() const
+	const void GLFWWindow::makeCurrent() const
 	{
 		TIME_FUNCTION;
 		glfwMakeContextCurrent((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::swapBuffers() const
+	const void GLFWWindow::swapBuffers() const
 	{
 		TIME_FUNCTION;
 		glfwSwapBuffers((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::pollEvents() const
+	const void GLFWWindow::pollEvents() const
 	{
 		TIME_FUNCTION;
 		glfwPollEvents();
 	}
-	const void OpenGLWindow::clear() const
+	const void GLFWWindow::clear() const
 	{
 		TIME_FUNCTION;
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	}
-	const void OpenGLWindow::setSize(unsigned int& width, unsigned int& height) const
+	const void GLFWWindow::setSize(unsigned int& width, unsigned int& height) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowSize((GLFWwindow*)this->m_WindowData.m_NativeWindow, width, height);
 	}
-	const glm::vec2 OpenGLWindow::getSize() const
+	const glm::vec2 GLFWWindow::getSize() const
 	{
 		TIME_FUNCTION;
 		int width, height;
 		glfwGetWindowSize((GLFWwindow*)this->m_WindowData.m_NativeWindow, &width, &height);
 		return glm::vec2(width, height);
 	}
-	const std::tuple<int, int, int, int> OpenGLWindow::getFrameSize() const
+	const std::tuple<int, int, int, int> GLFWWindow::getFrameSize() const
 	{
 		TIME_FUNCTION;
 		int left, top, right, bottom;
 		glfwGetWindowFrameSize((GLFWwindow*)this->m_WindowData.m_NativeWindow, &left, &top, &right, &bottom);
 		return { left, top, right, bottom };
 	}
-	const glm::vec2 OpenGLWindow::getFramebufferSize() const
+	const glm::vec2 GLFWWindow::getFramebufferSize() const
 	{
 		TIME_FUNCTION;
 		int width, height;
 		glfwGetFramebufferSize((GLFWwindow*)this->m_WindowData.m_NativeWindow, &width, &height);
 		return glm::vec2(width, height);
 	}
-	const glm::vec2 OpenGLWindow::getWindowContentScale() const
+	const glm::vec2 GLFWWindow::getWindowContentScale() const
 	{
 		TIME_FUNCTION;
 		float xscale, yscale;
 		glfwGetWindowContentScale((GLFWwindow*)this->m_WindowData.m_NativeWindow, &xscale, &yscale);
 		return glm::vec2(xscale, yscale);
 	}
-	const void OpenGLWindow::setPosition(int& x, int& y) const
+	const void GLFWWindow::setPosition(int& x, int& y) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowPos((GLFWwindow*)this->m_WindowData.m_NativeWindow, x, y);
 	}
-	const glm::vec2 OpenGLWindow::getPosition() const
+	const glm::vec2 GLFWWindow::getPosition() const
 	{
 		TIME_FUNCTION;
 		int x, y;
 		glfwGetWindowPos((GLFWwindow*)this->m_WindowData.m_NativeWindow, &x, &y);
 		return glm::vec2(x, y);
 	}
-	const void OpenGLWindow::setSizeLimits(unsigned int& minWidth, unsigned int& minHeight, unsigned int& maxWidth, unsigned int& maxHeight) const
+	const void GLFWWindow::setSizeLimits(unsigned int& minWidth, unsigned int& minHeight, unsigned int& maxWidth, unsigned int& maxHeight) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowSizeLimits((GLFWwindow*)this->m_WindowData.m_NativeWindow, minWidth, minHeight, maxWidth, maxHeight);
 	}
-	const void OpenGLWindow::setAspectRatio(unsigned int& width, unsigned int& height) const
+	const void GLFWWindow::setAspectRatio(unsigned int& width, unsigned int& height) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowAspectRatio((GLFWwindow*)this->m_WindowData.m_NativeWindow, width, height);
 	}
-	const void OpenGLWindow::setTitle(const char* title) const
+	const void GLFWWindow::setTitle(const char* title) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowTitle((GLFWwindow*)this->m_WindowData.m_NativeWindow, title);
 	}
-	const void OpenGLWindow::minimize() const
+	const void GLFWWindow::minimize() const
 	{
 		TIME_FUNCTION;
 		glfwIconifyWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::restore() const
+	const void GLFWWindow::restore() const
 	{
 		TIME_FUNCTION;
 		glfwRestoreWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::maximize() const
+	const void GLFWWindow::maximize() const
 	{
 		TIME_FUNCTION;
 		glfwMaximizeWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::show() const
+	const void GLFWWindow::show() const
 	{
 		TIME_FUNCTION;
 		glfwShowWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::hide() const
+	const void GLFWWindow::hide() const
 	{
 		TIME_FUNCTION;
 		glfwHideWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::focus() const
+	const void GLFWWindow::focus() const
 	{
 		TIME_FUNCTION;
 		glfwFocusWindow((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::requestAttention() const
+	const void GLFWWindow::requestAttention() const
 	{
 		TIME_FUNCTION;
 		glfwRequestWindowAttention((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::setOpacity(float opacity) const
+	const void GLFWWindow::setOpacity(float opacity) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowOpacity((GLFWwindow*)this->m_WindowData.m_NativeWindow, opacity);
 	}
-	const float OpenGLWindow::getOpacity() const
+	const float GLFWWindow::getOpacity() const
 	{
 		TIME_FUNCTION;
 		return glfwGetWindowOpacity((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const int OpenGLWindow::getKeyState(int keycode) const
+	const int GLFWWindow::getKeyState(int keycode) const
 	{
 		TIME_FUNCTION;
 		return glfwGetKey((GLFWwindow*)this->m_WindowData.m_NativeWindow, keycode);
 	}
-	const int OpenGLWindow::getMouseButtonState(int button) const
+	const int GLFWWindow::getMouseButtonState(int button) const
 	{
 		TIME_FUNCTION;
 		return glfwGetMouseButton((GLFWwindow*)this->m_WindowData.m_NativeWindow, button);
 	}
-	const void OpenGLWindow::setClipboardString(const char* string) const
+	const void GLFWWindow::setClipboardString(const char* string) const
 	{
 		TIME_FUNCTION;
 		glfwSetClipboardString((GLFWwindow*)this->m_WindowData.m_NativeWindow, string);
 	}
-	const char* OpenGLWindow::getClipboardString() const
+	const char* GLFWWindow::getClipboardString() const
 	{
 		TIME_FUNCTION;
 		return glfwGetClipboardString((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void OpenGLWindow::setSwapInterval(unsigned int& interval)
+	const void GLFWWindow::setSwapInterval(unsigned int& interval)
 	{
 		TIME_FUNCTION;
 		this->m_WindowData.m_SwapInterval = interval;
 		glfwSwapInterval(interval);
 	}
-	void* OpenGLWindow::createWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share) const
+	void* GLFWWindow::createWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share) const
 	{
 		TIME_FUNCTION;
 		if (!s_GLFWInitialized)
@@ -224,19 +223,19 @@ namespace assec::graphics
 		}
 		return glfwCreateWindow(width, height, title, (GLFWmonitor*)monitor, (GLFWwindow*)share);
 	}
-	const void OpenGLWindow::setWindowResizeCallback() const
+	const void GLFWWindow::setWindowResizeCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowSizeCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int width, int height)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowResizeEvent>((void*)&window, (unsigned int&)width, (unsigned int&)height));
 				window.getWindowData().m_Height = height;
 				window.getWindowData().m_Width = width;
 			});
 	}
-	const void OpenGLWindow::setFramebufferResizeCallback() const
+	const void GLFWWindow::setFramebufferResizeCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetFramebufferSizeCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int width, int height)
@@ -245,35 +244,35 @@ namespace assec::graphics
 				glViewport(0, 0, width, height);
 			});
 	}
-	const void OpenGLWindow::setWindowContentScaleCallback() const
+	const void GLFWWindow::setWindowContentScaleCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowContentScaleCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, float xscale, float yscale)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowContentScaleEvent>((void*)&window, xscale, yscale));
 			});
 	}
-	const void OpenGLWindow::setCloseCallback() const
+	const void GLFWWindow::setCloseCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowCloseCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				glfwSetWindowShouldClose(nativeWindow, true);
 				window.getWindowData().m_Open = false;
 				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowCloseEvent>((void*)&window));
 			});
 	}
-	const void OpenGLWindow::setMinimizeCallback() const
+	const void GLFWWindow::setMinimizeCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowIconifyCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int isIcon)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				if (isIcon)
 				{
 					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowMinimizeEvent>((void*)&window));
@@ -284,13 +283,13 @@ namespace assec::graphics
 				}
 			});
 	}
-	const void OpenGLWindow::setMaximizeCallback() const
+	const void GLFWWindow::setMaximizeCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowMaximizeCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int maximized)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				if (maximized)
 				{
 					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowMaximizeEvent>((void*)&window));
@@ -301,13 +300,13 @@ namespace assec::graphics
 				}
 			});
 	}
-	const void OpenGLWindow::setFocusCallback() const
+	const void GLFWWindow::setFocusCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowFocusCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int focused)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				if (focused)
 				{
 					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowFocusEvent>((void*)&window));
@@ -318,34 +317,34 @@ namespace assec::graphics
 				}
 			});
 	}
-	const void OpenGLWindow::setRefreshCallback() const
+	const void GLFWWindow::setRefreshCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowRefreshCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowRefreshEvent>((void*)&window));
 				window.swapBuffers();
 			});
 	}
-	const void OpenGLWindow::setPosCallBack() const
+	const void GLFWWindow::setPosCallBack() const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowPosCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int x, int y)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowMoveEvent>((void*)&window, (int&)x, (int&)y));
 			});
 	}
-	const void OpenGLWindow::setKeyCallback() const
+	const void GLFWWindow::setKeyCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetKeyCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int keycode, int scancode, int action, int mods)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				switch (action)
 				{
 				case GLFW_PRESS:
@@ -360,32 +359,32 @@ namespace assec::graphics
 				}
 			});
 	}
-	const void OpenGLWindow::setCharCallback() const
+	const void GLFWWindow::setCharCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetCharCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, unsigned int unicode)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().m_EventCallBack(std::make_shared<events::CharTypedEvent>((void*)&window, unicode));
 			});
 	}
-	const void OpenGLWindow::setMousePositionCallback() const
+	const void GLFWWindow::setMousePositionCallback() const
 	{
 		glfwSetCursorPosCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, double x, double y)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().m_EventCallBack(std::make_shared<events::MouseMovedEvent>((void*)&window, glm::vec2(x, y)));
 			});
 	}
-	const void OpenGLWindow::setCursorEnterCallback() const
+	const void GLFWWindow::setCursorEnterCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetCursorEnterCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int entered)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				if (entered)
 				{
 					window.getWindowData().m_EventCallBack(std::make_shared<events::CursorEnteredEvent>((void*)&window));
@@ -396,13 +395,13 @@ namespace assec::graphics
 				}
 			});
 	}
-	const void OpenGLWindow::setMouseButtonCallback() const
+	const void GLFWWindow::setMouseButtonCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetMouseButtonCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int button, int action, int mods)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				switch (action)
 				{
 				case GLFW_PRESS:
@@ -414,23 +413,23 @@ namespace assec::graphics
 				}
 			});
 	}
-	const void OpenGLWindow::setMouseScrolledCallback() const
+	const void GLFWWindow::setMouseScrolledCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetScrollCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, double xOffset, double yOffset)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().m_EventCallBack(std::make_shared<events::MouseScrolledEvent>((void*)&window, glm::vec2(xOffset, yOffset)));
 			});
 	}
-	const void OpenGLWindow::setPathDropCallback() const
+	const void GLFWWindow::setPathDropCallback() const
 	{
 		TIME_FUNCTION;
 		glfwSetDropCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int count, const char** paths)
 			{
 				TIME_FUNCTION;
-				OpenGLWindow& window = *((OpenGLWindow*)glfwGetWindowUserPointer(nativeWindow));
+				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().m_EventCallBack(std::make_shared<events::PathDroppedEvent>((void*)&window, count, paths));
 			});
 	}

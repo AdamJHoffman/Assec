@@ -1,27 +1,20 @@
 ﻿#include "include/Assec.h"
 namespace client
 {
-	auto layerStack = assec::layersystem::LayerStack();
-	void onEvent(assec::events::Event& event)
-	{
-		TIME_FUNCTION;
-		AC_CLIENT_TRACE(event.toString());
-		layerStack.onEvent(event);
-	}
-	auto windowManager = std::make_shared<assec::graphics::WindowManager>(onEvent);
 	void init()
 	{
-		assec::init();
+		assec::Assec::getInstance();
 		TIME_FUNCTION;
-		unsigned int width = 1920, height = 1080;
-
-		windowManager->addWindow(width, height, "Assec", nullptr, nullptr);
+		assec::Assec::getInstance().AC_WINDOW_MANAGER->addWindow(1920, 1080, "Assec", nullptr, nullptr);
 	}
 	void update()
 	{
 		TIME_FUNCTION;
-		std::string vertex = assec::util::Loader::getLoader().loadFile("res/shaders/texture_shader/texture.vertex");
-		std::string fragment = assec::util::Loader::getLoader().loadFile("res/shaders/texture_shader/texture.fragment");
+
+		// TEMP ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		std::string vertex = assec::util::Loader::getLoader().loadFile("res/shaders/matrix_shader/matrix.vertex");
+		std::string fragment = assec::util::Loader::getLoader().loadFile("res/shaders/matrix_shader/matrix.fragment");
 
 		float vertices[4 * 3 + 4 * 2] = {
 				-0.5f, -0.5f, 0.0f,
@@ -49,27 +42,32 @@ namespace client
 
 		assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
 
-		assec::ref<assec::graphics::Texture> texture = windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->genTexture2D(data.m_Width, data.m_Height, data.m_Data, props);
-		assec::ref<assec::graphics::VertexArray> vertexArray = windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->genVertexArray(vertices, sizeof(vertices), indices, sizeof(indices), 0x88E4, layout);
-		assec::ref<assec::graphics::ShaderProgram> shader = windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->genShaderProgram(vertex.c_str(), fragment.c_str());
-		while (!windowManager->empty())
+		assec::ref<assec::graphics::Texture> texture = assec::Assec::getInstance().AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Width, data.m_Height, data.m_Data, props);
+		assec::ref<assec::graphics::VertexArray> vertexArray = assec::Assec::getInstance().AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->createVertexArray(vertices, sizeof(vertices), indices, sizeof(indices), 0x88E4, layout);
+		assec::ref<assec::graphics::ShaderProgram> shader = assec::Assec::getInstance().AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(vertex.c_str(), fragment.c_str());
+		assec::ref<assec::graphics::Camera> camera = std::make_shared<assec::graphics::OrthographicCamera>(-2.0f, 2.0f, -1.125f, 1.125f, -1.0f, 1.0f);
+
+		shader->loadMat4("u_viewProjection", camera->getViewProjectionMatrix());
+
+		// TEMP ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		while (!assec::Assec::getInstance().AC_WINDOW_MANAGER->empty())
 		{
 			TIME_FUNCTION;
-			windowManager->prepare();
+			assec::Assec::getInstance().AC_WINDOW_MANAGER->prepare();
 
 			shader->bind();
-			windowManager->getWindows()[0]->getWindowData().m_GraphicsContext->setActiveTexture(0);
+			assec::Assec::getInstance().AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->setActiveTexture(0);
 			texture->bind();
-
 			vertexArray->render();
 
-			windowManager->finish();
+			assec::Assec::getInstance().AC_WINDOW_MANAGER->finish();
+			assec::Assec::getInstance().handleEvents();
 		}
 	}
 	void cleanup()
 	{
 		TIME_FUNCTION;
-		assec::cleanup();
 	}
 }
 

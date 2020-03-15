@@ -141,6 +141,8 @@
   <ItemGroup>
     <None Include="res\shaders\basic_shader\basic.fragment" />
     <None Include="res\shaders\basic_shader\basic.vertex" />
+    <None Include="res\shaders\matrix_shader\matrix.fragment" />
+    <None Include="res\shaders\matrix_shader\matrix.vertex" />
     <None Include="res\shaders\texture_shader\texture.fragment" />
     <None Include="res\shaders\texture_shader\texture.vertex" />
   </ItemGroup>

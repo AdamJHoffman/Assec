@@ -143,25 +143,33 @@
     <ClInclude Include="src\acpch.h" />
     <ClInclude Include="src\core\Config.h" />
     <ClInclude Include="src\core\Core.h" />
+    <ClInclude Include="src\core\Input.h" />
     <ClInclude Include="src\core\OpenGLConfig.h" />
     <ClInclude Include="src\event\EngineEvents.h" />
     <ClInclude Include="src\event\Event.h" />
+    <ClInclude Include="src\event\EventQueue.h" />
     <ClInclude Include="src\event\KeyEvents.h" />
     <ClInclude Include="src\event\MouseEvents.h" />
     <ClInclude Include="src\event\WindowEvents.h" />
     <ClInclude Include="src\graphics\Buffer.h" />
+    <ClInclude Include="src\graphics\Camera.h" />
+    <ClInclude Include="src\graphics\glfw\GLFWWindowContext.h" />
     <ClInclude Include="src\graphics\GraphicsContext.h" />
+    <ClInclude Include="src\graphics\renderer\Material.h" />
+    <ClInclude Include="src\graphics\renderer\Renderable.h" />
+    <ClInclude Include="src\graphics\renderer\Renderer.h" />
     <ClInclude Include="src\graphics\Shader.h" />
     <ClInclude Include="src\graphics\Texture.h" />
     <ClInclude Include="src\graphics\VertexArray.h" />
     <ClInclude Include="src\graphics\Window.h" />
+    <ClInclude Include="src\graphics\WindowContext.h" />
     <ClInclude Include="src\graphics\WindowManager.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLBuffer.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLGraphicsContext.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLShader.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLTexture.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLVertexArray.h" />
-    <ClInclude Include="src\graphics\openGL\OpenGLWindow.h" />
+    <ClInclude Include="src\graphics\opengl\OpenGLBuffer.h" />
+    <ClInclude Include="src\graphics\opengl\OpenGLGraphicsContext.h" />
+    <ClInclude Include="src\graphics\opengl\OpenGLShader.h" />
+    <ClInclude Include="src\graphics\opengl\OpenGLTexture.h" />
+    <ClInclude Include="src\graphics\opengl\OpenGLVertexArray.h" />
+    <ClInclude Include="src\graphics\glfw\GLFWWindow.h" />
     <ClInclude Include="src\include\Assec.h" />
     <ClInclude Include="src\layers\Layer.h" />
     <ClInclude Include="src\layers\LayerStack.h" />
@@ -558,13 +566,16 @@
     </ClCompile>
     <ClCompile Include="src\core\Assec.cpp" />
     <ClCompile Include="src\core\StbImageImplementation.cpp" />
+    <ClCompile Include="src\graphics\Camera.cpp" />
+    <ClCompile Include="src\graphics\glfw\GLFWWindowContext.cpp" />
+    <ClCompile Include="src\graphics\renderer\Material.cpp" />
     <ClCompile Include="src\graphics\WindowManager.cpp" />
-    <ClCompile Include="src\graphics\openGL\OpenGLBuffer.cpp" />
-    <ClCompile Include="src\graphics\openGL\OpenGLGraphicsContext.cpp" />
-    <ClCompile Include="src\graphics\openGL\OpenGLShader.cpp" />
-    <ClCompile Include="src\graphics\openGL\OpenGLTexture.cpp" />
-    <ClCompile Include="src\graphics\openGL\OpenGLVertexArray.cpp" />
-    <ClCompile Include="src\graphics\openGL\OpenGLWindow.cpp" />
+    <ClCompile Include="src\graphics\opengl\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\graphics\opengl\OpenGLGraphicsContext.cpp" />
+    <ClCompile Include="src\graphics\opengl\OpenGLShader.cpp" />
+    <ClCompile Include="src\graphics\opengl\OpenGLTexture.cpp" />
+    <ClCompile Include="src\graphics\opengl\OpenGLVertexArray.cpp" />
+    <ClCompile Include="src\graphics\glfw\GLFWWindow.cpp" />
     <ClCompile Include="src\layers\Layer.cpp" />
     <ClCompile Include="src\layers\LayerStack.cpp" />
     <ClCompile Include="src\layers\gameobjects\GameObject.cpp" />
@@ -585,4 +596,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>

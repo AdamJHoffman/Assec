@@ -32,7 +32,7 @@ namespace assec::graphics
 		virtual ~Window() { TIME_FUNCTION; }
 		inline WindowData& getWindowData() const { TIME_FUNCTION; return (WindowData&)this->m_WindowData; }
 		virtual const void setUserPointer() const = 0;
-		virtual const void terminate() const = 0;
+		virtual const void cleanup() const = 0;
 		virtual const void validate() const = 0;
 		virtual const void swapBuffers() const = 0;
 		virtual const void pollEvents() const = 0;

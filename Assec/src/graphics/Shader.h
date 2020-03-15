@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "acpch.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace assec::graphics
 {
@@ -21,6 +23,7 @@ namespace assec::graphics
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
 		virtual void loadInt(std::string name, int value) = 0;
+		virtual void loadMat4(std::string name, glm::mat4 value) = 0;
 		unsigned int m_RendererID;
 	protected:
 		ShaderProgram(unsigned int ID) : m_RendererID(ID) { TIME_FUNCTION; }
