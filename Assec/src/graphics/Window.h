@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <glm/glm.hpp>
 #include "graphics/GraphicsContext.h"
+#include "graphics/Monitor.h"
 #include "event/Event.h"
 
 namespace assec::graphics
@@ -66,7 +67,7 @@ namespace assec::graphics
 		virtual const void setClipboardString(const char* string) const = 0;
 		virtual const char* getClipboardString() const = 0;
 	protected:
-		virtual void* createWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share) const = 0;
+		virtual void* createWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share) const = 0;
 		virtual const void setWindowResizeCallback() const = 0;
 		virtual const void setFramebufferResizeCallback() const = 0;
 		virtual const void setWindowContentScaleCallback() const = 0;

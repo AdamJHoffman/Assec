@@ -139,6 +139,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\renderer2D\shaders\color\color.fragment" />
+    <None Include="res\renderer2D\shaders\color\color.vertex" />
+    <None Include="res\renderer2D\shaders\texture\texture.fragment" />
+    <None Include="res\renderer2D\shaders\texture\texture.vertex" />
     <None Include="res\shaders\basic_shader\basic.fragment" />
     <None Include="res\shaders\basic_shader\basic.vertex" />
     <None Include="res\shaders\matrix_shader\matrix.fragment" />

@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include "graphics/Window.h"
+#include "graphics/Monitor.h"
 #include "core/OpenGLConfig.h"
 #include "graphics/openGL/OpenGLGraphicsContext.h"
 
@@ -10,7 +11,7 @@ namespace assec::graphics
 	class GLFWWindow : public Window
 	{
 	public:
-		GLFWWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, EventCallBackFn eventCallBack);
+		GLFWWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack);
 		virtual ~GLFWWindow();
 		virtual const void setUserPointer() const override;
 		virtual const void cleanup() const override;
@@ -44,7 +45,7 @@ namespace assec::graphics
 		virtual const void setClipboardString(const char* string) const override;
 		virtual const char* getClipboardString() const override;
 	protected:
-		virtual void* createWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share) const override;
+		virtual void* createWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share) const override;
 		virtual const void setWindowResizeCallback() const override;
 		virtual const void setFramebufferResizeCallback() const override;
 		virtual const void setWindowContentScaleCallback() const override;

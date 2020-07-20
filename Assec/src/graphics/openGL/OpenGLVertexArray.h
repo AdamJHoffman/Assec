@@ -6,7 +6,8 @@ namespace assec::graphics
 	class OpenGLVertexArray : public VertexArray
 	{
 	public:
-		OpenGLVertexArray(const void* vertices, const size_t& verticesSize, const void* indices, const size_t& indicesSize, const int& usage, graphics::VertexBuffer::VertexBufferLayout& layout);
+		OpenGLVertexArray(VertexArrayData vertexArrayData);
+		OpenGLVertexArray(const int& usage, const size_t& size);
 		virtual ~OpenGLVertexArray();
 		void bind() const override;
 		void render() const override;

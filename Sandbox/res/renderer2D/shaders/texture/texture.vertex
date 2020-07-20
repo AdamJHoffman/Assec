@@ -1,0 +1,15 @@
+#version 460
+
+layout (location = 0) in vec3 a_position;
+layout (location = 1) in vec2 a_textureCoord;
+layout (location = 2) in mat4 a_transform;
+
+out vec2 p_textureCoord;
+
+uniform mat4 u_viewProjection;
+		
+void main()
+{	
+	p_textureCoord = a_textureCoord;
+	gl_Position = u_viewProjection * a_transform * vec4(a_position, 1.0);
+}

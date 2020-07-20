@@ -1298,6 +1298,10 @@
     <ClInclude Include="src\graphics\renderer\Renderer.h" />
     <ClInclude Include="src\graphics\renderer\Renderable.h" />
     <ClInclude Include="src\graphics\renderer\Material.h" />
+    <ClInclude Include="src\util\misc.h" />
+    <ClInclude Include="src\graphics\renderer\Mesh.h" />
+    <ClInclude Include="src\graphics\Monitor.h" />
+    <ClInclude Include="src\graphics\glfw\GLFWMonitor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1348,5 +1352,9 @@
       <Filter>src\graphics\openGL</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\renderer\Material.cpp" />
+    <ClCompile Include="src\graphics\renderer\Renderable.cpp" />
+    <ClCompile Include="src\graphics\renderer\Renderer.cpp" />
+    <ClCompile Include="src\graphics\renderer\Mesh.cpp" />
+    <ClCompile Include="src\graphics\glfw\GLFWMonitor.cpp" />
   </ItemGroup>
 </Project>

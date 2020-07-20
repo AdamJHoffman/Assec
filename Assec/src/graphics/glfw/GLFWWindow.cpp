@@ -12,7 +12,7 @@ namespace assec::graphics
 		AC_CORE_CRITICAL("GLFW Error ({0}): {1}", error, description);
 	}
 
-	GLFWWindow::GLFWWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share, EventCallBackFn eventCallBack)
+	GLFWWindow::GLFWWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack)
 		: Window::Window(width, height, title, eventCallBack, new OpenGLGraphicsContext(), this->createWindow(width, height, title, monitor, share))
 	{
 		TIME_FUNCTION;
@@ -211,7 +211,7 @@ namespace assec::graphics
 		this->m_WindowData.m_SwapInterval = interval;
 		glfwSwapInterval(interval);
 	}
-	void* GLFWWindow::createWindow(unsigned int& width, unsigned int& height, const char* title, void* monitor, void* share) const
+	void* GLFWWindow::createWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share) const
 	{
 		TIME_FUNCTION;
 		if (!s_GLFWInitialized)
@@ -221,7 +221,8 @@ namespace assec::graphics
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
-		return glfwCreateWindow(width, height, title, (GLFWmonitor*)monitor, (GLFWwindow*)share);
+
+		return glfwCreateWindow(width, height, title, (GLFWmonitor*)(monitor == nullptr ? nullptr : monitor->m_NativeMonitor), (GLFWwindow*)(share == nullptr ? nullptr : share->getWindowData().m_NativeWindow));
 	}
 	const void GLFWWindow::setWindowResizeCallback() const
 	{

@@ -19,7 +19,7 @@ namespace assec::util
 		~Profiler() {}
 		Profiler(Profiler const&) = delete;
 		void operator=(Profiler const&) = delete;
-		void beginSession(const std::string& name, const std::string& filepath = "profling_results.json")
+		void beginSession(const std::string& name, const std::string& filepath = "profiling_results.json")
 		{
 			this->m_OutputStream.open(filepath);
 			this->writeHeader();

@@ -65,6 +65,12 @@ namespace assec::graphics
 		this->bind();
 		GLCall(glUniform1i(this->getLocation(name), value));
 	}
+	void OpenGLShaderProgram::loadVec4(std::string name, glm::vec4 value)
+	{
+		TIME_FUNCTION;
+		this->bind();
+		GLCall(glUniform4fv(this->getLocation(name), 1, glm::value_ptr(value)));
+	}
 	void OpenGLShaderProgram::loadMat4(std::string name, glm::mat4 value)
 	{
 		TIME_FUNCTION;

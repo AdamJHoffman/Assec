@@ -4,21 +4,29 @@
 
 namespace assec::graphics
 {
-	OpenGLVertexArray::OpenGLVertexArray(const void* vertices, const size_t& verticesSize, const void* indices, const size_t& indicesSize, const int& usage, graphics::VertexBuffer::VertexBufferLayout& layout)
+	OpenGLVertexArray::OpenGLVertexArray(VertexArrayData vertexArrayData)
 		: VertexArray::VertexArray(this->genVertexArray())
 	{
 		TIME_FUNCTION;
 		this->bind();
-		this->m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(vertices, verticesSize, usage);
-		void* pointer = 0;
-		for (unsigned int i = 0; i < layout.m_Attributes.size(); i++)
+		this->m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(vertexArrayData.vertices, vertexArrayData.verticesSize, vertexArrayData.usage);
+		int pointer = 0;
+		for (unsigned int i = 0; i < vertexArrayData.layout.m_Attributes.size(); i++)
 		{
-			auto& attrib = layout.m_Attributes[i];
+			auto& attrib = vertexArrayData.layout.m_Attributes[i];
 			GLCall(glEnableVertexAttribArray(i));
-			GLCall(glVertexAttribPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), attrib.m_Normalized, attrib.getSize(), pointer));
-			pointer = (int*)pointer + verticesSize / layout.calculateVertexSize() * attrib.getSize();
+			GLCall(glVertexAttribPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), attrib.m_Normalized, attrib.getSize(), (const void*)pointer));
+			pointer += vertexArrayData.verticesSize / vertexArrayData.layout.calculateVertexSize() * attrib.getSize();
 		}
-		this->m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(indices, indicesSize, usage);
+		this->m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(vertexArrayData.indices, vertexArrayData.indicesSize, vertexArrayData.usage);
+	}
+	OpenGLVertexArray::OpenGLVertexArray(const int& usage, const size_t& size)
+		: VertexArray::VertexArray(this->genVertexArray())
+	{
+		TIME_FUNCTION;
+		this->bind();
+		this->m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(usage, size);
+		this->m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(usage, size);
 	}
 	OpenGLVertexArray::~OpenGLVertexArray() { TIME_FUNCTION; }
 	void OpenGLVertexArray::bind() const

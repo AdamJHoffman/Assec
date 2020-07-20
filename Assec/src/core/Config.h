@@ -162,6 +162,13 @@
 #define AC_CORE_ASSERT(x, ...) x;
 #endif //AC_DEBUG
 
+// TEMP----------------------------------------------------
+#define AC_SHADER_TEXTURE_NAME "u_image"
+#define AC_SHADER_COLOR_NAME "u_color"
+#define AC_SHADER_VIEWPROJECTIONMATRIX_NAME "u_viewProjection"
+#define AC_SHADER_TRANSFORM_NAME "u_transform"
+//--------------------------------------------------------
+
 namespace assec
 {
 	template<typename T>
@@ -178,6 +185,9 @@ namespace assec
 
 		VERTEX_SHADER,
 		FRAGMENT_SHADER,
+
+		STATIC_DRAW,
+		DYNAMIC_DRAW,
 
 		REPEAT,
 		MIRRORED_REPEAT,

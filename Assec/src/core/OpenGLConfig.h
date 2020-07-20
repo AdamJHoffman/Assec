@@ -33,6 +33,12 @@ namespace assec
 		case Type::FRAGMENT_SHADER:
 			return GL_FRAGMENT_SHADER;
 			break;
+		case Type::STATIC_DRAW:
+			return GL_STATIC_DRAW;
+			break;
+		case Type::DYNAMIC_DRAW:
+			return GL_DYNAMIC_DRAW;
+			break;
 		case Type::REPEAT:
 			return GL_REPEAT;
 			break;

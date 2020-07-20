@@ -153,9 +153,12 @@
     <ClInclude Include="src\event\WindowEvents.h" />
     <ClInclude Include="src\graphics\Buffer.h" />
     <ClInclude Include="src\graphics\Camera.h" />
+    <ClInclude Include="src\graphics\glfw\GLFWMonitor.h" />
     <ClInclude Include="src\graphics\glfw\GLFWWindowContext.h" />
     <ClInclude Include="src\graphics\GraphicsContext.h" />
+    <ClInclude Include="src\graphics\Monitor.h" />
     <ClInclude Include="src\graphics\renderer\Material.h" />
+    <ClInclude Include="src\graphics\renderer\Mesh.h" />
     <ClInclude Include="src\graphics\renderer\Renderable.h" />
     <ClInclude Include="src\graphics\renderer\Renderer.h" />
     <ClInclude Include="src\graphics\Shader.h" />
@@ -178,6 +181,7 @@
     <ClInclude Include="src\log\Logger.h" />
     <ClInclude Include="src\util\Loader.h" />
     <ClInclude Include="src\util\MemoryManager.h" />
+    <ClInclude Include="src\util\misc.h" />
     <ClInclude Include="src\util\Profiler.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -567,8 +571,12 @@
     <ClCompile Include="src\core\Assec.cpp" />
     <ClCompile Include="src\core\StbImageImplementation.cpp" />
     <ClCompile Include="src\graphics\Camera.cpp" />
+    <ClCompile Include="src\graphics\glfw\GLFWMonitor.cpp" />
     <ClCompile Include="src\graphics\glfw\GLFWWindowContext.cpp" />
     <ClCompile Include="src\graphics\renderer\Material.cpp" />
+    <ClCompile Include="src\graphics\renderer\Mesh.cpp" />
+    <ClCompile Include="src\graphics\renderer\Renderable.cpp" />
+    <ClCompile Include="src\graphics\renderer\Renderer.cpp" />
     <ClCompile Include="src\graphics\WindowManager.cpp" />
     <ClCompile Include="src\graphics\opengl\OpenGLBuffer.cpp" />
     <ClCompile Include="src\graphics\opengl\OpenGLGraphicsContext.cpp" />

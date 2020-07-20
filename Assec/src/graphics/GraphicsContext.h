@@ -33,10 +33,17 @@ namespace assec::graphics
 			this->m_IndexBuffers.push_back(result);
 			return result;
 		}
-		const ref<VertexArray> createVertexArray(const void* vertices, const size_t& verticesSize, const void* indices, const size_t& indicesSize, const int& usage, graphics::VertexBuffer::VertexBufferLayout& layout)
+		const ref<VertexArray> createVertexArray(VertexArray::VertexArrayData vertexArrayData)
 		{
 			TIME_FUNCTION;
-			auto result = this->createVertexArray0(vertices, verticesSize, indices, indicesSize, usage, layout);
+			auto result = this->createVertexArray0(vertexArrayData);
+			this->m_VertexArrays.push_back(result);
+			return result;
+		}
+		const ref<VertexArray> createVertexArray(const int& usage, const size_t& size = 0)
+		{
+			TIME_FUNCTION;
+			auto result = this->createVertexArray0(usage, size);
 			this->m_VertexArrays.push_back(result);
 			return result;
 		}
@@ -92,7 +99,8 @@ namespace assec::graphics
 	protected:
 		virtual const ref<VertexBuffer> createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const = 0;
 		virtual const ref<IndexBuffer> createIndexBuffer0(const void* indices, const size_t& size, const int& usage) const = 0;
-		virtual const ref<VertexArray> createVertexArray0(const void* vertices, const size_t& verticesSize, const void* indices, const size_t& indicesSize, const int& usage, graphics::VertexBuffer::VertexBufferLayout& layout) const = 0;
+		virtual const ref<VertexArray> createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const = 0;
+		virtual const ref<VertexArray> createVertexArray0(const int& usage, const size_t& size = 0) const = 0;
 		virtual const ref<Shader> createShader0(const char* source, Type& type) const = 0;
 		virtual const ref<ShaderProgram> createShaderProgram0(const char* vertexSource, const char* fragmentSource) const = 0;
 		virtual const ref<Texture2D> createTexture2D0(unsigned int width, unsigned int height, const void* data, Texture::TextureProps props) const = 0;

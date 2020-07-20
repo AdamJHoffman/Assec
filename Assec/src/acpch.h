@@ -9,6 +9,7 @@
 #include <chrono>
 
 #include <string>
+#include <array>
 #include <sstream>
 #include <vector>
 #include <unordered_map>
@@ -32,6 +33,10 @@
 #include "graphics/Shader.h"
 #include "graphics/Texture.h"
 #include "graphics/Camera.h"
+#include "graphics/renderer/Material.h"
+#include "graphics/renderer/Renderable.h"
+#include "graphics/renderer/Renderer.h"
+#include "graphics/renderer/Mesh.h"
 
 #include "core/Core.h"
 #include "core/Config.h"

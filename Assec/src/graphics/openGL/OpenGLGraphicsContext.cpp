@@ -37,10 +37,15 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		return std::make_shared<OpenGLIndexBuffer>(indices, size, usage);
 	}
-	const ref<VertexArray> OpenGLGraphicsContext::createVertexArray0(const void* vertices, const size_t& verticesSize, const void* indices, const size_t& indicesSize, const int& usage, graphics::VertexBuffer::VertexBufferLayout& layout) const
+	const ref<VertexArray> OpenGLGraphicsContext::createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLVertexArray>(vertices, verticesSize, indices, indicesSize, usage, layout);
+		return std::make_shared<OpenGLVertexArray>(vertexArrayData);
+	}
+	const ref<VertexArray> OpenGLGraphicsContext::createVertexArray0(const int& usage, const size_t& size) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLVertexArray>(usage, size);
 	}
 	const ref<Shader> OpenGLGraphicsContext::createShader0(const char* source, Type& type) const
 	{

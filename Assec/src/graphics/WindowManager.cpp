@@ -40,7 +40,7 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		return !this->m_Windows.size();
 	}
-	const void WindowManager::addWindow(unsigned int width, unsigned int height, const char* title, void* monitor, void* share)
+	const void WindowManager::addWindow(unsigned int width, unsigned int height, const char* title, Monitor* monitor, Window* share)
 	{
 		TIME_FUNCTION;
 		this->m_Windows.push_back(assec::Assec::getInstance().AC_WINDOW_MANAGER->m_WindowContext->createWindow(width, height, title, monitor, share, [this](std::shared_ptr<events::Event> event)
