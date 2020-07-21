@@ -42,10 +42,10 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		return std::make_shared<OpenGLVertexArray>(vertexArrayData);
 	}
-	const ref<VertexArray> OpenGLGraphicsContext::createVertexArray0(const int& usage, const size_t& size) const
+	const ref<VertexArray> OpenGLGraphicsContext::createVertexArray0(Type& usage, const size_t& size) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLVertexArray>(usage, size);
+		return std::make_shared<OpenGLVertexArray>(toOpenGLType(usage), size);
 	}
 	const ref<Shader> OpenGLGraphicsContext::createShader0(const char* source, Type& type) const
 	{

@@ -35,10 +35,10 @@ namespace assec::graphics
 		{
 			VertexBufferLayout() : m_Attributes(std::vector<VertexBufferAttribute>()) { TIME_FUNCTION; }
 			VertexBufferLayout(std::vector<VertexBufferAttribute> attributes) : m_Attributes(attributes) { TIME_FUNCTION; }
-			const int calculateVertexSize()
+			const size_t calculateVertexSize()
 			{
 				TIME_FUNCTION;
-				int result = 0;
+				size_t result = 0;
 				for (auto attrib : this->m_Attributes)
 				{
 					result += attrib.getSize();
@@ -63,7 +63,7 @@ namespace assec::graphics
 	public:
 		virtual ~IndexBuffer() { TIME_FUNCTION; }
 		virtual void addData(const void* vertices, const size_t& size, const int& usage) = 0;
-		virtual void addSubData(const void* data, const size_t& size, const int offset) const = 0;
+		virtual void addSubData(const void* data, const size_t& size, const int offset) = 0;
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
 		unsigned int m_RendererID;

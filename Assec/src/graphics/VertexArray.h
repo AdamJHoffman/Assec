@@ -17,6 +17,7 @@ namespace assec::graphics
 		virtual void bind() const = 0;
 		virtual void render() const = 0;
 		virtual void cleanup() const = 0;
+		virtual void mapVertexAttributes(const size_t& verticesSize, VertexBuffer::VertexBufferLayout& layout) const = 0;
 		unsigned int m_RendererID;
 		scope<VertexBuffer> m_VertexBuffer;
 		scope<IndexBuffer> m_IndexBuffer;

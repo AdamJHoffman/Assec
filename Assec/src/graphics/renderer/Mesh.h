@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <glm/glm.hpp>
 #include "acpch.h"
@@ -34,5 +34,8 @@ namespace assec::graphics
 		const std::vector<int> m_Indices;
 		const std::vector<Vertex> m_Vertices;
 		const std::vector<float> m_VerticesData;
+		const size_t* calculateSize();
+	private:
+		size_t m_Size;
 	};
 }

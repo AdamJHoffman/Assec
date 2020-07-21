@@ -25,7 +25,7 @@ namespace assec::graphics
 		OpenGLIndexBuffer(const int& usage, const size_t& size);
 		~OpenGLIndexBuffer();
 		virtual void addData(const void* vertices, const size_t& size, const int& usage) override;
-		virtual void addSubData(const void* data, const size_t& size, const int offset) const override;
+		virtual void addSubData(const void* data, const size_t& size, const int offset) override;
 		virtual void bind() const override;
 		virtual void cleanup() const override;
 	protected:

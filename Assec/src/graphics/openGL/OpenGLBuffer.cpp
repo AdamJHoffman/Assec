@@ -7,14 +7,12 @@ namespace assec::graphics
 	OpenGLVertexBuffer::OpenGLVertexBuffer(const void* vertices, const size_t& size, const int& usage) : VertexBuffer::VertexBuffer(this->genBuffer())
 	{
 		TIME_FUNCTION;
-		this->bind();
-		GLCall(glBufferData(GL_ARRAY_BUFFER, size, vertices, usage));
+		this->addData(vertices, size, usage);
 	}
 	OpenGLVertexBuffer::OpenGLVertexBuffer(const int& usage, const size_t& size) : VertexBuffer::VertexBuffer(this->genBuffer())
 	{
 		TIME_FUNCTION;
-		this->bind();
-		GLCall(glBufferData(GL_ARRAY_BUFFER, size, nullptr, usage));
+		this->addData(nullptr, size, usage);
 	}
 	OpenGLVertexBuffer::~OpenGLVertexBuffer() { TIME_FUNCTION; }
 	void OpenGLVertexBuffer::addData(const void* vertices, const size_t& size, const int& usage) const
@@ -46,17 +44,15 @@ namespace assec::graphics
 		GLCall(glCreateBuffers(1, &ID));
 		return ID;
 	}
-	OpenGLIndexBuffer::OpenGLIndexBuffer(const void* indices, const size_t& size, const int& usage) : IndexBuffer::IndexBuffer(this->genBuffer(), size)
+	OpenGLIndexBuffer::OpenGLIndexBuffer(const void* indices, const size_t& size, const int& usage) : IndexBuffer::IndexBuffer(this->genBuffer(), (size / sizeof(unsigned int)))
 	{
 		TIME_FUNCTION;
-		this->bind();
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, usage));
+		this->addData(indices, size, usage);
 	}
 	OpenGLIndexBuffer::OpenGLIndexBuffer(const int& usage, const size_t& size) : IndexBuffer::IndexBuffer(this->genBuffer(), 0)
 	{
 		TIME_FUNCTION;
-		this->bind();
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, nullptr, usage));
+		this->addData(nullptr, size, usage);
 	}
 	OpenGLIndexBuffer::~OpenGLIndexBuffer() { TIME_FUNCTION; }
 	void OpenGLIndexBuffer::addData(const void* indices, const size_t& size, const int& usage)
@@ -64,13 +60,14 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		this->bind();
 		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, usage));
-		this->m_Count = size;
+		this->m_Count = indices == nullptr ? 0 : (size / sizeof(unsigned int));
 	}
-	void OpenGLIndexBuffer::addSubData(const void* data, const size_t& size, const int offset) const
+	void OpenGLIndexBuffer::addSubData(const void* data, const size_t& size, const int offset)
 	{
 		TIME_FUNCTION;
 		this->bind();
 		GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data));
+		this->m_Count = data == nullptr ? 0 : (size / sizeof(unsigned int));
 	}
 	void OpenGLIndexBuffer::bind() const
 	{

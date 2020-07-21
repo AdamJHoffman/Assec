@@ -1302,6 +1302,7 @@
     <ClInclude Include="src\graphics\renderer\Mesh.h" />
     <ClInclude Include="src\graphics\Monitor.h" />
     <ClInclude Include="src\graphics\glfw\GLFWMonitor.h" />
+    <ClInclude Include="src\graphics\renderer\Batch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1356,5 +1357,6 @@
     <ClCompile Include="src\graphics\renderer\Renderer.cpp" />
     <ClCompile Include="src\graphics\renderer\Mesh.cpp" />
     <ClCompile Include="src\graphics\glfw\GLFWMonitor.cpp" />
+    <ClCompile Include="src\graphics\renderer\Batch.cpp" />
   </ItemGroup>
 </Project>

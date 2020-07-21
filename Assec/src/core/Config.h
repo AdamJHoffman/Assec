@@ -169,6 +169,9 @@
 #define AC_SHADER_TRANSFORM_NAME "u_transform"
 //--------------------------------------------------------
 
+#define BATCH_MAX_SIZE 1000000
+
+
 namespace assec
 {
 	template<typename T>

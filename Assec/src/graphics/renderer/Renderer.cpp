@@ -1,5 +1,6 @@
 ﻿#include "acpch.h"
 #include "Renderer.h"
+#include "Batch.h"
 #include "util/misc.h"
 #include "core/OpenGLConfig.h"
 #include "glm/gtc/type_ptr.hpp"
@@ -10,28 +11,23 @@ namespace assec::graphics
 	Renderer2D::~Renderer2D() {}
 	void Renderer2D::endScene()
 	{
-		for (auto key : util::Keys(this->m_Renderables))
+		for (auto key : util::Keys(*this->m_BatchManager.getBatches()))
 		{
 			key->makeCurrent();
 			key->getWindowData().m_GraphicsContext->setActiveTexture(0);
-			//if (this->m_VertexArray == nullptr)
-			//{
-			//	Type usage = Type::DYNAMIC_DRAW;
-			//	this->m_VertexArray = key->getWindowData().m_GraphicsContext->createVertexArray(toOpenGLType(usage), 1000000);
-			//}
-			for (auto renderable : this->m_Renderables.at(key))
+			if (this->m_VertexArray == nullptr)
 			{
-				renderable->m_Material->prepare(this->m_ViewProjectionMatrix);
-
-				Type usage = Type::DYNAMIC_DRAW;
-				this->m_VertexArray = key->getWindowData().m_GraphicsContext->createVertexArray({ &renderable->m_Mesh->m_VerticesData[0], (const void*)&renderable->m_Mesh->m_Indices[0], sizeof(float) * renderable->m_Mesh->m_VerticesData.size(), sizeof(unsigned int) * renderable->m_Mesh->m_Indices.size(), toOpenGLType(usage), Vertex::getLayout() });
-				//this->m_VertexArray->m_VertexBuffer->addData(&renderable->m_Mesh->m_VerticesData[0], sizeof(float) * renderable->m_Mesh->m_VerticesData.size(), toOpenGLType(usage));
-				//this->m_VertexArray->m_IndexBuffer->addData(&renderable->m_Mesh->m_Indices[0], sizeof(unsigned int) * renderable->m_Mesh->m_Indices.size(), toOpenGLType(usage));
+				this->m_VertexArray = key->getWindowData().m_GraphicsContext->createVertexArray(Type::DYNAMIC_DRAW, sizeof(Vertex) * 1000);
 			}
-			this->m_VertexArray->render();
-			this->m_VertexArray->cleanup();
-
+			for (auto b : (*this->m_BatchManager.getBatches()).at(key))
+			{
+				b->m_Material->prepare(this->m_ViewProjectionMatrix);
+				this->m_VertexArray->m_VertexBuffer->addSubData(&b->getMesh()->m_VerticesData[0], sizeof(float) * b->getMesh()->m_VerticesData.size(), 0);
+				this->m_VertexArray->m_IndexBuffer->addSubData(&b->getMesh()->m_Indices[0], sizeof(unsigned int) * b->getMesh()->m_Indices.size(), 0);
+				this->m_VertexArray->mapVertexAttributes(*b->getMesh()->calculateSize(), Vertex::getLayout());
+				this->m_VertexArray->render();
+			}
 		}
-		this->m_Renderables.clear();
+		this->m_BatchManager.clear();
 	}
 }
