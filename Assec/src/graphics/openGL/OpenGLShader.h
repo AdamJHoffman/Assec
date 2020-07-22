@@ -21,6 +21,7 @@ namespace assec::graphics
 		virtual ~OpenGLShaderProgram();
 		virtual void cleanup() const override;
 		virtual void loadInt(std::string name, int value) override;
+		virtual void loadIntArray(std::string name, size_t size, int* value) override;
 		virtual void loadVec4(std::string name, glm::vec4 value) override;
 		virtual void loadMat4(std::string name, glm::mat4 value) override;
 		virtual void bind() const override;

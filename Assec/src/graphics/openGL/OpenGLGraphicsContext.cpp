@@ -27,6 +27,13 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		GLCall(glActiveTexture(GL_TEXTURE0 + texture));
 	}
+	int OpenGLGraphicsContext::getMaxTextures() const
+	{
+		TIME_FUNCTION;
+		int texture_units;
+		GLCall(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units));
+		return texture_units;
+	}
 	const ref<VertexBuffer> OpenGLGraphicsContext::createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const
 	{
 		TIME_FUNCTION;

@@ -65,6 +65,12 @@ namespace assec::graphics
 		this->bind();
 		GLCall(glUniform1i(this->getLocation(name), value));
 	}
+	void OpenGLShaderProgram::loadIntArray(std::string name, size_t size, int* value)
+	{
+		TIME_FUNCTION;
+		this->bind();
+		GLCall(glUniform1iv(this->getLocation(name), size, value));
+	}
 	void OpenGLShaderProgram::loadVec4(std::string name, glm::vec4 value)
 	{
 		TIME_FUNCTION;

@@ -1,11 +1,12 @@
 #version 460
 			
 in vec2 p_textureCoord;
+flat in float p_texID;
 out vec4 o_color;
 
-uniform sampler2D u_image;
+uniform sampler2D u_images[32];
 		
 void main()
 {
-	o_color = texture(u_image, p_textureCoord);
+	o_color = texture(u_images[int(p_texID)], p_textureCoord);
 }

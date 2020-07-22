@@ -23,6 +23,7 @@ namespace assec::graphics
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
 		virtual void loadInt(std::string name, int value) = 0;
+		virtual void loadIntArray(std::string name, size_t size, int* value) = 0;
 		virtual void loadVec4(std::string name, glm::vec4 value) = 0;
 		virtual void loadMat4(std::string name, glm::mat4 value) = 0;
 		unsigned int m_RendererID;

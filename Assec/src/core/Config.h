@@ -170,6 +170,7 @@
 //--------------------------------------------------------
 
 #define BATCH_MAX_SIZE 1000000
+#define BATCH_MAX_TEXTURES 32
 
 
 namespace assec

@@ -3,47 +3,43 @@
 
 namespace assec::graphics
 {
-	Batch::Batch(ref<Material> material) : m_Size(0), m_Material(material), m_Meshes(std::vector<ref<Mesh>>()) {}
+	Batch::Batch(ref<Material> material) : m_Material(material) {}
 	Batch::~Batch() {}
 	const ref<Mesh> Batch::getMesh()
 	{
-		std::vector<Vertex> vertices = std::vector<Vertex>();
-		std::vector<int> indices = std::vector<int>();
-		if (!this->m_Meshes.empty())
-		{
-			int indicesOffset = 0;
-			for (ref<Mesh> m : m_Meshes)
-			{
-				for (Vertex v : m->m_Vertices)
-				{
-					vertices.push_back(v);
-				}
-				for (unsigned int i : m->m_Indices)
-				{
-					indices.push_back(i + indicesOffset);
-				}
-				indicesOffset += ((int)m->m_Indices.size());
-			}
-			return std::make_shared<Mesh>(vertices, indices);
-		}
-		return nullptr;
+		return std::make_shared<Mesh>(this->vertices, this->indices);
 	}
-	void Batch::pushBack(ref<Mesh> mesh)
+	void Batch::pushBack(ref<Renderable> renderable)
 	{
-		this->m_Meshes.push_back(mesh);
+		int indicesOffset = this->vertices.size();
+		for (Vertex v : renderable->m_Mesh->m_Vertices)
+		{
+			this->vertices.push_back(v);
+		}
+		for (int i : renderable->m_Mesh->m_Indices)
+		{
+			this->indices.push_back(indicesOffset + i);
+		}
+		this->m_Textures.push_back(renderable->m_Material->m_Texture);
+	}
+	void Batch::prepare(glm::mat4 viewProjectionMatrix, GraphicsContext* graphicscontext)
+	{
+		this->m_Material->m_ShaderProgram->bind();
+		this->m_Material->m_ShaderProgram->loadMat4(AC_SHADER_VIEWPROJECTIONMATRIX_NAME, viewProjectionMatrix);
+		for (int i = 0; i < this->m_Textures.size(); i++)
+		{
+			this->m_Material->m_ShaderProgram->loadInt("u_images[" + std::to_string(i) + "]", i);
+			graphicscontext->setActiveTexture(i);
+			this->m_Textures[i]->bind();
+		}
 	}
 	const size_t* Batch::calulateSize()
 	{
-		size_t verticesCount = 0;
-		for (ref<Mesh> m : this->m_Meshes)
-		{
-			verticesCount += m->m_Vertices.size();
-		}
-		this->m_Size = verticesCount * Vertex::getLayout().calculateVertexSize();
+		this->m_Size = this->vertices.size() * Vertex::getLayout().calculateVertexSize();
 		return &this->m_Size;
 	}
 
-	BatchManager::BatchManager(size_t batchSize) : m_BatchSize(batchSize), m_Batches(std::unordered_map<ref<Window>, std::vector<ref<Batch>>>()) {}
+	BatchManager::BatchManager(size_t batchSize, size_t maxTextures) : m_BatchSize(batchSize), m_MaxTextures(maxTextures), m_Batches(std::unordered_map<ref<Window>, std::vector<ref<Batch>>>()) {}
 	BatchManager::~BatchManager() {}
 	void BatchManager::pushBack(ref<Window> target, ref<Renderable> renderable)
 	{
@@ -51,18 +47,22 @@ namespace assec::graphics
 		{
 			for (ref<Batch> b : this->m_Batches[target])
 			{
-				if (b->m_Material == renderable->m_Material)
+				if (b->m_Material->m_ShaderProgram == renderable->m_Material->m_ShaderProgram)
 				{
 					if (*b->calulateSize() + *renderable->m_Mesh->calculateSize() < this->m_BatchSize)
 					{
-						b->pushBack(renderable->m_Mesh);
-						return;
+						if (std::count(b->m_Textures.begin(), b->m_Textures.end(), renderable->m_Material->m_Texture) ||
+							b->m_Textures.size() + 1 < this->m_MaxTextures)
+						{
+							b->pushBack(renderable);
+							return;
+						}
 					}
 				}
 			}
 		}
 		ref<Batch> b = std::make_shared<Batch>(renderable->m_Material);
-		b->pushBack(renderable->m_Mesh);
+		b->pushBack(renderable);
 		this->m_Batches[target].push_back(b);
 	}
 

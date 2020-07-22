@@ -11,6 +11,7 @@ namespace assec::graphics
 		virtual ~OpenGLGraphicsContext();
 		virtual const void init() const override;
 		virtual void setActiveTexture(unsigned int texture) const override;
+		virtual int getMaxTextures() const override;
 		virtual const ref<VertexBuffer> createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const override;
 		virtual const ref<IndexBuffer> createIndexBuffer0(const void* indices, const size_t& size, const int& usage) const override;
 		virtual const ref<VertexArray> createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const override;

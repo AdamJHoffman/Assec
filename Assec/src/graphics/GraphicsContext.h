@@ -19,6 +19,7 @@ namespace assec::graphics
 		}
 		virtual const void init() const = 0;
 		virtual void setActiveTexture(unsigned int texture) const = 0;
+		virtual int getMaxTextures() const = 0;
 		const ref<VertexBuffer> createVertexBuffer(const void* vertices, const size_t& size, const int& usage)
 		{
 			TIME_FUNCTION;
