@@ -4,12 +4,12 @@
 [submodule "Assec/vendor/glm"]
 	path = Assec/vendor/glm
 	url = https://github.com/g-truc/glm
-[submodule "Assec/vendor/imgui"]
-	path = Assec/vendor/imgui
-	url = https://github.com/ocornut/imgui/tree/docking
-[submodule "Assec/vendor/spdlog"]
-	path = Assec/vendor/spdlog
-	url = https://github.com/gabime/spdlog
 [submodule "Assec/vendor/stb/stb"]
 	path = Assec/vendor/stb
 	url = https://github.com/nothings/stb
+[submodule "Assec/vendor/spdlog"]
+	path = Assec/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Assec/vendor/imgui"]
+	path = Assec/vendor/imgui
+	url = https://github.com/ocornut/imgui/tree/docking
