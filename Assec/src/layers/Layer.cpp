@@ -5,7 +5,7 @@ namespace assec::layersystem
 {
 	Layer::Layer(bool enabled) : m_GameObjects(std::vector<ref<GameObject>>()), m_Enabled(enabled) { TIME_FUNCTION; }
 	Layer::~Layer() { TIME_FUNCTION; }
-	void Layer::onEvent(events::Event& event)
+	void Layer::onEvent(const events::Event& event)
 	{
 		TIME_FUNCTION;
 		events::Dispatcher dispatcher = events::Dispatcher(event);

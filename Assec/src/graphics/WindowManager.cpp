@@ -1,6 +1,5 @@
 ﻿#include "acpch.h"
 #include "WindowManager.h"
-#include "core/Core.h"
 
 namespace assec::graphics
 {
@@ -43,7 +42,7 @@ namespace assec::graphics
 	const void WindowManager::addWindow(unsigned int width, unsigned int height, const char* title, Monitor* monitor, Window* share)
 	{
 		TIME_FUNCTION;
-		this->m_Windows.push_back(assec::Assec::getInstance().AC_WINDOW_MANAGER->m_WindowContext->createWindow(width, height, title, monitor, share, [this](std::shared_ptr<events::Event> event)
+		this->m_Windows.push_back(this->m_WindowContext->createWindow(width, height, title, monitor, share, [this](std::shared_ptr<events::Event> event)
 			{
 				TIME_FUNCTION;
 				this->onEvent(event);

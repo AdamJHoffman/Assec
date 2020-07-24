@@ -131,12 +131,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\EditorApplication.cpp" />
+    <ClCompile Include="src\Launcher.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Assec\Assec.vcxproj">
       <Project>{143FD80C-8053-00BE-49D5-A31DB5A8FCEE}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Launcher.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

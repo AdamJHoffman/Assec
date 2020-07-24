@@ -8,7 +8,7 @@ namespace assec
 	public:
 		InputManager() : m_Keys(), m_MouseButtons() {}
 		~InputManager() {}
-		void onEvent(events::Event& event)
+		void onEvent(const events::Event& event)
 		{
 			TIME_FUNCTION;
 			events::Dispatcher dispatcher = events::Dispatcher(event);

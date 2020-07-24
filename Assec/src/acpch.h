@@ -38,7 +38,7 @@
 #include "graphics/renderer/Renderer.h"
 #include "graphics/renderer/Mesh.h"
 
-#include "core/Core.h"
+//#include "core/Core.h"
 #include "core/Config.h"
 
 #ifdef AC_PLATFORM_WINDOWS

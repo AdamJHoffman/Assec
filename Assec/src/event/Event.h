@@ -35,7 +35,7 @@ namespace assec::events
 	{
 		template<typename T> using EventFn = std::function<bool(T&)>;
 	public:
-		Dispatcher(Event& event) : m_Event(event) {}
+		Dispatcher(const Event& event) : m_Event(*const_cast<Event*>(&event)) {}
 
 		template<typename T> bool dispatch(EventFn<T> function)
 		{

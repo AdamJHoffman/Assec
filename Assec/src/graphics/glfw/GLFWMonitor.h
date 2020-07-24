@@ -1,22 +1,18 @@
 ﻿#pragma once
 #include "graphics/Monitor.h"
-#include <GLFW/glfw3.h>
 
 namespace assec::graphics
 {
 	class GLFWVideomode : public Videomode
 	{
 	public:
-		GLFWVideomode(const GLFWvidmode* videomode) : Videomode(videomode->width, videomode->height, videomode->redBits,
-			videomode->greenBits, videomode->blueBits, videomode->refreshRate) {
-			TIME_FUNCTION;
-		}
+		GLFWVideomode(const void* videomode);
 		~GLFWVideomode() { TIME_FUNCTION; }
 	};
 	class GLFWMonitor : public Monitor
 	{
 	public:
-		GLFWMonitor(GLFWmonitor* monitor);
+		GLFWMonitor(void* monitor);
 		~GLFWMonitor() { TIME_FUNCTION; }
 
 		virtual void setUserPointer(void* userPointer) const override;

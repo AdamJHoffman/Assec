@@ -1,21 +1,26 @@
 ﻿#include "acpch.h"
 #include "GLFWMonitor.h"
+#include <GLFW/glfw3.h>
 
 namespace assec::graphics
 {
-	GLFWMonitor::GLFWMonitor(GLFWmonitor* monitor) : Monitor((void*)monitor, GLFWVideomode(glfwGetVideoMode(monitor)), std::vector<Videomode>(), 0, glm::vec<2, int>(0),
-		glfwGetMonitorName(monitor), glm::vec<2, int>(0), glm::vec2(0), glm::vec<4, int>(0))
+	GLFWVideomode::GLFWVideomode(const void* videomode) : Videomode(((GLFWvidmode*)videomode)->width, ((GLFWvidmode*)videomode)->height, ((GLFWvidmode*)videomode)->redBits,
+		((GLFWvidmode*)videomode)->greenBits, ((GLFWvidmode*)videomode)->blueBits, ((GLFWvidmode*)videomode)->refreshRate) {
+		TIME_FUNCTION;
+	}
+	GLFWMonitor::GLFWMonitor(void* monitor) : Monitor((void*)monitor, GLFWVideomode(glfwGetVideoMode((GLFWmonitor*)monitor)), std::vector<Videomode>(), 0, glm::vec<2, int>(0),
+		glfwGetMonitorName((GLFWmonitor*)monitor), glm::vec<2, int>(0), glm::vec2(0), glm::vec<4, int>(0))
 	{
 		TIME_FUNCTION;
-		const GLFWvidmode* modes = glfwGetVideoModes(monitor, &this->m_SupportedVideoModeCount);
+		const GLFWvidmode* modes = glfwGetVideoModes((GLFWmonitor*)monitor, &this->m_SupportedVideoModeCount);
 		for (int i = 0; i < this->m_SupportedVideoModeCount; i++)
 		{
 			this->m_SupportedVideoModes.push_back(GLFWVideomode(&modes[i]));
 		}
-		glfwGetMonitorPhysicalSize(monitor, &this->m_PhysicalSize.x, &this->m_PhysicalSize.y);
-		glfwGetMonitorContentScale(monitor, &this->m_ContentScale.x, &this->m_ContentScale.y);
-		glfwGetMonitorPos(monitor, &this->m_VirtualPosition.x, &this->m_VirtualPosition.y);
-		glfwGetMonitorWorkarea(monitor, &this->m_WorkArea.x, &this->m_WorkArea.x, &this->m_WorkArea.z, &this->m_WorkArea.w);
+		glfwGetMonitorPhysicalSize((GLFWmonitor*)monitor, &this->m_PhysicalSize.x, &this->m_PhysicalSize.y);
+		glfwGetMonitorContentScale((GLFWmonitor*)monitor, &this->m_ContentScale.x, &this->m_ContentScale.y);
+		glfwGetMonitorPos((GLFWmonitor*)monitor, &this->m_VirtualPosition.x, &this->m_VirtualPosition.y);
+		glfwGetMonitorWorkarea((GLFWmonitor*)monitor, &this->m_WorkArea.x, &this->m_WorkArea.x, &this->m_WorkArea.z, &this->m_WorkArea.w);
 	}
 	void GLFWMonitor::setUserPointer(void* userPointer) const
 	{

@@ -1,5 +1,4 @@
 ﻿#include "acpch.h"
-#include "core/Core.h"
 #include "GLFWWindow.h"
 
 namespace assec::graphics

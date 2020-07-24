@@ -51,7 +51,7 @@ namespace assec::layersystem
 			}
 		}
 	}
-	void LayerStack::onEvent(events::Event& event) const
+	void LayerStack::onEvent(const events::Event& event) const
 	{
 		TIME_FUNCTION;
 		for (auto layer : this->m_Layers)

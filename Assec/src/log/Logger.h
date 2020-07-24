@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <spdlog/logger.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/stdout_sinks.h>
 #include "core/Config.h"
 #include "util/Profiler.h"

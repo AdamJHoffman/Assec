@@ -1,5 +1,4 @@
 ﻿#include "acpch.h"
-#include "core/Core.h"
 #include "OpenGLGraphicsContext.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLVertexArray.h"
