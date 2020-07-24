@@ -7,8 +7,11 @@ namespace assec::graphics
 	{
 	public:
 		Videomode(const int& width, const int& height, const int& redBits, const int& greenBits, const int& blueBits, const int& refreshRate)
-			: m_Width(width), m_Height(height), m_RedBits(redBits), m_GreenBits(greenBits), m_BlueBits(blueBits), m_RefreshRate(refreshRate) {}
-		~Videomode() {}
+			: m_Width(width), m_Height(height), m_RedBits(redBits), m_GreenBits(greenBits), m_BlueBits(blueBits), m_RefreshRate(refreshRate)
+		{
+			TIME_FUNCTION;
+		}
+		~Videomode() { TIME_FUNCTION; }
 		const int& m_Width;
 		const int& m_Height;
 		const int& m_RedBits;
@@ -20,8 +23,11 @@ namespace assec::graphics
 	{
 	public:
 		GammaRamp(unsigned short* red, unsigned short* green, unsigned short* blue, unsigned int size)
-			: m_Red(red), m_Green(green), m_Blue(blue), m_Size(size) {}
-		~GammaRamp() {}
+			: m_Red(red), m_Green(green), m_Blue(blue), m_Size(size)
+		{
+			TIME_FUNCTION;
+		}
+		~GammaRamp() { TIME_FUNCTION; }
 		unsigned short* m_Red;
 		unsigned short* m_Green;
 		unsigned short* m_Blue;
@@ -33,8 +39,11 @@ namespace assec::graphics
 		Monitor(void* nativeMonitor, Videomode& currentVideoMode, std::vector<Videomode> supportedVideoModes, int supportedVideoModesCount,
 			glm::vec<2, int>& virtualPosition, const char* name, glm::vec<2, int>& physicalSize, glm::vec2& contentScale, glm::vec<4, int>& workArea)
 			: m_NativeMonitor(nativeMonitor), m_CurrentVideoMode(currentVideoMode), m_SupportedVideoModes(supportedVideoModes), m_SupportedVideoModeCount(supportedVideoModesCount),
-			m_VirtualPosition(virtualPosition), m_Name(name), m_PhysicalSize(physicalSize), m_ContentScale(contentScale), m_WorkArea(workArea) {}
-		~Monitor() {}
+			m_VirtualPosition(virtualPosition), m_Name(name), m_PhysicalSize(physicalSize), m_ContentScale(contentScale), m_WorkArea(workArea)
+		{
+			TIME_FUNCTION;
+		}
+		~Monitor() { TIME_FUNCTION; }
 		void* m_NativeMonitor;
 		Videomode& m_CurrentVideoMode;
 		std::vector<Videomode> m_SupportedVideoModes;

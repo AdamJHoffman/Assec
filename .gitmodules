@@ -6,7 +6,7 @@
 	url = https://github.com/g-truc/glm
 [submodule "Assec/vendor/imgui"]
 	path = Assec/vendor/imgui
-	url = https://github.com/ocornut/imgui
+	url = https://github.com/ocornut/imgui/tree/docking
 [submodule "Assec/vendor/spdlog"]
 	path = Assec/vendor/spdlog
 	url = https://github.com/gabime/spdlog

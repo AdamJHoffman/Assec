@@ -11,6 +11,7 @@ namespace assec::graphics
 	Renderer2D::~Renderer2D() {}
 	void Renderer2D::endScene()
 	{
+		TIME_FUNCTION;
 		for (auto key : util::Keys(*this->m_BatchManager.getBatches()))
 		{
 			key->makeCurrent();

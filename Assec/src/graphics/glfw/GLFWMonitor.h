@@ -8,14 +8,16 @@ namespace assec::graphics
 	{
 	public:
 		GLFWVideomode(const GLFWvidmode* videomode) : Videomode(videomode->width, videomode->height, videomode->redBits,
-			videomode->greenBits, videomode->blueBits, videomode->refreshRate) {}
-		~GLFWVideomode() {}
+			videomode->greenBits, videomode->blueBits, videomode->refreshRate) {
+			TIME_FUNCTION;
+		}
+		~GLFWVideomode() { TIME_FUNCTION; }
 	};
 	class GLFWMonitor : public Monitor
 	{
 	public:
 		GLFWMonitor(GLFWmonitor* monitor);
-		~GLFWMonitor() {}
+		~GLFWMonitor() { TIME_FUNCTION; }
 
 		virtual void setUserPointer(void* userPointer) const override;
 		virtual void* getUserPointer() const override;

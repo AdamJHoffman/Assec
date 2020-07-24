@@ -42,6 +42,7 @@ namespace assec::graphics
 	}
 	void OpenGLVertexArray::mapVertexAttributes(const size_t& verticesSize, VertexBuffer::VertexBufferLayout& layout) const
 	{
+		TIME_FUNCTION;
 		this->bind();
 		int pointer = 0;
 		for (unsigned int i = 0; i < layout.m_Attributes.size(); i++)

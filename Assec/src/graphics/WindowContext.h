@@ -7,7 +7,7 @@ namespace assec::graphics
 	class WindowContext
 	{
 	public:
-		virtual ~WindowContext() {}
+		virtual ~WindowContext() { TIME_FUNCTION; }
 		virtual void cleanup() const = 0;
 		void init()
 		{
@@ -31,7 +31,7 @@ namespace assec::graphics
 		}
 		bool m_Initialized = false;
 	protected:
-		WindowContext() {}
+		WindowContext() { TIME_FUNCTION; }
 		virtual void init0() const = 0;
 		virtual ref<Window> createWindow0(unsigned int width, unsigned int height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack) = 0;
 		std::vector<ref<Window>> m_Windows = std::vector<ref<Window>>();

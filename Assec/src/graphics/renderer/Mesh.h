@@ -9,7 +9,7 @@ namespace assec::graphics
 	{
 		static VertexBuffer::VertexBufferLayout& getLayout()
 		{
-
+			TIME_FUNCTION;
 			static VertexBuffer::VertexBufferLayout s_Layout = VertexBuffer::VertexBufferLayout({
 			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
 			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
@@ -33,7 +33,7 @@ namespace assec::graphics
 	{
 	public:
 		Mesh(std::vector<Vertex> vertices, std::vector<int> indices);
-		~Mesh() {}
+		~Mesh() { TIME_FUNCTION; }
 		const std::vector<int> m_Indices;
 		const std::vector<Vertex> m_Vertices;
 		const std::vector<float>& getVerticesData();

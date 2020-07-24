@@ -1,6 +1,6 @@
 workspace "Assec"
 	architecture "x64"
-	startproject "Sandbox"
+	startproject "Assec-Editor"
 
 	configurations
 	{
@@ -18,9 +18,11 @@ workspace "Assec"
 	IncludeDir["imgui"] = "Assec/vendor/imgui"
 	IncludeDir["glm"] = "Assec/vendor/glm"
 
-	include "Assec/vendor/glfw"
-	include "Assec/vendor/glad"
-	include "Assec/vendor/imgui"
+	group "Dependencies"
+		include "Assec/vendor/glfw"
+		include "Assec/vendor/glad"
+		include "Assec/vendor/imgui"
+	group ""
 
 	project "Assec"
 		location "Assec"
@@ -113,7 +115,6 @@ workspace "Assec"
 			"%{wks.location}/Assec/vendor/spdlog/include",
 			"%{wks.location}/Assec/vendor/stb",
 			"%{IncludeDir.glm}",
-			"%{IncludeDir.imgui}"
 		}
 
 		links
@@ -143,3 +144,56 @@ workspace "Assec"
 			defines "AC_DIST"
 			runtime "Release"
 			optimize "on"
+
+	project "Assec-Editor"
+			location "Assec-Editor"
+			kind "ConsoleApp"
+			language "C++"
+			cppdialect "C++17"
+			staticruntime "on"
+
+			targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+			objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+			files
+			{
+				"%{prj.name}/src/**.h",
+				"%{prj.name}/src/**.cpp"
+			}
+
+			includedirs
+			{
+				"Assec/src",
+				"%{wks.location}/Assec/vendor/spdlog/include",
+				"%{wks.location}/Assec/vendor/stb",
+				"%{IncludeDir.glm}",
+				"%{IncludeDir.imgui}"
+			}
+
+			links
+			{
+				"Assec"
+			}
+
+			filter "system:windows"
+				systemversion "latest"
+
+			defines
+			{
+				"PLATFORM_WINDOWS"
+			}
+
+			filter "configurations:Debug"
+				defines "AC_DEBUG"
+				runtime "Debug"
+				symbols "on"
+
+			filter "configurations:Release"
+				defines "AC_RELEASE"
+				runtime "Release"
+				optimize "on"
+
+			filter "configurations:Dist"
+				defines "AC_DIST"
+				runtime "Release"
+				optimize "on"

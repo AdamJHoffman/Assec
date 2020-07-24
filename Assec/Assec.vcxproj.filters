@@ -13,8 +13,14 @@
     <Filter Include="src\graphics">
       <UniqueIdentifier>{2DF282EC-1955-1291-C2DA-4A47AE1CDE13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\graphics\openGL">
-      <UniqueIdentifier>{E1DA1276-4D3C-F083-D6A9-3636420A2743}</UniqueIdentifier>
+    <Filter Include="src\graphics\glfw">
+      <UniqueIdentifier>{0C2AAFFA-7840-AD90-C1B7-38B22D0D7E18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphics\opengl">
+      <UniqueIdentifier>{21DF1276-8D40-F083-16AE-3636820E2743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\graphics\renderer">
+      <UniqueIdentifier>{939494D0-FF00-50CB-C8F4-E72834207233}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\include">
       <UniqueIdentifier>{A0AF70A7-0C65-E99C-9559-E373010EE0A0}</UniqueIdentifier>
@@ -66,6 +72,9 @@
     <ClInclude Include="src\core\Core.h">
       <Filter>src\core</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\Input.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
     <ClInclude Include="src\core\OpenGLConfig.h">
       <Filter>src\core</Filter>
     </ClInclude>
@@ -73,6 +82,9 @@
       <Filter>src\event</Filter>
     </ClInclude>
     <ClInclude Include="src\event\Event.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\EventQueue.h">
       <Filter>src\event</Filter>
     </ClInclude>
     <ClInclude Include="src\event\KeyEvents.h">
@@ -87,7 +99,13 @@
     <ClInclude Include="src\graphics\Buffer.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\Camera.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
     <ClInclude Include="src\graphics\GraphicsContext.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\Monitor.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\Shader.h">
@@ -102,8 +120,50 @@
     <ClInclude Include="src\graphics\Window.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\WindowContext.h">
+      <Filter>src\graphics</Filter>
+    </ClInclude>
     <ClInclude Include="src\graphics\WindowManager.h">
       <Filter>src\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\glfw\GLFWMonitor.h">
+      <Filter>src\graphics\glfw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\glfw\GLFWWindow.h">
+      <Filter>src\graphics\glfw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\glfw\GLFWWindowContext.h">
+      <Filter>src\graphics\glfw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\opengl\OpenGLBuffer.h">
+      <Filter>src\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\opengl\OpenGLGraphicsContext.h">
+      <Filter>src\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\opengl\OpenGLShader.h">
+      <Filter>src\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\opengl\OpenGLTexture.h">
+      <Filter>src\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\opengl\OpenGLVertexArray.h">
+      <Filter>src\graphics\opengl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderer\Batch.h">
+      <Filter>src\graphics\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderer\Material.h">
+      <Filter>src\graphics\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderer\Mesh.h">
+      <Filter>src\graphics\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderer\Renderable.h">
+      <Filter>src\graphics\renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\renderer\Renderer.h">
+      <Filter>src\graphics\renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\include\Assec.h">
       <Filter>src\include</Filter>
@@ -130,6 +190,9 @@
       <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\util\Profiler.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\misc.h">
       <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\common.hpp">
@@ -1272,37 +1335,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\Camera.h" />
-    <ClInclude Include="src\event\EventQueue.h" />
-    <ClInclude Include="src\core\Input.h" />
-    <ClInclude Include="src\graphics\opengl\OpenGLBuffer.h">
-      <Filter>src\graphics\openGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\opengl\OpenGLGraphicsContext.h">
-      <Filter>src\graphics\openGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\opengl\OpenGLShader.h">
-      <Filter>src\graphics\openGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\opengl\OpenGLTexture.h">
-      <Filter>src\graphics\openGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\opengl\OpenGLVertexArray.h">
-      <Filter>src\graphics\openGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\glfw\GLFWWindowContext.h" />
-    <ClInclude Include="src\graphics\glfw\GLFWWindow.h">
-      <Filter>src\graphics\openGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\WindowContext.h" />
-    <ClInclude Include="src\graphics\renderer\Renderer.h" />
-    <ClInclude Include="src\graphics\renderer\Renderable.h" />
-    <ClInclude Include="src\graphics\renderer\Material.h" />
-    <ClInclude Include="src\util\misc.h" />
-    <ClInclude Include="src\graphics\renderer\Mesh.h" />
-    <ClInclude Include="src\graphics\Monitor.h" />
-    <ClInclude Include="src\graphics\glfw\GLFWMonitor.h" />
-    <ClInclude Include="src\graphics\renderer\Batch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1314,8 +1346,50 @@
     <ClCompile Include="src\core\StbImageImplementation.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\Camera.cpp">
+      <Filter>src\graphics</Filter>
+    </ClCompile>
     <ClCompile Include="src\graphics\WindowManager.cpp">
       <Filter>src\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\glfw\GLFWMonitor.cpp">
+      <Filter>src\graphics\glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\glfw\GLFWWindow.cpp">
+      <Filter>src\graphics\glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\glfw\GLFWWindowContext.cpp">
+      <Filter>src\graphics\glfw</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\opengl\OpenGLBuffer.cpp">
+      <Filter>src\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\opengl\OpenGLGraphicsContext.cpp">
+      <Filter>src\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\opengl\OpenGLShader.cpp">
+      <Filter>src\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\opengl\OpenGLTexture.cpp">
+      <Filter>src\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\opengl\OpenGLVertexArray.cpp">
+      <Filter>src\graphics\opengl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderer\Batch.cpp">
+      <Filter>src\graphics\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderer\Material.cpp">
+      <Filter>src\graphics\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderer\Mesh.cpp">
+      <Filter>src\graphics\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderer\Renderable.cpp">
+      <Filter>src\graphics\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\renderer\Renderer.cpp">
+      <Filter>src\graphics\renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\layers\Layer.cpp">
       <Filter>src\layers</Filter>
@@ -1332,31 +1406,5 @@
     <ClCompile Include="src\log\Logger.cpp">
       <Filter>src\log</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\Camera.cpp" />
-    <ClCompile Include="src\graphics\opengl\OpenGLBuffer.cpp">
-      <Filter>src\graphics\openGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\opengl\OpenGLGraphicsContext.cpp">
-      <Filter>src\graphics\openGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\opengl\OpenGLShader.cpp">
-      <Filter>src\graphics\openGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\opengl\OpenGLTexture.cpp">
-      <Filter>src\graphics\openGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\opengl\OpenGLVertexArray.cpp">
-      <Filter>src\graphics\openGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\glfw\GLFWWindowContext.cpp" />
-    <ClCompile Include="src\graphics\glfw\GLFWWindow.cpp">
-      <Filter>src\graphics\openGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\renderer\Material.cpp" />
-    <ClCompile Include="src\graphics\renderer\Renderable.cpp" />
-    <ClCompile Include="src\graphics\renderer\Renderer.cpp" />
-    <ClCompile Include="src\graphics\renderer\Mesh.cpp" />
-    <ClCompile Include="src\graphics\glfw\GLFWMonitor.cpp" />
-    <ClCompile Include="src\graphics\renderer\Batch.cpp" />
   </ItemGroup>
 </Project>
