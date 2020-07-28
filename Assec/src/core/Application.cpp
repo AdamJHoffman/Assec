@@ -31,21 +31,32 @@ namespace assec
 	const void Application::handleEvents()
 	{
 		TIME_FUNCTION;
-		for (auto event : this->AC_EVENT_QUEUE->m_Events)
+		if (!this->AC_WINDOW_MANAGER->empty())
 		{
-			AC_CORE_TRACE(event->toString());
-			this->AC_LAYER_STACK->onEvent(*event);
+			for (auto event : this->AC_EVENT_QUEUE->m_Events)
+			{
+				AC_CORE_TRACE(event->toString());
+				this->AC_LAYER_STACK->onEvent(*event);
+			}
 		}
 		this->AC_EVENT_QUEUE->m_Events.clear();
 	}
 	const void Application::run()
 	{
 		this->AC_WINDOW_MANAGER->addWindow(1920, 1080, "Assec", nullptr, nullptr);
+		this->init();
+		float lastFrameTime = 0;
 		while (!this->AC_WINDOW_MANAGER->empty())
 		{
 			TIME_FUNCTION;
-			this->AC_WINDOW_MANAGER->finish();
+			float time = this->AC_WINDOW_MANAGER->m_WindowContext->getCurrentTime();
+			float timeStep = time - lastFrameTime;
+			lastFrameTime = time;
+			this->onEvent(std::make_shared<events::AppUpdateEvent>(timeStep));
+			this->onEvent(std::make_shared<events::AppRenderEvent>(timeStep));
+			this->AC_WINDOW_MANAGER->prepare();
 			this->handleEvents();
+			this->AC_WINDOW_MANAGER->finish();
 		}
 		this->close();
 	}

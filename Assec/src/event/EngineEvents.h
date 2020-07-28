@@ -15,7 +15,7 @@ namespace assec::events
 	class AppUpdateEvent : public Event
 	{
 	public:
-		AppUpdateEvent(void* window, float delta) : Event::Event(window), m_Delta(delta) { TIME_FUNCTION; }
+		AppUpdateEvent(float delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
 		~AppUpdateEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::AppUpdate);
 		float m_Delta;
@@ -24,7 +24,7 @@ namespace assec::events
 	class AppRenderEvent : public Event
 	{
 	public:
-		AppRenderEvent(void* window, float delta) : Event::Event(window), m_Delta(delta) { TIME_FUNCTION; }
+		AppRenderEvent(float delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
 		~AppRenderEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::AppRender);
 		float m_Delta;

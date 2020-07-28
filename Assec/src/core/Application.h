@@ -4,6 +4,7 @@
 #include "util/MemoryManager.h"
 #include "util/Profiler.h"
 #include "util/Loader.h"
+#include "layers/LayerStack.h"
 #include "Input.h"
 
 namespace assec
@@ -16,6 +17,7 @@ namespace assec
 		const void onEvent(ref<events::Event> event);
 		const void handleEvents();
 		const void run();
+		virtual void init() = 0;
 		ref<graphics::WindowManager> AC_WINDOW_MANAGER;
 		ref<layersystem::LayerStack> AC_LAYER_STACK = std::make_shared<layersystem::LayerStack>();
 		ref<events::EventQueue> AC_EVENT_QUEUE = std::make_shared<events::EventQueue>();

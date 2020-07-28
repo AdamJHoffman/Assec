@@ -36,3 +36,4 @@
 bin/
 bin-int/
 *.user
+profiling_results.json

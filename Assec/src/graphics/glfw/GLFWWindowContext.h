@@ -10,6 +10,7 @@ namespace assec::graphics
 		GLFWWindowContext();
 		~GLFWWindowContext();
 		virtual void cleanup() const override;
+		virtual float getCurrentTime() const override;
 		virtual ref<Monitor> getPrimaryMonitor() const override;
 		virtual ref<std::vector<ref<Monitor>>> getMonitors() const override;
 	protected:

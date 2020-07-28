@@ -171,12 +171,6 @@
     <ClInclude Include="src\layers\LayerStack.h">
       <Filter>src\layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\layers\gameobjects\GameObject.h">
-      <Filter>src\layers\gameobjects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\layers\gameobjects\components\Component.h">
-      <Filter>src\layers\gameobjects\components</Filter>
-    </ClInclude>
     <ClInclude Include="src\log\Logger.h">
       <Filter>src\log</Filter>
     </ClInclude>
@@ -1417,6 +1411,7 @@
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Application.h" />
+    <ClInclude Include="src\layers\ImguiLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1470,21 +1465,14 @@
     <ClCompile Include="src\graphics\renderer\Renderer.cpp">
       <Filter>src\graphics\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\layers\Layer.cpp">
-      <Filter>src\layers</Filter>
-    </ClCompile>
     <ClCompile Include="src\layers\LayerStack.cpp">
       <Filter>src\layers</Filter>
-    </ClCompile>
-    <ClCompile Include="src\layers\gameobjects\GameObject.cpp">
-      <Filter>src\layers\gameobjects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\layers\gameobjects\components\Component.cpp">
-      <Filter>src\layers\gameobjects\components</Filter>
     </ClCompile>
     <ClCompile Include="src\log\Logger.cpp">
       <Filter>src\log</Filter>
     </ClCompile>
     <ClCompile Include="src\core\Application.cpp" />
+    <ClCompile Include="src\core\ImGuiImplmentation.cpp" />
+    <ClCompile Include="src\layers\ImguiLayer.cpp" />
   </ItemGroup>
 </Project>

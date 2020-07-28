@@ -23,6 +23,7 @@ namespace assec::graphics
 		{
 			window->makeCurrent();
 			window->clear();
+			window->pollEvents();
 		}
 	}
 	void WindowManager::finish()
@@ -31,7 +32,6 @@ namespace assec::graphics
 		for (auto window : this->m_Windows)
 		{
 			window->swapBuffers();
-			window->pollEvents();
 		}
 	}
 	const bool WindowManager::empty() const

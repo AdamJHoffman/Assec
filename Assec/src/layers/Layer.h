@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "gameobjects/GameObject.h"
 #include "core/Config.h"
 
 namespace assec::layersystem
@@ -7,14 +6,12 @@ namespace assec::layersystem
 	const class Layer
 	{
 	public:
-		Layer(bool enabled = true);
-		~Layer();
-		inline std::vector<ref<GameObject>>& getGameObjects() { TIME_FUNCTION; return this->m_GameObjects; }
-		void onEvent(const events::Event& event);
-		void onAttach();
-		void onDetach();
+		Layer(bool enabled = true) : m_Enabled(enabled) { TIME_FUNCTION; }
+		~Layer() { TIME_FUNCTION; }
+		virtual void onEvent(const events::Event& event) = 0;
+		virtual void onAttach() = 0;
+		virtual void onDetach() = 0;
 		bool m_Enabled;
 	private:
-		std::vector<ref<GameObject>> m_GameObjects;
 	};
 }

@@ -21,6 +21,7 @@ namespace assec::graphics
 				window->cleanup();
 			}
 		}
+		virtual float getCurrentTime() const = 0;
 		virtual ref<Monitor> getPrimaryMonitor() const = 0;
 		virtual ref<std::vector<ref<Monitor>>> getMonitors() const = 0;
 		ref<Window> createWindow(unsigned int width, unsigned int height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack)

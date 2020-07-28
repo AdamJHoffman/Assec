@@ -12,6 +12,10 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		glfwTerminate();
 	}
+	float GLFWWindowContext::getCurrentTime() const
+	{
+		return glfwGetTime();
+	}
 	ref<Monitor> GLFWWindowContext::getPrimaryMonitor() const
 	{
 		TIME_FUNCTION;

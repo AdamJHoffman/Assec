@@ -25,8 +25,7 @@
 
 #include "layers/LayerStack.h"
 #include "layers/Layer.h"
-#include "layers/gameobjects/GameObject.h"
-#include "layers/gameobjects/components/Component.h"
+#include "layers/ImguiLayer.h"
 
 #include "graphics/Buffer.h"
 #include "graphics/VertexArray.h"

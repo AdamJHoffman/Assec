@@ -4,7 +4,14 @@
 namespace assec::layersystem
 {
 	LayerStack::LayerStack() : m_Layers(std::vector<ref<Layer>>()), m_LayerInsertIndex(0) { TIME_FUNCTION; }
-	LayerStack::~LayerStack() { TIME_FUNCTION; }
+	LayerStack::~LayerStack()
+	{
+		TIME_FUNCTION;
+		for (ref<Layer> layer : this->m_Layers)
+		{
+			layer->onDetach();
+		}
+	}
 	void LayerStack::addLayer(ref<Layer> layer)
 	{
 		TIME_FUNCTION;
@@ -12,7 +19,7 @@ namespace assec::layersystem
 		this->m_LayerInsertIndex++;
 		if (layer->m_Enabled)
 		{
-			layer->onDetach();
+			layer->onAttach();
 		}
 	}
 	void LayerStack::addOverlay(ref<Layer> layer)

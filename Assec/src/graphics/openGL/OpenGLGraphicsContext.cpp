@@ -19,7 +19,6 @@ namespace assec::graphics
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Vendor: {0}", glGetString(GL_VENDOR));
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Renderer: {0}", glGetString(GL_RENDERER));
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Version: {0}", glGetString(GL_VERSION));
-
 	}
 	void OpenGLGraphicsContext::setActiveTexture(unsigned int texture) const
 	{

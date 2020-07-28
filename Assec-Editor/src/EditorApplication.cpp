@@ -1,5 +1,6 @@
 #include "include/Assec.h"
-#include "core/Application.h"
+#include "EditorLayer.h"
+#include "EditorGuiLayer.h"
 
 namespace assec::editor
 {
@@ -8,6 +9,11 @@ namespace assec::editor
 	public:
 		EditorApplication() {}
 		~EditorApplication() {}
+		virtual void init() override
+		{
+			this->AC_LAYER_STACK->addLayer(std::make_shared<EditorLayer>(*this));
+			this->AC_LAYER_STACK->addOverlay(std::make_shared<EditorGuiLayer>(*this));
+		}
 	};
 } // namespace assec::editor
 

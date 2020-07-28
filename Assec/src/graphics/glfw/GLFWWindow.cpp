@@ -27,7 +27,7 @@ namespace assec::graphics
 		this->setMinimizeCallback();
 		this->setMaximizeCallback();
 		this->setFocusCallback();
-		this->setRefreshCallback();
+		//this->setRefreshCallback();
 		this->setPosCallBack();
 		this->setKeyCallback();
 		this->setCharCallback();
@@ -375,7 +375,7 @@ namespace assec::graphics
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(std::make_shared<events::MouseMovedEvent>((void*)&window, glm::vec2(x, y)));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::MouseMovedEvent>((void*)&window, glm::vec2((float)x, (float)y)));
 			});
 	}
 	const void GLFWWindow::setCursorEnterCallback() const
