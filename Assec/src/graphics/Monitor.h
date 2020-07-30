@@ -22,7 +22,7 @@ namespace assec::graphics
 	class GammaRamp
 	{
 	public:
-		GammaRamp(unsigned short* red, unsigned short* green, unsigned short* blue, unsigned int size)
+		GammaRamp(unsigned short* red, unsigned short* green, unsigned short* blue, size_t size)
 			: m_Red(red), m_Green(green), m_Blue(blue), m_Size(size)
 		{
 			TIME_FUNCTION;
@@ -31,7 +31,7 @@ namespace assec::graphics
 		unsigned short* m_Red;
 		unsigned short* m_Green;
 		unsigned short* m_Blue;
-		unsigned int m_Size;
+		size_t m_Size;
 	};
 	class Monitor
 	{

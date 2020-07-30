@@ -33,9 +33,9 @@ namespace assec::events
 	class CharTypedEvent : public Event
 	{
 	public:
-		CharTypedEvent(void* window, unsigned int unicode) : Event::Event(window), m_Unicode(unicode) {}
+		CharTypedEvent(void* window, uint32_t unicode) : Event::Event(window), m_Unicode(unicode) {}
 		~CharTypedEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::CharTyped);
-		unsigned int m_Unicode;
+		uint32_t m_Unicode;
 	};
 }

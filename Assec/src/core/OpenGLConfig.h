@@ -7,16 +7,16 @@
 #define GLCall(x)   GLClearError();\
                     x;\
                     {\
-                    unsigned int error = glGetError();\
-                    AC_CORE_ASSERT(!error, "Assertion failed: [OPENGL ERROR {0}] in function \"{1}\" on line {2} in file \"{3}\"", error, #x, __LINE__, __FILE__)\
-                    }
+                    uint32_t error = glGetError();\
+					AC_CORE_ASSERT(!error, "Assertion failed: [OPENGL ERROR {0}] in function \"{1}\" on line {2} in file \"{3}\"", error, #x, __LINE__, __FILE__)\
+					}
 #else
 #define GLCall(x) x
 #endif
 
 namespace assec
 {
-	static unsigned int toOpenGLType(Type& type)
+	static uint32_t toOpenGLType(Type& type)
 	{
 		TIME_FUNCTION;
 		switch (type)
@@ -26,6 +26,12 @@ namespace assec
 			break;
 		case Type::UNSIGNED_INT:
 			return GL_UNSIGNED_INT;
+			break;
+		case Type::UNSIGNED_BYTE:
+			return GL_UNSIGNED_BYTE;
+			break;
+		case Type::UNSIGNED_INT_24_8:
+			return GL_UNSIGNED_INT_24_8;
 			break;
 		case Type::VERTEX_SHADER:
 			return GL_VERTEX_SHADER;
@@ -68,6 +74,21 @@ namespace assec
 			break;
 		case Type::LINEAR_MIPMAP_LINEAR:
 			return GL_LINEAR_MIPMAP_LINEAR;
+			break;
+		case Type::RGB:
+			return GL_RGB;
+			break;
+		case Type::RGBA:
+			return GL_RGBA;
+			break;
+		case Type::RGBA8:
+			return GL_RGBA8;
+			break;
+		case Type::DEPTH24_STENCIL8:
+			return GL_DEPTH24_STENCIL8;
+			break;
+		case Type::DEPTH_STENCIL:
+			return GL_DEPTH_STENCIL;
 			break;
 		default:
 			return NULL;

@@ -23,10 +23,10 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		GLCall(glDeleteShader(this->m_RendererID));
 	}
-	const unsigned int OpenGLShader::genShader(Type& type) const
+	const uint32_t OpenGLShader::genShader(Type& type) const
 	{
 		TIME_FUNCTION;
-		GLCall(unsigned int ID = glCreateShader(toOpenGLType(type)));
+		GLCall(uint32_t ID = glCreateShader(toOpenGLType(type)));
 		return ID;
 	}
 	OpenGLShaderProgram::OpenGLShaderProgram(const char* vertexSource, const char* fragmentSource) : ShaderProgram::ShaderProgram(this->genShaderProgram())
@@ -69,7 +69,7 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		this->bind();
-		GLCall(glUniform1iv(this->getLocation(name), size, value));
+		GLCall(glUniform1iv(this->getLocation(name), static_cast<GLsizei>(size), value));
 	}
 	void OpenGLShaderProgram::loadVec4(std::string name, glm::vec4 value)
 	{
@@ -83,10 +83,10 @@ namespace assec::graphics
 		this->bind();
 		GLCall(glUniformMatrix4fv(this->getLocation(name), 1, false, glm::value_ptr(value)));
 	}
-	const unsigned int OpenGLShaderProgram::genShaderProgram() const
+	const uint32_t OpenGLShaderProgram::genShaderProgram() const
 	{
 		TIME_FUNCTION;
-		GLCall(unsigned int ID = glCreateProgram());
+		GLCall(uint32_t ID = glCreateProgram());
 		return ID;
 	}
 	int OpenGLShaderProgram::getLocation(const std::string& name)

@@ -13,7 +13,7 @@ namespace assec::graphics
 	void Batch::pushBack(ref<Renderable> renderable)
 	{
 		TIME_FUNCTION;
-		int indicesOffset = this->vertices.size();
+		int indicesOffset = static_cast<int>(this->vertices.size());
 		for (Vertex v : renderable->m_Mesh->m_Vertices)
 		{
 			this->vertices.push_back(v);

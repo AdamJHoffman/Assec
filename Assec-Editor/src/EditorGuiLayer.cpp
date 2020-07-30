@@ -2,15 +2,14 @@
 
 namespace assec::editor
 {
-	EditorGuiLayer::EditorGuiLayer(const assec::Application& application) : ImGuiLayer(application) {}
+	EditorGuiLayer::EditorGuiLayer(assec::Application& application, graphics::FrameBuffer* frameBuffer) : ImGuiLayer(application), m_FrameBuffer(frameBuffer) {}
 	EditorGuiLayer::~EditorGuiLayer() {}
-	void EditorGuiLayer::onEvent(const events::Event& event)
+	void EditorGuiLayer::onEvent0(const events::Event& event)
 	{
 		events::Dispatcher dispatcher = events::Dispatcher(event);
 		dispatcher.dispatch<events::AppRenderEvent>([this](events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;
-				this->begin();
 
 				static bool dockspaceOpen = true;
 				static bool opt_fullscreen_persistant = true;
@@ -51,7 +50,7 @@ namespace assec::editor
 				{
 					if (ImGui::BeginMenu("File"))
 					{
-						//if (ImGui::MenuItem("Exit")) Application::Get().Close();
+						if (ImGui::MenuItem("Exit")) this->m_Application->close();
 						ImGui::EndMenu();
 					}
 
@@ -62,10 +61,23 @@ namespace assec::editor
 				bool show = true;
 				ImGui::ShowDemoWindow(&show);
 
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+				ImGui::Begin("Viewport");
+
+				m_ViewportFocused = ImGui::IsWindowFocused();
+				m_ViewportHovered = ImGui::IsWindowHovered();
+				this->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
+				ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+				this->m_FrameBuffer->getFrameBufferProps().m_Width = static_cast<uint32_t>(viewportPanelSize.x);
+				this->m_FrameBuffer->getFrameBufferProps().m_Height = static_cast<uint32_t>(viewportPanelSize.y);
+
+				intptr_t textureID = static_cast<intptr_t>(this->m_FrameBuffer->m_ColorTetxure->m_RendererID);
+				ImGui::Image((void*)textureID, ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				ImGui::End();
+				ImGui::PopStyleVar();
 
 				ImGui::End();
-				this->end(event.m_Delta);
-
 				return false;
 			});
 

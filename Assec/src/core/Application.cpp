@@ -57,7 +57,15 @@ namespace assec
 			this->AC_WINDOW_MANAGER->prepare();
 			this->handleEvents();
 			this->AC_WINDOW_MANAGER->finish();
+			if (this->m_ShouldClose)
+			{
+				break;
+			}
 		}
-		this->close();
+		this->cleanup();
+	}
+	void Application::close()
+	{
+		this->m_ShouldClose = true;
 	}
 } // namespace assec

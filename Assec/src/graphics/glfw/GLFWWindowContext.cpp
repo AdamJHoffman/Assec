@@ -14,7 +14,7 @@ namespace assec::graphics
 	}
 	float GLFWWindowContext::getCurrentTime() const
 	{
-		return glfwGetTime();
+		return static_cast<float>(glfwGetTime());
 	}
 	ref<Monitor> GLFWWindowContext::getPrimaryMonitor() const
 	{
@@ -38,7 +38,7 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		glfwInit();
 	}
-	ref<Window> GLFWWindowContext::createWindow0(unsigned int width, unsigned int height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack)
+	ref<Window> GLFWWindowContext::createWindow0(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack)
 	{
 		TIME_FUNCTION;
 		return std::make_shared<GLFWWindow>(width, height, title, monitor, share, eventCallBack);

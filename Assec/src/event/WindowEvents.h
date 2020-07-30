@@ -30,10 +30,10 @@ namespace assec::events
 	class WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(void* window, unsigned int& width, unsigned int& height) : Event::Event(window), m_Width(width), m_Height(height) { TIME_FUNCTION; }
+		WindowResizeEvent(void* window, uint32_t& width, uint32_t& height) : Event::Event(window), m_Width(width), m_Height(height) { TIME_FUNCTION; }
 		~WindowResizeEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowResize);
-		unsigned int m_Width, m_Height;
+		uint32_t m_Width, m_Height;
 	};
 
 	class WindowContentScaleEvent : public Event
@@ -51,7 +51,7 @@ namespace assec::events
 		WindowMoveEvent(void* window, int& x, int& y) : Event::Event(window), m_X(x), m_Y(y) { TIME_FUNCTION; }
 		~WindowMoveEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::WindowMove);
-		unsigned int m_X, m_Y;
+		uint32_t m_X, m_Y;
 	};
 
 	class WindowMinimizeEvent : public Event

@@ -37,9 +37,9 @@ namespace assec::graphics
 	const bool WindowManager::empty() const
 	{
 		TIME_FUNCTION;
-		return !this->m_Windows.size();
+		return this->m_Windows.empty();
 	}
-	const void WindowManager::addWindow(unsigned int width, unsigned int height, const char* title, Monitor* monitor, Window* share)
+	const void WindowManager::addWindow(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share)
 	{
 		TIME_FUNCTION;
 		this->m_Windows.push_back(this->m_WindowContext->createWindow(width, height, title, monitor, share, [this](std::shared_ptr<events::Event> event)

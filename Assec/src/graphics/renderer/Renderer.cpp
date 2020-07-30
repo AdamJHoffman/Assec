@@ -23,7 +23,7 @@ namespace assec::graphics
 			{
 				b->prepare(this->m_ViewProjectionMatrix, key->getWindowData().m_GraphicsContext);
 				this->m_VertexArray->m_VertexBuffer->addSubData(&b->getMesh()->getVerticesData()[0], sizeof(float) * b->getMesh()->getVerticesData().size(), 0);
-				this->m_VertexArray->m_IndexBuffer->addSubData(&b->getMesh()->m_Indices[0], sizeof(unsigned int) * b->getMesh()->m_Indices.size(), 0);
+				this->m_VertexArray->m_IndexBuffer->addSubData(&b->getMesh()->m_Indices[0], sizeof(uint32_t) * b->getMesh()->m_Indices.size(), 0);
 				this->m_VertexArray->mapVertexAttributes(*b->getMesh()->calculateSize(), Vertex::getLayout());
 				this->m_VertexArray->render();
 			}

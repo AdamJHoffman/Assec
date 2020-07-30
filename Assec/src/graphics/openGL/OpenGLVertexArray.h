@@ -14,7 +14,7 @@ namespace assec::graphics
 		virtual void cleanup() const override;
 		virtual void mapVertexAttributes(const size_t& verticesSize, VertexBuffer::VertexBufferLayout& layout) const override;
 	protected:
-		const unsigned int genVertexArray() const override;
+		const uint32_t genVertexArray() const override;
 	private:
 	};
 }

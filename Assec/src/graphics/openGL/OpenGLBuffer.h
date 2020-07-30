@@ -14,7 +14,7 @@ namespace assec::graphics
 		virtual void bind() const override;
 		virtual void cleanup() const override;
 	protected:
-		virtual const unsigned int genBuffer() const override;
+		virtual const uint32_t genBuffer() const override;
 	private:
 	};
 
@@ -29,6 +29,19 @@ namespace assec::graphics
 		virtual void bind() const override;
 		virtual void cleanup() const override;
 	protected:
-		virtual const unsigned int genBuffer() const override;
+		virtual const uint32_t genBuffer() const override;
+	};
+
+	class OpenGLFrameBuffer : public FrameBuffer
+	{
+	public:
+		OpenGLFrameBuffer(const FrameBufferProps& frameBufferProps);
+		~OpenGLFrameBuffer();
+		virtual void bind() const override;
+		virtual void unbind() const override;
+		virtual void cleanup() const override;
+		virtual void invalidate() override;
+	protected:
+		virtual const uint32_t genBuffer(const FrameBufferProps& frameBufferProps) const override;
 	};
 }

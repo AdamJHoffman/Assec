@@ -11,7 +11,7 @@ namespace assec::graphics
 		~OpenGLShader();
 		virtual void cleanup() const override;
 	protected:
-		virtual const unsigned int genShader(Type& type) const override;
+		virtual const uint32_t genShader(Type& type) const override;
 	};
 
 	class OpenGLShaderProgram : public ShaderProgram
@@ -26,7 +26,7 @@ namespace assec::graphics
 		virtual void loadMat4(std::string name, glm::mat4 value) override;
 		virtual void bind() const override;
 	protected:
-		virtual const unsigned int genShaderProgram() const override;
+		virtual const uint32_t genShaderProgram() const override;
 		virtual int getLocation(const std::string& name) override;
 	};
 }

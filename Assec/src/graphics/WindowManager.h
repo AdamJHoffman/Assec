@@ -13,7 +13,7 @@ namespace assec::graphics
 		void prepare();
 		void finish();
 		const bool empty() const;
-		const void addWindow(unsigned int width, unsigned int height, const char* title, Monitor* monitor, Window* share);
+		const void addWindow(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share);
 		const void onEvent(ref<events::Event> event);
 		inline std::vector<ref<Window>> getWindows() const { TIME_FUNCTION; return this->m_Windows; }
 		ref<WindowContext> m_WindowContext;

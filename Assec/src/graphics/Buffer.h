@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "core/Config.h"
+#include "graphics/Texture.h"
 
 namespace assec::graphics
 {
@@ -9,17 +10,17 @@ namespace assec::graphics
 		struct VertexBufferAttribute
 		{
 			VertexBufferAttribute(Type type, int count, bool normalized) : m_Type(type), m_Count(count), m_Normalized(normalized) { TIME_FUNCTION; }
-			const int getSize()
+			const size_t getSize()
 			{
 				TIME_FUNCTION;
-				int result = 0;
+				size_t result = 0;
 				switch (this->m_Type)
 				{
 				case Type::FLOAT:
 					result = sizeof(float);
 					break;
 				case Type::UNSIGNED_INT:
-					result = sizeof(unsigned int);
+					result = sizeof(uint32_t);
 					break;
 				default:
 					result = 0;
@@ -52,10 +53,10 @@ namespace assec::graphics
 		virtual void addSubData(const void* data, const size_t& size, const int offset) const = 0;
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
-		unsigned int m_RendererID;
+		uint32_t m_RendererID;
 	protected:
-		VertexBuffer(unsigned int ID) : m_RendererID(ID) { TIME_FUNCTION; }
-		virtual const unsigned int genBuffer() const = 0;
+		VertexBuffer(uint32_t ID) : m_RendererID(ID) { TIME_FUNCTION; }
+		virtual const uint32_t genBuffer() const = 0;
 	};
 
 	class IndexBuffer
@@ -66,10 +67,41 @@ namespace assec::graphics
 		virtual void addSubData(const void* data, const size_t& size, const int offset) = 0;
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
-		unsigned int m_RendererID;
+		uint32_t m_RendererID;
 		size_t m_Count;
 	protected:
-		IndexBuffer(unsigned int ID, const size_t& count) : m_RendererID(ID), m_Count(count) { TIME_FUNCTION; }
-		virtual const unsigned int genBuffer() const = 0;
+		IndexBuffer(uint32_t ID, const size_t& count) : m_RendererID(ID), m_Count(count) { TIME_FUNCTION; }
+		virtual const uint32_t genBuffer() const = 0;
+	};
+
+	class FrameBuffer
+	{
+	public:
+		struct FrameBufferFormat
+		{
+
+		};
+		struct FrameBufferProps
+		{
+			FrameBufferFormat format;
+			uint32_t m_Width, m_Height, m_Samples = 1;
+			bool swapChainTarget = false;
+		};
+		virtual ~FrameBuffer() { TIME_FUNCTION; }
+		inline const FrameBufferProps& getFrameBufferProps() const { return this->m_FrameBufferProps; }
+		inline FrameBufferProps& getFrameBufferProps() { return this->m_FrameBufferProps; }
+		virtual void bind() const = 0;
+		virtual void unbind() const = 0;
+		virtual void cleanup() const = 0;
+		virtual void invalidate() = 0;
+		uint32_t m_RendererID;
+
+		// TEMP
+		ref<Texture> m_ColorTetxure, m_DepthTexture;
+
+	protected:
+		FrameBuffer(uint32_t ID, const FrameBufferProps& frameBufferProps) : m_RendererID(ID), m_FrameBufferProps(frameBufferProps) { TIME_FUNCTION; }
+		virtual const uint32_t genBuffer(const FrameBufferProps& frameBufferProps) const = 0;
+		FrameBufferProps m_FrameBufferProps;
 	};
 }

@@ -31,6 +31,19 @@ namespace assec::events
 		void* m_Window;
 	};
 
+	class MouseEvent : public Event
+	{
+	public:
+		MouseEvent(void* window) : Event::Event(window) {}
+		virtual ~MouseEvent() { TIME_FUNCTION; }
+	};
+	class KeyEvent : public Event
+	{
+	public:
+		KeyEvent(void* window) : Event::Event(window) {}
+		virtual ~KeyEvent() { TIME_FUNCTION; }
+	};
+
 	class Dispatcher
 	{
 		template<typename T> using EventFn = std::function<bool(T&)>;

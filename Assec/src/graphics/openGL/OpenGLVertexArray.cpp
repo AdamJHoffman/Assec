@@ -44,19 +44,19 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		this->bind();
-		int pointer = 0;
-		for (unsigned int i = 0; i < layout.m_Attributes.size(); i++)
+		void* pointer = 0;
+		for (int i = 0; i < layout.m_Attributes.size(); i++)
 		{
 			auto& attrib = layout.m_Attributes[i];
 			GLCall(glEnableVertexAttribArray(i));
-			GLCall(glVertexAttribPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), attrib.m_Normalized, attrib.getSize(), (const void*)pointer));
-			pointer += verticesSize / layout.calculateVertexSize() * attrib.getSize();
+			GLCall(glVertexAttribPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), attrib.m_Normalized, static_cast<GLsizei>(attrib.getSize()), pointer));
+			pointer = static_cast<char*>(pointer) + (verticesSize / layout.calculateVertexSize() * attrib.getSize());
 		}
 	}
-	const unsigned int OpenGLVertexArray::genVertexArray() const
+	const uint32_t OpenGLVertexArray::genVertexArray() const
 	{
 		TIME_FUNCTION;
-		unsigned int ID;
+		uint32_t ID;
 		GLCall(glCreateVertexArrays(1, &ID));
 		return ID;
 	}

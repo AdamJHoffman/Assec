@@ -15,6 +15,6 @@ namespace assec::graphics
 		virtual ref<std::vector<ref<Monitor>>> getMonitors() const override;
 	protected:
 		virtual void init0() const override;
-		virtual ref<Window> createWindow0(unsigned int width, unsigned int height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack) override;
+		virtual ref<Window> createWindow0(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack) override;
 	};
 }

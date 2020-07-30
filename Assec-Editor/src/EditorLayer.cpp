@@ -3,7 +3,7 @@
 
 namespace assec::editor
 {
-	EditorLayer::EditorLayer(const assec::Application& application) : m_Application(&application) {}
+	EditorLayer::EditorLayer(const assec::Application& application, graphics::FrameBuffer* frameBuffer) : m_Application(&application), m_FrameBuffer(frameBuffer) {}
 	EditorLayer::~EditorLayer() {}
 	void EditorLayer::onEvent(const events::Event& event)
 	{
@@ -11,6 +11,12 @@ namespace assec::editor
 		dispatcher.dispatch<events::AppRenderEvent>([this](events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;
+				if (this->m_ViewportSize.x != this->m_FrameBuffer->getFrameBufferProps().m_Width || this->m_ViewportSize.y != this->m_FrameBuffer->getFrameBufferProps().m_Height)
+				{
+					this->m_FrameBuffer->invalidate();
+				}
+				this->m_FrameBuffer->bind();
+				this->m_Application->AC_WINDOW_MANAGER->getWindows()[0]->clear();
 				this->m_Renderer->beginScene(this->m_Camera->getViewProjectionMatrix());
 
 
@@ -19,6 +25,8 @@ namespace assec::editor
 
 
 				this->m_Renderer->endScene();
+				this->m_FrameBuffer->unbind();
+				this->m_ViewportSize = { this->m_FrameBuffer->getFrameBufferProps().m_Width, this->m_FrameBuffer->getFrameBufferProps().m_Height };
 				return false;
 			});
 	}
@@ -32,8 +40,8 @@ namespace assec::editor
 		std::string fragment = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/texture/texture.fragment");
 
 		assec::util::Loader::TextureData data = assec::util::Loader::getLoader().loadImage("res/textures/rock_cliff/albedo.jpg");
-		assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
-		assec::ref<assec::graphics::Texture> texture = m_Application->AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Width, data.m_Height, data.m_Data, props);
+		assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE };
+		assec::ref<assec::graphics::Texture> texture = m_Application->AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
 
 		assec::ref<assec::graphics::ShaderProgram> shader = m_Application->AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(vertex.c_str(), fragment.c_str());
 
@@ -74,8 +82,8 @@ namespace assec::editor
 
 
 		assec::util::Loader::TextureData dataa = assec::util::Loader::getLoader().loadImage("res/textures/rock_cliff/normal.jpg");
-		assec::graphics::Texture::TextureProps propsa = { assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
-		assec::ref<assec::graphics::Texture> texturea = m_Application->AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(dataa.m_Width, dataa.m_Height, dataa.m_Data, propsa);
+		assec::graphics::Texture::TextureProps propsa = { dataa.m_Width, dataa.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE };
+		assec::ref<assec::graphics::Texture> texturea = m_Application->AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(dataa.m_Data, propsa);
 
 		assec::ref<assec::graphics::Material> materiala = std::make_shared<assec::graphics::Material>(shader, texturea);
 

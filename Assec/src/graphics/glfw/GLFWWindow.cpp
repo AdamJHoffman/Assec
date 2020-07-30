@@ -11,7 +11,7 @@ namespace assec::graphics
 		AC_CORE_CRITICAL("GLFW Error ({0}): {1}", error, description);
 	}
 
-	GLFWWindow::GLFWWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack)
+	GLFWWindow::GLFWWindow(uint32_t& width, uint32_t& height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack)
 		: Window::Window(width, height, title, eventCallBack, new OpenGLGraphicsContext(), this->createWindow(width, height, title, monitor, share))
 	{
 		TIME_FUNCTION;
@@ -79,7 +79,7 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	}
-	const void GLFWWindow::setSize(unsigned int& width, unsigned int& height) const
+	const void GLFWWindow::setSize(uint32_t& width, uint32_t& height) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowSize((GLFWwindow*)this->m_WindowData.m_NativeWindow, width, height);
@@ -124,12 +124,12 @@ namespace assec::graphics
 		glfwGetWindowPos((GLFWwindow*)this->m_WindowData.m_NativeWindow, &x, &y);
 		return glm::vec2(x, y);
 	}
-	const void GLFWWindow::setSizeLimits(unsigned int& minWidth, unsigned int& minHeight, unsigned int& maxWidth, unsigned int& maxHeight) const
+	const void GLFWWindow::setSizeLimits(uint32_t& minWidth, uint32_t& minHeight, uint32_t& maxWidth, uint32_t& maxHeight) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowSizeLimits((GLFWwindow*)this->m_WindowData.m_NativeWindow, minWidth, minHeight, maxWidth, maxHeight);
 	}
-	const void GLFWWindow::setAspectRatio(unsigned int& width, unsigned int& height) const
+	const void GLFWWindow::setAspectRatio(uint32_t& width, uint32_t& height) const
 	{
 		TIME_FUNCTION;
 		glfwSetWindowAspectRatio((GLFWwindow*)this->m_WindowData.m_NativeWindow, width, height);
@@ -204,13 +204,13 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		return glfwGetClipboardString((GLFWwindow*)this->m_WindowData.m_NativeWindow);
 	}
-	const void GLFWWindow::setSwapInterval(unsigned int& interval)
+	const void GLFWWindow::setSwapInterval(uint32_t& interval)
 	{
 		TIME_FUNCTION;
 		this->m_WindowData.m_SwapInterval = interval;
 		glfwSwapInterval(interval);
 	}
-	void* GLFWWindow::createWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share) const
+	void* GLFWWindow::createWindow(uint32_t& width, uint32_t& height, const char* title, Monitor* monitor, Window* share) const
 	{
 		TIME_FUNCTION;
 		if (!s_GLFWInitialized)
@@ -230,7 +230,7 @@ namespace assec::graphics
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowResizeEvent>((void*)&window, (unsigned int&)width, (unsigned int&)height));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowResizeEvent>((void*)&window, (uint32_t&)width, (uint32_t&)height));
 				window.getWindowData().m_Height = height;
 				window.getWindowData().m_Width = width;
 			});
@@ -362,7 +362,7 @@ namespace assec::graphics
 	const void GLFWWindow::setCharCallback() const
 	{
 		TIME_FUNCTION;
-		glfwSetCharCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, unsigned int unicode)
+		glfwSetCharCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, uint32_t unicode)
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));

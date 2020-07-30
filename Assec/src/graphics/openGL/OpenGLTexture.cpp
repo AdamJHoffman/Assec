@@ -3,11 +3,11 @@
 
 namespace assec::graphics
 {
-	OpenGLTexture2D::OpenGLTexture2D(unsigned int width, unsigned int height, const void* data, Texture::TextureProps props) : Texture2D::Texture2D(this->genTexture(), width, height, props)
+	OpenGLTexture2D::OpenGLTexture2D(const void* data, Texture::TextureProps props) : Texture2D::Texture2D(this->genTexture(), props)
 	{
 		TIME_FUNCTION;
 		this->bind();
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->m_Width, this->m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, toOpenGLType(this->m_Props.m_Internalformat), this->m_Props.m_Width, this->m_Props.m_Height, 0, toOpenGLType(this->m_Props.m_Format), toOpenGLType(this->m_Props.m_Type), data));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toOpenGLType(this->m_Props.m_WrapType)));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toOpenGLType(this->m_Props.m_WrapType)));
 		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(this->m_Props.m_BorderColor)));
@@ -35,10 +35,10 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		GLCall(glDeleteTextures(1, &this->m_RendererID));
 	}
-	const unsigned int OpenGLTexture2D::genTexture() const
+	const uint32_t OpenGLTexture2D::genTexture() const
 	{
 		TIME_FUNCTION;
-		unsigned int ID;
+		uint32_t ID;
 		GLCall(glCreateTextures(GL_TEXTURE_2D, 1, &ID));
 		return ID;
 	}

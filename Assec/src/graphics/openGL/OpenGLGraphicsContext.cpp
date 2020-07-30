@@ -20,7 +20,7 @@ namespace assec::graphics
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Renderer: {0}", glGetString(GL_RENDERER));
 		assec::Logger::CORE_LOGGER->getLogger()->info("	Version: {0}", glGetString(GL_VERSION));
 	}
-	void OpenGLGraphicsContext::setActiveTexture(unsigned int texture) const
+	void OpenGLGraphicsContext::setActiveTexture(uint32_t texture) const
 	{
 		TIME_FUNCTION;
 		GLCall(glActiveTexture(GL_TEXTURE0 + texture));
@@ -62,9 +62,15 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		return std::make_shared<OpenGLShaderProgram>(vertexSource, fragmentSource);
 	}
-	const ref<Texture2D> OpenGLGraphicsContext::createTexture2D0(unsigned int width, unsigned int height, const void* data, Texture::TextureProps props) const
+	const ref<Texture2D> OpenGLGraphicsContext::createTexture2D0(const void* data, Texture::TextureProps props) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLTexture2D>(width, height, data, props);
+		return std::make_shared<OpenGLTexture2D>(data, props);
 	}
+	const ref<FrameBuffer> OpenGLGraphicsContext::createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLFrameBuffer>(frameBufferProps);
+	}
+
 }

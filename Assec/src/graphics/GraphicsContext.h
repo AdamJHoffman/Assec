@@ -18,7 +18,7 @@ namespace assec::graphics
 			this->cleanup();
 		}
 		virtual const void init() const = 0;
-		virtual void setActiveTexture(unsigned int texture) const = 0;
+		virtual void setActiveTexture(uint32_t texture) const = 0;
 		virtual int getMaxTextures() const = 0;
 		const ref<VertexBuffer> createVertexBuffer(const void* vertices, const size_t& size, const int& usage)
 		{
@@ -62,11 +62,18 @@ namespace assec::graphics
 			this->m_ShaderPrograms.push_back(result);
 			return result;
 		}
-		const ref<Texture2D> createTexture2D(unsigned int width, unsigned int height, const void* data, Texture::TextureProps props)
+		const ref<Texture2D> createTexture2D(const void* data, Texture::TextureProps props)
 		{
 			TIME_FUNCTION;
-			auto result = this->createTexture2D0(width, height, data, props);
+			auto result = this->createTexture2D0(data, props);
 			this->m_Textures.push_back(result);
+			return result;
+		}
+		const ref<FrameBuffer> createFrameBuffer(const FrameBuffer::FrameBufferProps& frameBufferProps)
+		{
+			TIME_FUNCTION;
+			auto result = this->createFrameBuffer0(frameBufferProps);
+			this->m_FrameBuffers.push_back(result);
 			return result;
 		}
 		const void cleanup()
@@ -96,6 +103,10 @@ namespace assec::graphics
 			{
 				texture->cleanup();
 			}
+			for (auto framebuffer : this->m_FrameBuffers)
+			{
+				framebuffer->cleanup();
+			}
 		}
 	protected:
 		virtual const ref<VertexBuffer> createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const = 0;
@@ -104,7 +115,8 @@ namespace assec::graphics
 		virtual const ref<VertexArray> createVertexArray0(Type& usage, const size_t& size = 0) const = 0;
 		virtual const ref<Shader> createShader0(const char* source, Type& type) const = 0;
 		virtual const ref<ShaderProgram> createShaderProgram0(const char* vertexSource, const char* fragmentSource) const = 0;
-		virtual const ref<Texture2D> createTexture2D0(unsigned int width, unsigned int height, const void* data, Texture::TextureProps props) const = 0;
+		virtual const ref<Texture2D> createTexture2D0(const void* data, Texture::TextureProps props) const = 0;
+		virtual const ref<FrameBuffer> createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const = 0;
 	private:
 		std::vector<ref<VertexBuffer>> m_VertexBuffers = std::vector<ref<VertexBuffer>>();
 		std::vector<ref<IndexBuffer>> m_IndexBuffers = std::vector<ref<IndexBuffer>>();
@@ -112,5 +124,6 @@ namespace assec::graphics
 		std::vector<ref<Shader>> m_Shaders = std::vector<ref<Shader>>();
 		std::vector<ref<ShaderProgram>> m_ShaderPrograms = std::vector<ref<ShaderProgram>>();
 		std::vector<ref<Texture>> m_Textures = std::vector<ref<Texture>>();
+		std::vector<ref<FrameBuffer>> m_FrameBuffers = std::vector<ref<FrameBuffer>>();
 	};
 }

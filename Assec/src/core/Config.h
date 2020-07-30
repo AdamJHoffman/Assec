@@ -154,7 +154,9 @@
 #define TIME_FUNCTION assec::util::Timer timer = assec::util::Timer(__FUNCSIG__)
 #ifdef AC_PLATFORM_WINDOWS
 #define AC_CLIENT_ASSERT(x, y, ...) {if(!(x)) { AC_CLIENT_CRITICAL(y, __VA_ARGS__); __debugbreak(); } }
+#define AC_CLIENT_ASSERT_(x, y) {if(!(x)) { AC_CLIENT_CRITICAL(y); __debugbreak(); } }
 #define AC_CORE_ASSERT(x, y, ...) {if(!(x)) { AC_CORE_CRITICAL(y, __VA_ARGS__); __debugbreak(); } }
+#define AC_CORE_ASSERT_(x, y) {if(!(x)) { AC_CORE_CRITICAL(y); __debugbreak(); } }
 #endif //AC_PLATFORM_WINDOWS
 #else //AC_DEBUG
 #define TIME_FUNCTION
@@ -186,6 +188,8 @@ namespace assec
 		NONE = 0,
 		FLOAT,
 		UNSIGNED_INT,
+		UNSIGNED_BYTE,
+		UNSIGNED_INT_24_8,
 
 		VERTEX_SHADER,
 		FRAGMENT_SHADER,
@@ -205,5 +209,11 @@ namespace assec
 		LINEAR_MIPMAP_NEAREST,
 		NEAREST_MIPMAP_LINEAR,
 		LINEAR_MIPMAP_LINEAR,
+
+		RGB,
+		RGBA,
+		RGBA8,
+		DEPTH24_STENCIL8,
+		DEPTH_STENCIL
 	};
 }

@@ -11,7 +11,7 @@ namespace assec::graphics
 	class GLFWWindow : public Window
 	{
 	public:
-		GLFWWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack);
+		GLFWWindow(uint32_t& width, uint32_t& height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack);
 		virtual ~GLFWWindow();
 		virtual const void setUserPointer() const override;
 		virtual const void cleanup() const override;
@@ -20,15 +20,15 @@ namespace assec::graphics
 		virtual const void swapBuffers() const override;
 		virtual const void pollEvents() const override;
 		virtual const void clear() const override;
-		virtual const void setSize(unsigned int& width, unsigned int& height) const override;
+		virtual const void setSize(uint32_t& width, uint32_t& height) const override;
 		virtual const glm::vec2 getSize() const override;
 		virtual const std::tuple<int, int, int, int> getFrameSize() const override;
 		virtual const glm::vec2 getFramebufferSize() const override;
 		virtual const glm::vec2 getWindowContentScale() const override;
 		virtual const void setPosition(int& x, int& y) const override;
 		virtual const glm::vec2 getPosition() const override;
-		virtual const void setSizeLimits(unsigned int& minWidth, unsigned int& minHeight, unsigned int& maxWidth, unsigned int& maxHeight) const override;
-		virtual const void setAspectRatio(unsigned int& width, unsigned int& height) const override;
+		virtual const void setSizeLimits(uint32_t& minWidth, uint32_t& minHeight, uint32_t& maxWidth, uint32_t& maxHeight) const override;
+		virtual const void setAspectRatio(uint32_t& width, uint32_t& height) const override;
 		virtual const void setTitle(const char* title) const override;
 		virtual const void minimize() const override;
 		virtual const void restore() const override;
@@ -39,13 +39,13 @@ namespace assec::graphics
 		virtual const void requestAttention() const override;
 		virtual const void setOpacity(float opacity) const override;
 		virtual const float getOpacity() const override;
-		virtual const void setSwapInterval(unsigned int& interval) override;
+		virtual const void setSwapInterval(uint32_t& interval) override;
 		virtual const int getKeyState(int keycode) const override;
 		virtual const int getMouseButtonState(int button) const override;
 		virtual const void setClipboardString(const char* string) const override;
 		virtual const char* getClipboardString() const override;
 	protected:
-		virtual void* createWindow(unsigned int& width, unsigned int& height, const char* title, Monitor* monitor, Window* share) const override;
+		virtual void* createWindow(uint32_t& width, uint32_t& height, const char* title, Monitor* monitor, Window* share) const override;
 		virtual const void setWindowResizeCallback() const override;
 		virtual const void setFramebufferResizeCallback() const override;
 		virtual const void setWindowContentScaleCallback() const override;

@@ -45,7 +45,7 @@ namespace assec::graphics
 		ramp.red = gammaRamp->m_Red;
 		ramp.green = gammaRamp->m_Green;
 		ramp.blue = gammaRamp->m_Blue;
-		ramp.size = gammaRamp->m_Size;
+		ramp.size = static_cast<unsigned int>(gammaRamp->m_Size);
 		glfwSetGammaRamp((GLFWmonitor*)this->m_NativeMonitor, &ramp);
 	}
 	void GLFWMonitor::setGamma(float gamma) const

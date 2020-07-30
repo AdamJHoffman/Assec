@@ -11,7 +11,7 @@ namespace assec::util
 	public:
 		struct TextureData
 		{
-			int m_Width, m_Height, m_NrChannels;
+			uint32_t m_Width, m_Height, m_NrChannels;
 			unsigned char* m_Data;
 		};
 		static Loader& getLoader()
@@ -38,7 +38,7 @@ namespace assec::util
 			TIME_FUNCTION;
 			int width, height, nrChannels;
 			unsigned char* data = stbi_load(file, &width, &height, &nrChannels, 0);
-			return { width, height, nrChannels, data };
+			return { static_cast<uint32_t>(width), static_cast<uint32_t>(height), static_cast<uint32_t>(nrChannels), data };
 		}
 		~Loader() { TIME_FUNCTION; }
 	private:
