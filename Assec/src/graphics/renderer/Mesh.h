@@ -1,7 +1,9 @@
 ﻿#pragma once
+#include "acpch.h"
 
 #include <glm/glm.hpp>
-#include "acpch.h"
+
+#include "graphics/Buffer.h"
 
 namespace assec::graphics
 {

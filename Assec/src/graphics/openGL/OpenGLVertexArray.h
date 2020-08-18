@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "graphics/VertexArray.h"
 #include "graphics/openGL/OpenGLBuffer.h"
 
 namespace assec::graphics

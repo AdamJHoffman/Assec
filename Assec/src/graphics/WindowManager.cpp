@@ -1,5 +1,6 @@
 ﻿#include "acpch.h"
 #include "WindowManager.h"
+#include "event/WindowEvents.h"
 
 namespace assec::graphics
 {

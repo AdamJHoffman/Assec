@@ -1,5 +1,11 @@
-#include "acpch.h"
+﻿#include "acpch.h"
 #include "ImguiLayer.h"
+#include "event/EngineEvents.h"
+#include "event/KeyEvents.h"
+#include "event/MouseEvents.h"
+#include "event/WindowEvents.h"
+
+#include <imgui.h>
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include <examples/imgui_impl_glfw.h>

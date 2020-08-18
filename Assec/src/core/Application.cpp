@@ -1,17 +1,18 @@
-#include "acpch.h"
+﻿#include "acpch.h"
 
 #include "Application.h"
 #include "graphics/glfw/GLFWWindowContext.h"
+#include "event/EngineEvents.h"
 
 void* operator new(size_t size)
 {
-	assec::util::MemoryManager::getMemoryManager().m_Allocated += (uint32_t)size;
+	assec::util::MemoryManager::m_Allocated += (uint32_t)size;
 	return malloc(size);
 }
 
 void operator delete(void* object, size_t size)
 {
-	assec::util::MemoryManager::getMemoryManager().m_Freed += (uint32_t)size;
+	assec::util::MemoryManager::m_Freed += (uint32_t)size;
 	free(object);
 }
 
@@ -25,7 +26,7 @@ namespace assec
 	const void Application::onEvent(ref<events::Event> event)
 	{
 		TIME_FUNCTION;
-		this->AC_INPUT_MANAGER->onEvent(*event);
+		Input::onEvent(*event);
 		this->AC_EVENT_QUEUE->m_Events.push_back(event);
 	}
 	const void Application::handleEvents()
@@ -37,6 +38,18 @@ namespace assec
 			{
 				AC_CORE_TRACE(event->toString());
 				this->AC_LAYER_STACK->onEvent(*event);
+				this->m_ActiveScene->reg().view<scene::OrthoCameraComponent>().each([=](auto entity, auto& udc)
+					{
+						udc.onEvent(*event);
+					});
+				this->m_ActiveScene->reg().view<scene::NativeScriptComponent>().each([=](auto entity, auto& nsc)
+					{
+						if (!nsc.m_Instance)
+						{
+							nsc.m_InstantiateFunction(entity, this->m_ActiveScene.get());
+						}
+						nsc.onEvent(*event);
+					});
 			}
 		}
 		this->AC_EVENT_QUEUE->m_Events.clear();

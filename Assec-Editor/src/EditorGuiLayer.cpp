@@ -1,4 +1,5 @@
-#include "EditorGuiLayer.h"
+﻿#include "EditorGuiLayer.h"
+#include <imgui.h>
 
 namespace assec::editor
 {
@@ -72,8 +73,7 @@ namespace assec::editor
 				this->m_FrameBuffer->getFrameBufferProps().m_Width = static_cast<uint32_t>(viewportPanelSize.x);
 				this->m_FrameBuffer->getFrameBufferProps().m_Height = static_cast<uint32_t>(viewportPanelSize.y);
 
-				intptr_t textureID = static_cast<intptr_t>(this->m_FrameBuffer->m_ColorTetxure->m_RendererID);
-				ImGui::Image((void*)textureID, ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				ImGui::Image((void*)static_cast<intptr_t>(this->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT_0).m_RendererID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 				ImGui::End();
 				ImGui::PopStyleVar();
 

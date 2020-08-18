@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "core/Config.h"
+#include "log/Logger.h"
 #include <fstream>
 #include <sstream>
 #include <stb_image.h>

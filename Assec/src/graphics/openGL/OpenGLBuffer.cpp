@@ -87,22 +87,7 @@ namespace assec::graphics
 		GLCall(glCreateBuffers(1, &ID));
 		return ID;
 	}
-	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferProps& frameBufferProps) : FrameBuffer(this->genBuffer(frameBufferProps), frameBufferProps)
-	{
-		this->bind();
-
-		Texture::TextureProps props = { frameBufferProps.m_Width, frameBufferProps.m_Height , assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, false, false, Type::RGBA8, Type::RGBA, Type::UNSIGNED_BYTE };
-		this->m_ColorTetxure = std::make_shared<OpenGLTexture2D>(nullptr, props);
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->m_ColorTetxure->m_RendererID, 0));
-
-		props = { frameBufferProps.m_Width, frameBufferProps.m_Height , assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, false, false, Type::DEPTH24_STENCIL8, Type::DEPTH_STENCIL, Type::UNSIGNED_INT_24_8 };
-		this->m_DepthTexture = std::make_shared<OpenGLTexture2D>(nullptr, props);
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, this->m_DepthTexture->m_RendererID, 0));
-
-		AC_CORE_ASSERT_(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
-
-		this->unbind();
-	}
+	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferProps& frameBufferProps) : FrameBuffer(this->genBuffer(frameBufferProps), frameBufferProps) {}
 	OpenGLFrameBuffer::~OpenGLFrameBuffer() { TIME_FUNCTION; }
 	void OpenGLFrameBuffer::bind() const
 	{
@@ -114,31 +99,44 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 	}
-	void OpenGLFrameBuffer::cleanup() const
+	void OpenGLFrameBuffer::cleanup()
+	{
+		TIME_FUNCTION;
+		for (auto key : util::Keys(this->m_TextureAttachments))
+		{
+			this->m_TextureAttachments.at(key)->cleanup();
+		}
+		this->m_TextureAttachments.clear();
+		GLCall(glDeleteFramebuffers(1, &this->m_RendererID));
+	}
+	void OpenGLFrameBuffer::resize()
 	{
 		TIME_FUNCTION;
 		GLCall(glDeleteFramebuffers(1, &this->m_RendererID));
-	}
-	void OpenGLFrameBuffer::invalidate()
-	{
-		TIME_FUNCTION;
-		this->cleanup();
-		this->m_ColorTetxure->cleanup();
-		this->m_DepthTexture->cleanup();
 		this->m_RendererID = this->genBuffer(this->m_FrameBufferProps);
-
+		for (auto key : util::Keys(this->m_TextureAttachments))
+		{
+			this->m_TextureAttachments.at(key)->cleanup();
+			const Type& attachment = key;
+			const Type& internalForamat = this->m_TextureAttachments.at(key)->getProps().m_Internalformat;
+			const Type& format = this->m_TextureAttachments.at(key)->getProps().m_Format;
+			const Type& type = this->m_TextureAttachments.at(key)->getProps().m_Type;
+			this->addTextureAttachment(attachment, internalForamat, format, type);
+		}
+		this->validate();
+	}
+	void OpenGLFrameBuffer::validate() const
+	{
 		this->bind();
-
-		Texture::TextureProps props = { this->m_FrameBufferProps.m_Width, this->m_FrameBufferProps.m_Height , assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, false, false, Type::RGBA8, Type::RGBA, Type::UNSIGNED_BYTE };
-		this->m_ColorTetxure = std::make_shared<OpenGLTexture2D>(nullptr, props);
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->m_ColorTetxure->m_RendererID, 0));
-
-		props = { this->m_FrameBufferProps.m_Width, this->m_FrameBufferProps.m_Height , assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, false, false, Type::DEPTH24_STENCIL8, Type::DEPTH_STENCIL, Type::UNSIGNED_INT_24_8 };
-		this->m_DepthTexture = std::make_shared<OpenGLTexture2D>(nullptr, props);
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, this->m_DepthTexture->m_RendererID, 0));
-
-		AC_CORE_ASSERT_(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
-
+		GLCall(bool result = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE));
+		AC_CLIENT_ASSERT(result, "framebuffer {0} incomplete", this->m_RendererID);
+		this->unbind();
+	}
+	void OpenGLFrameBuffer::addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type)
+	{
+		this->bind();
+		this->m_TextureAttachments[attachment] = std::make_shared<OpenGLTexture2D>(nullptr, Texture::TextureProps{ this->m_FrameBufferProps.m_Width, this->m_FrameBufferProps.m_Height , assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, false, false, internalFormat, format, type });
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, toOpenGLType(attachment), GL_TEXTURE_2D, this->m_TextureAttachments[attachment]->m_RendererID, 0));
 		this->unbind();
 	}
 	const uint32_t OpenGLFrameBuffer::genBuffer(const FrameBufferProps& frameBufferProps) const

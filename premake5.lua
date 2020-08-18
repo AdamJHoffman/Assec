@@ -17,6 +17,8 @@ workspace "Assec"
 	IncludeDir["glad"] = "Assec/vendor/glad/include"
 	IncludeDir["imgui"] = "Assec/vendor/imgui"
 	IncludeDir["glm"] = "Assec/vendor/glm"
+	IncludeDir["entt"] = "Assec/vendor/entt/single_include"
+
 
 	group "Dependencies"
 		include "Assec/vendor/glfw"
@@ -58,7 +60,8 @@ workspace "Assec"
 			"%{IncludeDir.glfw}",
 			"%{IncludeDir.glad}",
 			"%{IncludeDir.imgui}",
-			"%{IncludeDir.glm}"
+			"%{IncludeDir.glm}",
+			"%{IncludeDir.entt}"
 		}
 
 		links
@@ -115,6 +118,7 @@ workspace "Assec"
 			"%{wks.location}/Assec/vendor/spdlog/include",
 			"%{wks.location}/Assec/vendor/stb",
 			"%{IncludeDir.glm}",
+			"%{IncludeDir.entt}"
 		}
 
 		links
@@ -167,7 +171,8 @@ workspace "Assec"
 				"%{wks.location}/Assec/vendor/spdlog/include",
 				"%{wks.location}/Assec/vendor/stb",
 				"%{IncludeDir.glm}",
-				"%{IncludeDir.imgui}"
+				"%{IncludeDir.imgui}",
+				"%{IncludeDir.entt}",
 			}
 
 			links
@@ -180,7 +185,7 @@ workspace "Assec"
 
 			defines
 			{
-				"PLATFORM_WINDOWS"
+				"AC_PLATFORM_WINDOWS"
 			}
 
 			filter "configurations:Debug"

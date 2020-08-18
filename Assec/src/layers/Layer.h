@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "core/Config.h"
+#include "event/Event.h"
 
 namespace assec::layersystem
 {

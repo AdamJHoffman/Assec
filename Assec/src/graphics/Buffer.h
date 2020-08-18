@@ -90,18 +90,18 @@ namespace assec::graphics
 		virtual ~FrameBuffer() { TIME_FUNCTION; }
 		inline const FrameBufferProps& getFrameBufferProps() const { return this->m_FrameBufferProps; }
 		inline FrameBufferProps& getFrameBufferProps() { return this->m_FrameBufferProps; }
+		inline const Texture& getTextureAttachment(const Type& attachment) { return *this->m_TextureAttachments[attachment]; }
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
-		virtual void cleanup() const = 0;
-		virtual void invalidate() = 0;
+		virtual void cleanup() = 0;
+		virtual void resize() = 0;
+		virtual void validate() const = 0;
+		virtual void addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type) = 0;
 		uint32_t m_RendererID;
-
-		// TEMP
-		ref<Texture> m_ColorTetxure, m_DepthTexture;
-
 	protected:
 		FrameBuffer(uint32_t ID, const FrameBufferProps& frameBufferProps) : m_RendererID(ID), m_FrameBufferProps(frameBufferProps) { TIME_FUNCTION; }
 		virtual const uint32_t genBuffer(const FrameBufferProps& frameBufferProps) const = 0;
 		FrameBufferProps m_FrameBufferProps;
+		std::unordered_map<Type, std::shared_ptr<Texture>> m_TextureAttachments = std::unordered_map<Type, std::shared_ptr<Texture>>();
 	};
 }

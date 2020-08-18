@@ -1,4 +1,9 @@
 ﻿#pragma once
+#include "graphics/renderer/Material.h"
+#include "graphics/renderer/Mesh.h"
+#include "graphics/renderer/Renderable.h"
+#include "graphics/GraphicsContext.h"
+#include "graphics/Window.h"
 
 namespace assec::graphics
 {

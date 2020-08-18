@@ -1,5 +1,9 @@
 ﻿#include "acpch.h"
 #include "GLFWWindow.h"
+#include "event/WindowEvents.h"
+#include "event/KeyEvents.h"
+#include "event/MouseEvents.h"
+#include "event/EngineEvents.h"
 
 namespace assec::graphics
 {

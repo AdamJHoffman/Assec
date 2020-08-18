@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <glm/glm.hpp>
 #include "acpch.h"
 
 namespace assec::graphics

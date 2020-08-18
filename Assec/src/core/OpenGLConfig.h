@@ -16,7 +16,7 @@
 
 namespace assec
 {
-	static uint32_t toOpenGLType(Type& type)
+	static uint32_t toOpenGLType(const Type& type)
 	{
 		TIME_FUNCTION;
 		switch (type)
@@ -89,6 +89,12 @@ namespace assec
 			break;
 		case Type::DEPTH_STENCIL:
 			return GL_DEPTH_STENCIL;
+			break;
+		case Type::COLOR_ATTACHMENT_0:
+			return GL_COLOR_ATTACHMENT0;
+			break;
+		case Type::DEPTH_STENCIL_ATTACHMENT:
+			return GL_DEPTH_STENCIL_ATTACHMENT;
 			break;
 		default:
 			return NULL;

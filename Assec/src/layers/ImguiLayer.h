@@ -1,6 +1,5 @@
-#pragma once
+﻿#pragma once
 #include "core/Application.h"
-#include <imgui.h>
 
 namespace assec
 {

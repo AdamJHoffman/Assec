@@ -1,8 +1,44 @@
-#include "EditorLayer.h"
-#include "util/Loader.h"
+﻿#include "EditorLayer.h"
 
 namespace assec::editor
 {
+
+	class CameraController : public scene::Entity
+	{
+	public:
+		CameraController(entt::entity handle, scene::Scene* scene) : Entity::Entity(handle, scene) {}
+		~CameraController() {}
+		void onCreate()
+		{
+		}
+
+		void onDestroy()
+		{
+		}
+
+		void onEvent(const events::Event& event)
+		{
+			auto& transform = this->getComponent<scene::TransformComponent>().m_Transform;
+			float speed = 0.5f;
+
+			events::Dispatcher dispatcher = events::Dispatcher(event);
+			dispatcher.dispatch<events::AppUpdateEvent>([&](events::AppUpdateEvent& event)
+				{
+					TIME_FUNCTION;
+					if (Input::isKeyDown(AC_KEY_A))
+						transform[3][0] -= speed * event.m_Delta;
+					if (Input::isKeyDown(AC_KEY_D))
+						transform[3][0] += speed * event.m_Delta;
+					if (Input::isKeyDown(AC_KEY_W))
+						transform[3][1] += speed * event.m_Delta;
+					if (Input::isKeyDown(AC_KEY_S))
+						transform[3][1] -= speed * event.m_Delta;
+					this->getComponent<scene::OrthoCameraComponent>().setViewMatrix(transform);
+					return false;
+				});
+		}
+	};
+
 	EditorLayer::EditorLayer(const assec::Application& application, graphics::FrameBuffer* frameBuffer) : m_Application(&application), m_FrameBuffer(frameBuffer) {}
 	EditorLayer::~EditorLayer() {}
 	void EditorLayer::onEvent(const events::Event& event)
@@ -13,11 +49,15 @@ namespace assec::editor
 				TIME_FUNCTION;
 				if (this->m_ViewportSize.x != this->m_FrameBuffer->getFrameBufferProps().m_Width || this->m_ViewportSize.y != this->m_FrameBuffer->getFrameBufferProps().m_Height)
 				{
-					this->m_FrameBuffer->invalidate();
+					this->m_FrameBuffer->resize();
+					this->m_Application->m_ActiveScene->reg().view<scene::OrthoCameraComponent>().each([=](auto entity, auto& udc)
+						{
+							udc.setViewportSize(this->m_ViewportSize.x, this->m_ViewportSize.y);
+						});
 				}
 				this->m_FrameBuffer->bind();
 				this->m_Application->AC_WINDOW_MANAGER->getWindows()[0]->clear();
-				this->m_Renderer->beginScene(this->m_Camera->getViewProjectionMatrix());
+				this->m_Renderer->beginScene(this->m_Application->m_ActiveScene->getActiveCamera());
 
 
 				this->m_Renderer->submit(this->m_Application->AC_WINDOW_MANAGER->getWindows()[0], this->m_Renderable);
@@ -131,6 +171,12 @@ namespace assec::editor
 		this->m_RenderableA = std::make_shared<assec::graphics::Renderable2D>(mesha, materiala);
 
 		// TEMP ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		scene::Entity camera = this->m_Application->m_ActiveScene->createEntity();
+		camera.addComponent<scene::NativeScriptComponent>().bind<CameraController>();
+		this->m_Application->m_ActiveScene->setActiveCamera(camera.addComponent<scene::OrthoCameraComponent>(assec::scene::Camera(glm::ortho(-2.0f, 2.0f, -1.125f, 1.125f, -1.0f, 1.0f))).m_Camera.m_Projection);
+		camera.getComponent<scene::OrthoCameraComponent>().orthographic(2.0f, 1.0f, -1.0f);
+		//this->m_Application->m_ActiveScene->setActiveCamera(this->m_EditorCamera->getViewProjectionMatrix());
 
 	}
 	void EditorLayer::onDetach()

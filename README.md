@@ -1,2 +1,19 @@
-# Assec
-The Assec game engine used for development by Team Vistic.
+# Assec Engine
+
+The Assec Engine is a basic game engine capable of creating simple 2D games.
+
+## Installation
+
+Clone the git repository and open it using visual studio.
+
+## Usage
+
+// TODO
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)

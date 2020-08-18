@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "acpch.h"
 
 namespace assec::util
 {

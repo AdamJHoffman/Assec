@@ -1,11 +1,13 @@
-#pragma once
+﻿#pragma once
 #include "event/Event.h"
 #include "event/EventQueue.h"
 #include "util/MemoryManager.h"
+#include "graphics/WindowManager.h"
 #include "util/Profiler.h"
 #include "util/Loader.h"
 #include "layers/LayerStack.h"
 #include "Input.h"
+#include "scene/Scene.h"
 
 namespace assec
 {
@@ -22,7 +24,7 @@ namespace assec
 		ref<graphics::WindowManager> AC_WINDOW_MANAGER;
 		ref<layersystem::LayerStack> AC_LAYER_STACK = std::make_shared<layersystem::LayerStack>();
 		ref<events::EventQueue> AC_EVENT_QUEUE = std::make_shared<events::EventQueue>();
-		ref<InputManager> AC_INPUT_MANAGER = std::make_shared<InputManager>();
+		ref<scene::Scene> m_ActiveScene = std::make_shared<scene::Scene>();
 	private:
 		bool m_ShouldClose = false;
 		const void cleanup() const

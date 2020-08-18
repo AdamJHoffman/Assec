@@ -28,12 +28,6 @@
     <Filter Include="src\layers">
       <UniqueIdentifier>{6C614A68-5819-8CB5-C120-6511ADF726A6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\layers\gameobjects">
-      <UniqueIdentifier>{9F2EBEEE-8B28-E740-7495-7D51602E4DAD}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\layers\gameobjects\components">
-      <UniqueIdentifier>{74766B7C-E0E4-C0FB-29CE-7BFB957BB697}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\log">
       <UniqueIdentifier>{9E1930A9-0AF9-AE44-1311-3A1B7F6F15A6}</UniqueIdentifier>
     </Filter>
@@ -66,6 +60,9 @@
     <ClInclude Include="src\acpch.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\Application.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
     <ClInclude Include="src\core\Config.h">
       <Filter>src\core</Filter>
     </ClInclude>
@@ -94,9 +91,6 @@
       <Filter>src\event</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\Buffer.h">
-      <Filter>src\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\Camera.h">
       <Filter>src\graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\GraphicsContext.h">
@@ -164,6 +158,9 @@
     </ClInclude>
     <ClInclude Include="src\include\Assec.h">
       <Filter>src\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\layers\ImguiLayer.h">
+      <Filter>src\layers</Filter>
     </ClInclude>
     <ClInclude Include="src\layers\Layer.h">
       <Filter>src\layers</Filter>
@@ -1410,18 +1407,23 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Application.h" />
-    <ClInclude Include="src\layers\ImguiLayer.h" />
+    <ClInclude Include="src\scene\Entity.h" />
+    <ClInclude Include="src\scene\Scene.h" />
+    <ClInclude Include="src\scene\Components.h" />
+    <ClInclude Include="src\scene\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\StbImageImplementation.cpp">
+    <ClCompile Include="src\core\Application.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\Camera.cpp">
-      <Filter>src\graphics</Filter>
+    <ClCompile Include="src\core\ImGuiImplmentation.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\StbImageImplementation.cpp">
+      <Filter>src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\WindowManager.cpp">
       <Filter>src\graphics</Filter>
@@ -1465,14 +1467,21 @@
     <ClCompile Include="src\graphics\renderer\Renderer.cpp">
       <Filter>src\graphics\renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\layers\ImguiLayer.cpp">
+      <Filter>src\layers</Filter>
+    </ClCompile>
     <ClCompile Include="src\layers\LayerStack.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
     <ClCompile Include="src\log\Logger.cpp">
       <Filter>src\log</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Application.cpp" />
-    <ClCompile Include="src\core\ImGuiImplmentation.cpp" />
-    <ClCompile Include="src\layers\ImguiLayer.cpp" />
+    <ClCompile Include="src\util\MemoryManager.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Scene.cpp" />
+    <ClCompile Include="src\scene\Entity.cpp" />
+    <ClCompile Include="src\scene\Camera.cpp" />
+    <ClCompile Include="src\core\Input.cpp" />
   </ItemGroup>
 </Project>

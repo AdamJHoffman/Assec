@@ -39,8 +39,10 @@ namespace assec::graphics
 		~OpenGLFrameBuffer();
 		virtual void bind() const override;
 		virtual void unbind() const override;
-		virtual void cleanup() const override;
-		virtual void invalidate() override;
+		virtual void cleanup() override;
+		virtual void resize() override;
+		virtual void validate() const override;
+		virtual void addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type) override;
 	protected:
 		virtual const uint32_t genBuffer(const FrameBufferProps& frameBufferProps) const override;
 	};

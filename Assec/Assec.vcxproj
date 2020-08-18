@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -97,7 +97,7 @@
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -121,7 +121,7 @@
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -145,6 +145,9 @@
     <ClInclude Include="src\core\Config.h" />
     <ClInclude Include="src\core\Input.h" />
     <ClInclude Include="src\core\OpenGLConfig.h" />
+    <ClInclude Include="src\scene\Camera.h" />
+    <ClInclude Include="src\scene\Components.h" />
+    <ClInclude Include="src\scene\Entity.h" />
     <ClInclude Include="src\event\EngineEvents.h" />
     <ClInclude Include="src\event\Event.h" />
     <ClInclude Include="src\event\EventQueue.h" />
@@ -152,7 +155,6 @@
     <ClInclude Include="src\event\MouseEvents.h" />
     <ClInclude Include="src\event\WindowEvents.h" />
     <ClInclude Include="src\graphics\Buffer.h" />
-    <ClInclude Include="src\graphics\Camera.h" />
     <ClInclude Include="src\graphics\GraphicsContext.h" />
     <ClInclude Include="src\graphics\Monitor.h" />
     <ClInclude Include="src\graphics\Shader.h" />
@@ -179,6 +181,7 @@
     <ClInclude Include="src\layers\Layer.h" />
     <ClInclude Include="src\layers\LayerStack.h" />
     <ClInclude Include="src\log\Logger.h" />
+    <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\util\Loader.h" />
     <ClInclude Include="src\util\MemoryManager.h" />
     <ClInclude Include="src\util\Profiler.h" />
@@ -598,8 +601,8 @@
     </ClCompile>
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\ImGuiImplmentation.cpp" />
+    <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\StbImageImplementation.cpp" />
-    <ClCompile Include="src\graphics\Camera.cpp" />
     <ClCompile Include="src\graphics\WindowManager.cpp" />
     <ClCompile Include="src\graphics\glfw\GLFWMonitor.cpp" />
     <ClCompile Include="src\graphics\glfw\GLFWWindow.cpp" />
@@ -617,6 +620,10 @@
     <ClCompile Include="src\layers\ImguiLayer.cpp" />
     <ClCompile Include="src\layers\LayerStack.cpp" />
     <ClCompile Include="src\log\Logger.cpp" />
+    <ClCompile Include="src\scene\Camera.cpp" />
+    <ClCompile Include="src\scene\Entity.cpp" />
+    <ClCompile Include="src\scene\Scene.cpp" />
+    <ClCompile Include="src\util\MemoryManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\glfw\GLFW.vcxproj">
