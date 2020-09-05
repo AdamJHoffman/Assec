@@ -36,11 +36,13 @@ namespace assec
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)this->m_Application->AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_NativeWindow, true);
+		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)graphics::WindowManager::getWindows()[0]->getWindowData().m_NativeWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
+		this->onAttach0();
 	}
 	void ImGuiLayer::onDetach()
 	{
+		this->onDetach0();
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
@@ -177,8 +179,8 @@ namespace assec
 	void ImGuiLayer::end(const float& deltaTime)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(static_cast<float>(this->m_Application->AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_Width),
-			static_cast<float>(this->m_Application->AC_WINDOW_MANAGER->getWindows()[0]->getWindowData().m_Height));
+		io.DisplaySize = ImVec2(static_cast<float>(graphics::WindowManager::getWindows()[0]->getWindowData().m_Width),
+			static_cast<float>(graphics::WindowManager::getWindows()[0]->getWindowData().m_Height));
 		io.DeltaTime = deltaTime;
 
 		ImGui::Render();
@@ -186,7 +188,7 @@ namespace assec
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			ref<assec::graphics::Window> backupCurrentContext = this->m_Application->AC_WINDOW_MANAGER->getWindows()[0];
+			ref<assec::graphics::Window> backupCurrentContext = graphics::WindowManager::getWindows()[0];
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 			backupCurrentContext->makeCurrent();

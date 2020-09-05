@@ -9,10 +9,10 @@ namespace assec::graphics
 	class Material
 	{
 	public:
-		Material(ref<ShaderProgram> shaderProgram, ref<Texture> texture);
+		Material(ShaderProgram& shaderProgram, Texture& texture);
 		~Material();
 		void prepare(glm::mat4& viewProjectionMatrix = glm::mat4(1.0f)) const;
-		ref<ShaderProgram> m_ShaderProgram;
-		ref<Texture> m_Texture;
+		ShaderProgram& m_ShaderProgram;
+		Texture& m_Texture;
 	};
 }

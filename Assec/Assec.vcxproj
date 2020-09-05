@@ -623,6 +623,7 @@
     <ClCompile Include="src\scene\Camera.cpp" />
     <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
+    <ClCompile Include="src\util\Loader.cpp" />
     <ClCompile Include="src\util\MemoryManager.cpp" />
   </ItemGroup>
   <ItemGroup>

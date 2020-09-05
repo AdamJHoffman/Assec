@@ -20,61 +20,61 @@ namespace assec::graphics
 		virtual const void init() const = 0;
 		virtual void setActiveTexture(uint32_t texture) const = 0;
 		virtual int getMaxTextures() const = 0;
-		const ref<VertexBuffer> createVertexBuffer(const void* vertices, const size_t& size, const int& usage)
+		VertexBuffer& createVertexBuffer(const void* vertices, const size_t& size, const int& usage)
 		{
 			TIME_FUNCTION;
 			auto result = this->createVertexBuffer0(vertices, size, usage);
 			this->m_VertexBuffers.push_back(result);
-			return result;
+			return *result;
 		}
-		const ref<IndexBuffer> createIndexBuffer(const void* indices, const size_t& size, const int& usage)
+		IndexBuffer& createIndexBuffer(const void* indices, const size_t& size, const int& usage)
 		{
 			TIME_FUNCTION;
 			auto result = this->createIndexBuffer0(indices, size, usage);
 			this->m_IndexBuffers.push_back(result);
-			return result;
+			return *result;
 		}
-		const ref<VertexArray> createVertexArray(VertexArray::VertexArrayData vertexArrayData)
+		VertexArray& createVertexArray(VertexArray::VertexArrayData vertexArrayData)
 		{
 			TIME_FUNCTION;
 			auto result = this->createVertexArray0(vertexArrayData);
 			this->m_VertexArrays.push_back(result);
-			return result;
+			return *result;
 		}
-		const ref<VertexArray> createVertexArray(Type usage, const size_t& size = 0)
+		VertexArray& createVertexArray(Type usage, const size_t& size = 0)
 		{
 			TIME_FUNCTION;
 			auto result = this->createVertexArray0(usage, size);
 			this->m_VertexArrays.push_back(result);
-			return result;
+			return *result;
 		}
-		const ref<Shader> createShader(const char* source, Type type)
+		Shader& createShader(const char* source, Type type)
 		{
 			TIME_FUNCTION;
 			auto result = this->createShader0(source, type);
 			this->m_Shaders.push_back(result);
-			return result;
+			return *result;
 		}
-		const ref<ShaderProgram> createShaderProgram(const char* vertexSource, const char* fragmentSource)
+		ShaderProgram& createShaderProgram(const char* vertexSource, const char* fragmentSource)
 		{
 			TIME_FUNCTION;
 			auto result = this->createShaderProgram0(vertexSource, fragmentSource);
 			this->m_ShaderPrograms.push_back(result);
-			return result;
+			return *result;
 		}
-		const ref<Texture2D> createTexture2D(const void* data, Texture::TextureProps props)
+		Texture2D& createTexture2D(const void* data, Texture::TextureProps props)
 		{
 			TIME_FUNCTION;
 			auto result = this->createTexture2D0(data, props);
 			this->m_Textures.push_back(result);
-			return result;
+			return *result;
 		}
-		const ref<FrameBuffer> createFrameBuffer(const FrameBuffer::FrameBufferProps& frameBufferProps)
+		FrameBuffer& createFrameBuffer(const FrameBuffer::FrameBufferProps& frameBufferProps)
 		{
 			TIME_FUNCTION;
 			auto result = this->createFrameBuffer0(frameBufferProps);
 			this->m_FrameBuffers.push_back(result);
-			return result;
+			return *result;
 		}
 		const void cleanup()
 		{
@@ -82,48 +82,55 @@ namespace assec::graphics
 			for (auto vertexBuffer : this->m_VertexBuffers)
 			{
 				vertexBuffer->cleanup();
+				delete vertexBuffer;
 			}
 			for (auto indexBuffer : this->m_IndexBuffers)
 			{
 				indexBuffer->cleanup();
+				delete indexBuffer;
 			}
 			for (auto vertexArray : this->m_VertexArrays)
 			{
 				vertexArray->cleanup();
+				delete vertexArray;
 			}
 			for (auto shader : this->m_Shaders)
 			{
 				shader->cleanup();
+				delete shader;
 			}
 			for (auto program : this->m_ShaderPrograms)
 			{
 				program->cleanup();
+				delete program;
 			}
 			for (auto texture : this->m_Textures)
 			{
 				texture->cleanup();
+				delete texture;
 			}
 			for (auto framebuffer : this->m_FrameBuffers)
 			{
 				framebuffer->cleanup();
+				delete framebuffer;
 			}
 		}
 	protected:
-		virtual const ref<VertexBuffer> createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const = 0;
-		virtual const ref<IndexBuffer> createIndexBuffer0(const void* indices, const size_t& size, const int& usage) const = 0;
-		virtual const ref<VertexArray> createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const = 0;
-		virtual const ref<VertexArray> createVertexArray0(Type& usage, const size_t& size = 0) const = 0;
-		virtual const ref<Shader> createShader0(const char* source, Type& type) const = 0;
-		virtual const ref<ShaderProgram> createShaderProgram0(const char* vertexSource, const char* fragmentSource) const = 0;
-		virtual const ref<Texture2D> createTexture2D0(const void* data, Texture::TextureProps props) const = 0;
-		virtual const ref<FrameBuffer> createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const = 0;
+		virtual VertexBuffer* createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const = 0;
+		virtual IndexBuffer* createIndexBuffer0(const void* indices, const size_t& size, const int& usage) const = 0;
+		virtual VertexArray* createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const = 0;
+		virtual VertexArray* createVertexArray0(Type& usage, const size_t& size = 0) const = 0;
+		virtual Shader* createShader0(const char* source, Type& type) const = 0;
+		virtual ShaderProgram* createShaderProgram0(const char* vertexSource, const char* fragmentSource) const = 0;
+		virtual Texture2D* createTexture2D0(const void* data, Texture::TextureProps props) const = 0;
+		virtual FrameBuffer* createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const = 0;
 	private:
-		std::vector<ref<VertexBuffer>> m_VertexBuffers = std::vector<ref<VertexBuffer>>();
-		std::vector<ref<IndexBuffer>> m_IndexBuffers = std::vector<ref<IndexBuffer>>();
-		std::vector<ref<VertexArray>> m_VertexArrays = std::vector<ref<VertexArray>>();
-		std::vector<ref<Shader>> m_Shaders = std::vector<ref<Shader>>();
-		std::vector<ref<ShaderProgram>> m_ShaderPrograms = std::vector<ref<ShaderProgram>>();
-		std::vector<ref<Texture>> m_Textures = std::vector<ref<Texture>>();
-		std::vector<ref<FrameBuffer>> m_FrameBuffers = std::vector<ref<FrameBuffer>>();
+		std::vector<VertexBuffer*> m_VertexBuffers = std::vector<VertexBuffer*>();
+		std::vector<IndexBuffer*> m_IndexBuffers = std::vector<IndexBuffer*>();
+		std::vector<VertexArray*> m_VertexArrays = std::vector<VertexArray*>();
+		std::vector<Shader*> m_Shaders = std::vector<Shader*>();
+		std::vector<ShaderProgram*> m_ShaderPrograms = std::vector<ShaderProgram*>();
+		std::vector<Texture*> m_Textures = std::vector<Texture*>();
+		std::vector<FrameBuffer*> m_FrameBuffers = std::vector<FrameBuffer*>();
 	};
 }

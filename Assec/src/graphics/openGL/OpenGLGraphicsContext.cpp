@@ -32,45 +32,45 @@ namespace assec::graphics
 		GLCall(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units));
 		return texture_units;
 	}
-	const ref<VertexBuffer> OpenGLGraphicsContext::createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const
+	VertexBuffer* OpenGLGraphicsContext::createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLVertexBuffer>(vertices, size, usage);
+		return new OpenGLVertexBuffer(vertices, size, usage);
 	}
-	const ref<IndexBuffer> OpenGLGraphicsContext::createIndexBuffer0(const void* indices, const size_t& size, const int& usage) const
+	IndexBuffer* OpenGLGraphicsContext::createIndexBuffer0(const void* indices, const size_t& size, const int& usage) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLIndexBuffer>(indices, size, usage);
+		return new OpenGLIndexBuffer(indices, size, usage);
 	}
-	const ref<VertexArray> OpenGLGraphicsContext::createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const
+	VertexArray* OpenGLGraphicsContext::createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLVertexArray>(vertexArrayData);
+		return new OpenGLVertexArray(vertexArrayData);
 	}
-	const ref<VertexArray> OpenGLGraphicsContext::createVertexArray0(Type& usage, const size_t& size) const
+	VertexArray* OpenGLGraphicsContext::createVertexArray0(Type& usage, const size_t& size) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLVertexArray>(toOpenGLType(usage), size);
+		return new OpenGLVertexArray(toOpenGLType(usage), size);
 	}
-	const ref<Shader> OpenGLGraphicsContext::createShader0(const char* source, Type& type) const
+	Shader* OpenGLGraphicsContext::createShader0(const char* source, Type& type) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLShader>(source, type);
+		return new OpenGLShader(source, type);
 	}
-	const ref<ShaderProgram> OpenGLGraphicsContext::createShaderProgram0(const char* vertexSource, const char* fragmentSource) const
+	ShaderProgram* OpenGLGraphicsContext::createShaderProgram0(const char* vertexSource, const char* fragmentSource) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLShaderProgram>(vertexSource, fragmentSource);
+		return new OpenGLShaderProgram(vertexSource, fragmentSource);
 	}
-	const ref<Texture2D> OpenGLGraphicsContext::createTexture2D0(const void* data, Texture::TextureProps props) const
+	Texture2D* OpenGLGraphicsContext::createTexture2D0(const void* data, Texture::TextureProps props) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLTexture2D>(data, props);
+		return new OpenGLTexture2D(data, props);
 	}
-	const ref<FrameBuffer> OpenGLGraphicsContext::createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const
+	FrameBuffer* OpenGLGraphicsContext::createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLFrameBuffer>(frameBufferProps);
+		return new OpenGLFrameBuffer(frameBufferProps);
 	}
 
 }

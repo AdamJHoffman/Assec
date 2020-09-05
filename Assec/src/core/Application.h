@@ -8,6 +8,7 @@
 #include "layers/LayerStack.h"
 #include "Input.h"
 #include "scene/Scene.h"
+#include "graphics/renderer/Renderer.h"
 
 namespace assec
 {
@@ -21,7 +22,6 @@ namespace assec
 		const void run();
 		void close();
 		virtual void init() = 0;
-		ref<graphics::WindowManager> AC_WINDOW_MANAGER;
 		ref<layersystem::LayerStack> AC_LAYER_STACK = std::make_shared<layersystem::LayerStack>();
 		ref<events::EventQueue> AC_EVENT_QUEUE = std::make_shared<events::EventQueue>();
 		ref<scene::Scene> m_ActiveScene = std::make_shared<scene::Scene>();

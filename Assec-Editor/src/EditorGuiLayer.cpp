@@ -5,6 +5,18 @@ namespace assec::editor
 {
 	EditorGuiLayer::EditorGuiLayer(assec::Application& application, graphics::FrameBuffer* frameBuffer) : ImGuiLayer(application), m_FrameBuffer(frameBuffer) {}
 	EditorGuiLayer::~EditorGuiLayer() {}
+	void EditorGuiLayer::onAttach0()
+	{
+		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
+		this->m_SceneHierarchyPanel.setSelectionCallback([&](const scene::Entity& entity)
+			{
+				this->m_InspectorPanel.setSelectedEntity(entity);
+			});
+	}
+	void EditorGuiLayer::onDetach0()
+	{
+
+	}
 	void EditorGuiLayer::onEvent0(const events::Event& event)
 	{
 		events::Dispatcher dispatcher = events::Dispatcher(event);
@@ -58,6 +70,8 @@ namespace assec::editor
 					ImGui::EndMenuBar();
 				}
 
+				this->m_SceneHierarchyPanel.renderImGUI();
+				this->m_InspectorPanel.renderImGUI();
 
 				bool show = true;
 				ImGui::ShowDemoWindow(&show);

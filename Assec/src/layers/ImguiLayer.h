@@ -14,6 +14,8 @@ namespace assec
 		void BlockEvents(bool block) { this->m_BlockEvents = block; }
 	protected:
 		virtual void onEvent0(const events::Event& event) = 0;
+		virtual void onAttach0() = 0;
+		virtual void onDetach0() = 0;
 		void begin();
 		void end(const float& deltaTime);
 		assec::Application* m_Application;

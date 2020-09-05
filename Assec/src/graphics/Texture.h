@@ -26,6 +26,10 @@ namespace assec::graphics
 		virtual void cleanup() const = 0;
 		inline const TextureProps& getProps() { return this->m_Props; }
 		uint32_t m_RendererID;
+		bool const operator ==(const Texture& other) const
+		{
+			return this->m_RendererID == other.m_RendererID;
+		}
 	protected:
 		Texture(uint32_t ID, TextureProps props) : m_RendererID(ID), m_Props(props) { TIME_FUNCTION; }
 		virtual const uint32_t genTexture() const = 0;

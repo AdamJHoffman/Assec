@@ -18,8 +18,9 @@ void operator delete(void* object, size_t size)
 
 namespace assec
 {
-	Application::Application(const char* name) : AC_WINDOW_MANAGER(std::make_shared<graphics::WindowManager>(std::make_shared<graphics::GLFWWindowContext>(), [this](ref<events::Event> event) {return this->onEvent(event); }))
+	Application::Application(const char* name)
 	{
+		graphics::WindowManager::init(std::make_shared<graphics::GLFWWindowContext>(), [this](ref<events::Event> event) {return this->onEvent(event); });
 		util::Profiler::getProfiler().beginSession(name);
 	}
 	Application::~Application() {}
@@ -32,44 +33,33 @@ namespace assec
 	const void Application::handleEvents()
 	{
 		TIME_FUNCTION;
-		if (!this->AC_WINDOW_MANAGER->empty())
+		if (!graphics::WindowManager::empty())
 		{
 			for (auto event : this->AC_EVENT_QUEUE->m_Events)
 			{
 				AC_CORE_TRACE(event->toString());
 				this->AC_LAYER_STACK->onEvent(*event);
-				this->m_ActiveScene->reg().view<scene::OrthoCameraComponent>().each([=](auto entity, auto& udc)
-					{
-						udc.onEvent(*event);
-					});
-				this->m_ActiveScene->reg().view<scene::NativeScriptComponent>().each([=](auto entity, auto& nsc)
-					{
-						if (!nsc.m_Instance)
-						{
-							nsc.m_InstantiateFunction(entity, this->m_ActiveScene.get());
-						}
-						nsc.onEvent(*event);
-					});
+				this->m_ActiveScene->onEvent(*event);
 			}
 		}
 		this->AC_EVENT_QUEUE->m_Events.clear();
 	}
 	const void Application::run()
 	{
-		this->AC_WINDOW_MANAGER->addWindow(1920, 1080, "Assec", nullptr, nullptr);
+		graphics::WindowManager::addWindow(1920, 1080, "Assec", nullptr, nullptr);
 		this->init();
 		float lastFrameTime = 0;
-		while (!this->AC_WINDOW_MANAGER->empty())
+		while (!graphics::WindowManager::empty())
 		{
 			TIME_FUNCTION;
-			float time = this->AC_WINDOW_MANAGER->m_WindowContext->getCurrentTime();
+			float time = graphics::WindowManager::m_WindowContext->getCurrentTime();
 			float timeStep = time - lastFrameTime;
 			lastFrameTime = time;
 			this->onEvent(std::make_shared<events::AppUpdateEvent>(timeStep));
 			this->onEvent(std::make_shared<events::AppRenderEvent>(timeStep));
-			this->AC_WINDOW_MANAGER->prepare();
+			graphics::WindowManager::prepare();
 			this->handleEvents();
-			this->AC_WINDOW_MANAGER->finish();
+			graphics::WindowManager::finish();
 			if (this->m_ShouldClose)
 			{
 				break;

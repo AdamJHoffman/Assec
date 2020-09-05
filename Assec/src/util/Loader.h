@@ -21,20 +21,20 @@ namespace assec::util
 			static Loader loader;
 			return loader;
 		}
-		std::string loadFile(const char* file)
+		static std::string loadFile(const char* file)
 		{
 			TIME_FUNCTION;
-			this->m_InputStream.open(file);
-			if (!this->m_InputStream)
+			m_InputStream.open(file);
+			if (!m_InputStream)
 			{
 				AC_CORE_WARNING("Assertion failed: {0}: {1}", "unable to open file", file);
 			}
 			std::stringstream text;
-			text << this->m_InputStream.rdbuf();
-			this->m_InputStream.close();
+			text << m_InputStream.rdbuf();
+			m_InputStream.close();
 			return text.str();
 		}
-		TextureData loadImage(const char* file)
+		static TextureData loadImage(const char* file)
 		{
 			TIME_FUNCTION;
 			int width, height, nrChannels;
@@ -44,6 +44,6 @@ namespace assec::util
 		~Loader() { TIME_FUNCTION; }
 	private:
 		Loader() { TIME_FUNCTION; }
-		std::ifstream m_InputStream;
+		static std::ifstream m_InputStream;
 	};
 }

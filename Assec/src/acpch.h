@@ -20,10 +20,6 @@
 #include "util/misc.h"
 #include "log/Logger.h"
 
-#include "scene/Entity.h"
-#include "scene/Scene.h"
-#include "scene/Components.h"
-
 #ifdef AC_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif

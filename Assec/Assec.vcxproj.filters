@@ -1483,5 +1483,6 @@
     <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Camera.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
+    <ClCompile Include="src\util\Loader.cpp" />
   </ItemGroup>
 </Project>

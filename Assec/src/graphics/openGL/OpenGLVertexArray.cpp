@@ -40,7 +40,7 @@ namespace assec::graphics
 		this->m_VertexBuffer->cleanup();
 		GLCall(glDeleteVertexArrays(1, &this->m_RendererID));
 	}
-	void OpenGLVertexArray::mapVertexAttributes(const size_t& verticesSize, VertexBuffer::VertexBufferLayout& layout) const
+	void OpenGLVertexArray::mapVertexAttributes(const size_t& verticesSize, const VertexBuffer::VertexBufferLayout& layout) const
 	{
 		TIME_FUNCTION;
 		this->bind();

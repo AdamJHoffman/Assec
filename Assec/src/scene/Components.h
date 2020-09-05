@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <glm/glm.hpp>
+#include <imgui.h>
 #include "Camera.h"
 #include "graphics/renderer/Renderable.h"
 #include "event/Event.h"
@@ -9,10 +10,6 @@
 
 namespace assec::scene
 {
-	struct UpdateableComponent
-	{
-		virtual void onEvent(const events::Event& event) {}
-	};
 
 	struct TagComponent
 	{
@@ -23,7 +20,7 @@ namespace assec::scene
 		TagComponent(const char* tag)
 			: m_Tag(tag) {}
 
-		operator const const char* () const { return this->m_Tag; }
+		operator const char* () const { return this->m_Tag; }
 	};
 
 	struct TransformComponent
@@ -38,7 +35,7 @@ namespace assec::scene
 		operator const glm::mat4& () const { return m_Transform; }
 	};
 
-	struct OrthoCameraComponent : public UpdateableComponent
+	struct OrthoCameraComponent
 	{
 		Camera m_Camera;
 
@@ -46,7 +43,7 @@ namespace assec::scene
 		OrthoCameraComponent(const OrthoCameraComponent&) = default;
 		OrthoCameraComponent(const Camera& camera) : m_Camera(camera) {}
 
-		void onEvent(const events::Event& event) override
+		void onEvent(const events::Event& event)
 		{
 			events::Dispatcher dispatcher = events::Dispatcher(event);
 			dispatcher.dispatch<events::WindowResizeEvent>([this](events::WindowResizeEvent& event)
@@ -95,30 +92,40 @@ namespace assec::scene
 		glm::mat4 viewMatrix = glm::mat4(1.0f);
 	};
 
-	struct RenderableComponent
+	struct MeshComponent
 	{
-		graphics::Renderable* m_Renderable;
+		graphics::Mesh* m_Mesh = nullptr;
 
-		RenderableComponent() = default;
-		~RenderableComponent() { delete this->m_Renderable; }
-		RenderableComponent(const RenderableComponent&) = default;
-		RenderableComponent(graphics::Renderable& renderable)
-			: m_Renderable(&renderable) {}
+		~MeshComponent() { delete this->m_Mesh; }
+		MeshComponent(const std::vector<graphics::Vertex>& vertices, const std::vector<int>& indices)
+			: m_Mesh(new graphics::Mesh(vertices, indices)) {}
+		MeshComponent(const MeshComponent& other)
+			: m_Mesh(new graphics::Mesh(other.m_Mesh->m_Vertices, other.m_Mesh->m_Indices)) {}
 
-		operator graphics::Renderable& () { return *this->m_Renderable; }
-		operator const graphics::Renderable& () const { return *this->m_Renderable; }
+		operator graphics::Mesh& () { return *this->m_Mesh; }
+		operator const graphics::Mesh& () const { return *this->m_Mesh; }
 	};
 
-	struct NativeScriptComponent : public UpdateableComponent
+	struct MaterialComponent
+	{
+		graphics::Material* m_Material = nullptr;
+
+		~MaterialComponent() { delete this->m_Material; }
+		MaterialComponent(graphics::ShaderProgram& shaderProgram, graphics::Texture& texture)
+			: m_Material(new graphics::Material(shaderProgram, texture)) {}
+		MaterialComponent(const MaterialComponent& other)
+			: m_Material(new graphics::Material(other.m_Material->m_ShaderProgram, other.m_Material->m_Texture)) {}
+
+		operator graphics::Material& () { return *this->m_Material; }
+		operator const graphics::Material& () const { return *this->m_Material; }
+	};
+
+	struct NativeScriptComponent
 	{
 		Entity* m_Instance = nullptr;
 
 		std::function<void(entt::entity, Scene*)> m_InstantiateFunction;
 		std::function<void()> m_DestroyInstanceFunction;
-
-		std::function<void()> m_OnCreateFunction;
-		std::function<void()> m_OnDestroyFunction;
-		std::function<void(const events::Event&)> m_OnEventFunction;
 
 		template<typename T> void bind()
 		{
@@ -130,9 +137,14 @@ namespace assec::scene
 			this->m_DestroyInstanceFunction = [&]() { this->m_OnDestroyFunction(); delete (T*)this->m_Instance; this->m_Instance = nullptr; };
 		}
 
-		void onEvent(const events::Event& event) override
+		void onEvent(const events::Event& event)
 		{
 			this->m_OnEventFunction(event);
 		}
+
+	private:
+		std::function<void()> m_OnCreateFunction;
+		std::function<void()> m_OnDestroyFunction;
+		std::function<void(const events::Event&)> m_OnEventFunction;
 	};
 }

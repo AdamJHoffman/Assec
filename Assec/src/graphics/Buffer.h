@@ -10,7 +10,7 @@ namespace assec::graphics
 		struct VertexBufferAttribute
 		{
 			VertexBufferAttribute(Type type, int count, bool normalized) : m_Type(type), m_Count(count), m_Normalized(normalized) { TIME_FUNCTION; }
-			const size_t getSize()
+			const size_t getSize() const
 			{
 				TIME_FUNCTION;
 				size_t result = 0;
@@ -36,7 +36,7 @@ namespace assec::graphics
 		{
 			VertexBufferLayout() : m_Attributes(std::vector<VertexBufferAttribute>()) { TIME_FUNCTION; }
 			VertexBufferLayout(std::vector<VertexBufferAttribute> attributes) : m_Attributes(attributes) { TIME_FUNCTION; }
-			const size_t calculateVertexSize()
+			const size_t calculateVertexSize() const
 			{
 				TIME_FUNCTION;
 				size_t result = 0;

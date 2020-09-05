@@ -16,6 +16,9 @@
 
 #include "scene/Camera.h"
 #include "scene/Scene.h"
+#include "scene/Entity.h"
+#include "scene/Scene.h"
+#include "scene/Components.h"
 
 #include "graphics/Buffer.h"
 #include "graphics/VertexArray.h"

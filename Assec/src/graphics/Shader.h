@@ -27,6 +27,10 @@ namespace assec::graphics
 		virtual void loadVec4(std::string name, glm::vec4 value) = 0;
 		virtual void loadMat4(std::string name, glm::mat4 value) = 0;
 		uint32_t m_RendererID;
+		bool operator==(const ShaderProgram& other) const
+		{
+			return this->m_RendererID == other.m_RendererID;
+		}
 	protected:
 		ShaderProgram(uint32_t ID) : m_RendererID(ID) { TIME_FUNCTION; }
 		virtual const uint32_t genShaderProgram() const = 0;

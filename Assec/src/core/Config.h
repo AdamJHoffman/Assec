@@ -162,6 +162,7 @@
 #define TIME_FUNCTION
 #define AC_CLIENT_ASSERT(x, ...) x;
 #define AC_CORE_ASSERT(x, ...) x;
+#define AC_CORE_ASSERT_(x, y) x;
 #endif //AC_DEBUG
 
 // TEMP----------------------------------------------------

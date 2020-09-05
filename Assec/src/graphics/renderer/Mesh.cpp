@@ -3,7 +3,7 @@
 
 namespace assec::graphics
 {
-	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<int> indices) : m_Vertices(vertices), m_Indices(indices), m_Size(0) { TIME_FUNCTION; }
+	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices) : m_Vertices(vertices), m_Indices(indices), m_Size(0) { TIME_FUNCTION; }
 	const std::vector<float>& Mesh::getVerticesData()
 	{
 		TIME_FUNCTION;
@@ -55,7 +55,7 @@ namespace assec::graphics
 		}
 		return this->m_VerticesData;
 	}
-	const size_t* Mesh::calculateSize()
+	const size_t* Mesh::calculateSize() const
 	{
 		TIME_FUNCTION;
 		this->m_Size = this->m_Vertices.size() * Vertex::getLayout().calculateVertexSize();

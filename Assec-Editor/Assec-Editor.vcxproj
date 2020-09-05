@@ -133,11 +133,15 @@
   <ItemGroup>
     <ClInclude Include="src\EditorGuiLayer.h" />
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\panels\InspectorPanel.h" />
+    <ClInclude Include="src\panels\SceneHierarchyPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorApplication.cpp" />
     <ClCompile Include="src\EditorGuiLayer.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\panels\InspectorPanel.cpp" />
+    <ClCompile Include="src\panels\SceneHierarchyPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Assec\Assec.vcxproj">

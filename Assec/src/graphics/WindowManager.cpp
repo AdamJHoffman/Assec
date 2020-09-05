@@ -4,23 +4,28 @@
 
 namespace assec::graphics
 {
-	WindowManager::WindowManager(ref<WindowContext> windowContext, std::function<void(ref<events::Event>)> eventCallBackFn) : m_WindowContext(windowContext), m_Windows(std::vector<std::shared_ptr<Window>>()), m_EventCallBack(eventCallBackFn)
+	std::vector<assec::ref<Window>> WindowManager::m_Windows = std::vector<assec::ref<Window>>();
+	ref<WindowContext> WindowManager::m_WindowContext = nullptr;
+	std::function<void(ref<events::Event>)> WindowManager::m_EventCallBack = nullptr;
+	void WindowManager::init(const ref<WindowContext> windowContext, std::function<void(ref<events::Event>)> eventCallBackFn)
 	{
+		m_WindowContext = windowContext;
+		m_EventCallBack = eventCallBackFn;
 		TIME_FUNCTION;
-		if (!this->m_WindowContext->m_Initialized)
+		if (!m_WindowContext->m_Initialized)
 		{
-			this->m_WindowContext->init();
+			m_WindowContext->init();
 		}
 	}
 	WindowManager::~WindowManager()
 	{
 		TIME_FUNCTION;
-		this->m_WindowContext->cleanup();
+		m_WindowContext->cleanup();
 	}
 	void WindowManager::prepare()
 	{
 		TIME_FUNCTION;
-		for (auto window : this->m_Windows)
+		for (auto window : m_Windows)
 		{
 			window->makeCurrent();
 			window->clear();
@@ -30,39 +35,47 @@ namespace assec::graphics
 	void WindowManager::finish()
 	{
 		TIME_FUNCTION;
-		for (auto window : this->m_Windows)
+		for (auto window : m_Windows)
 		{
 			window->swapBuffers();
 		}
 	}
-	const bool WindowManager::empty() const
+	const bool WindowManager::empty()
 	{
 		TIME_FUNCTION;
-		return this->m_Windows.empty();
+		return m_Windows.empty();
+	}
+	const void WindowManager::clear()
+	{
+		TIME_FUNCTION;
+		for (auto& window : m_Windows)
+		{
+			window->clear();
+		}
 	}
 	const void WindowManager::addWindow(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share)
 	{
 		TIME_FUNCTION;
-		this->m_Windows.push_back(this->m_WindowContext->createWindow(width, height, title, monitor, share, [this](std::shared_ptr<events::Event> event)
+		m_Windows.push_back(m_WindowContext->createWindow(width, height, title, monitor, share, [&](std::shared_ptr<events::Event> event)
 			{
 				TIME_FUNCTION;
-				this->onEvent(event);
+				onEvent(event);
 			}));
 	}
 	const void WindowManager::onEvent(ref<events::Event> event)
 	{
 		TIME_FUNCTION;
 		events::Dispatcher dispatcher = events::Dispatcher(*event);
-		dispatcher.dispatch<events::WindowCloseEvent>([this](events::WindowCloseEvent& event)
+		dispatcher.dispatch<events::WindowCloseEvent>([&](events::WindowCloseEvent& event)
 			{
 				TIME_FUNCTION;
-				this->m_Windows.erase(std::remove_if(this->m_Windows.begin(), this->m_Windows.end(), [](ref<Window> window)
+				m_Windows.erase(std::remove_if(m_Windows.begin(), m_Windows.end(), [](ref<Window> window)
 					{
 						TIME_FUNCTION;
 						return !window->getWindowData().m_Open;
-					}), this->m_Windows.end());
+					}), m_Windows.end());
 				return false;
 			});
-		this->m_EventCallBack(event);
+		m_EventCallBack(event);
 	}
 }

@@ -9,10 +9,10 @@ namespace assec::graphics
 {
 	struct Vertex
 	{
-		static VertexBuffer::VertexBufferLayout& getLayout()
+		static const VertexBuffer::VertexBufferLayout& getLayout()
 		{
-			TIME_FUNCTION;
-			static VertexBuffer::VertexBufferLayout s_Layout = VertexBuffer::VertexBufferLayout({
+			//TIME_FUNCTION;
+			static const VertexBuffer::VertexBufferLayout s_Layout = VertexBuffer::VertexBufferLayout({
 			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
 			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
 			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 2, false),
@@ -34,14 +34,14 @@ namespace assec::graphics
 	class Mesh
 	{
 	public:
-		Mesh(std::vector<Vertex> vertices, std::vector<int> indices);
+		Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices);
 		~Mesh() { TIME_FUNCTION; }
 		const std::vector<int> m_Indices;
-		const std::vector<Vertex> m_Vertices;
+		std::vector<Vertex> m_Vertices;
 		const std::vector<float>& getVerticesData();
-		const size_t* calculateSize();
+		const size_t* calculateSize() const;
 	private:
 		std::vector<float> m_VerticesData;
-		size_t m_Size;
+		mutable size_t m_Size;
 	};
 }
