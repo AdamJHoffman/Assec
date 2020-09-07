@@ -10,7 +10,7 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		return std::make_shared<Mesh>(this->vertices, this->indices);
 	}
-	void Batch::pushBack(const Renderable& renderable)
+	void Batch::submit(const Renderable& renderable)
 	{
 		TIME_FUNCTION;
 		int indicesOffset = static_cast<int>(this->vertices.size());
@@ -22,7 +22,10 @@ namespace assec::graphics
 		{
 			this->indices.push_back(indicesOffset + i);
 		}
-		this->m_Textures.push_back(&renderable.m_Material.m_Texture);
+		if (!(std::count(this->m_Textures.begin(), this->m_Textures.end(), &renderable.m_Material.m_Texture)))
+		{
+			this->m_Textures.push_back(&renderable.m_Material.m_Texture);
+		}
 	}
 	void Batch::prepare(glm::mat4 viewProjectionMatrix, GraphicsContext* graphicscontext)
 	{
@@ -45,7 +48,7 @@ namespace assec::graphics
 
 	BatchManager::BatchManager(size_t batchSize, size_t maxTextures) : m_BatchSize(batchSize), m_MaxTextures(maxTextures) { TIME_FUNCTION; }
 	BatchManager::~BatchManager() { TIME_FUNCTION; }
-	void BatchManager::pushBack(const Window& target, const Renderable& renderable)
+	void BatchManager::submit(const Window& target, const Renderable& renderable)
 	{
 		TIME_FUNCTION;
 		if (!this->m_Batches.empty())
@@ -59,7 +62,7 @@ namespace assec::graphics
 						if (std::count(b->m_Textures.begin(), b->m_Textures.end(), &renderable.m_Material.m_Texture) ||
 							b->m_Textures.size() + 1 < this->m_MaxTextures)
 						{
-							b->pushBack(renderable);
+							b->submit(renderable);
 							return;
 						}
 					}
@@ -67,7 +70,7 @@ namespace assec::graphics
 			}
 		}
 		ref<Batch> b = std::make_shared<Batch>(renderable.m_Material);
-		b->pushBack(renderable);
+		b->submit(renderable);
 		this->m_Batches[&target].push_back(b);
 	}
 

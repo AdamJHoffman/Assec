@@ -38,8 +38,11 @@ namespace assec::util
 		{
 			TIME_FUNCTION;
 			int width, height, nrChannels;
-			unsigned char* data = stbi_load(file, &width, &height, &nrChannels, 0);
-			return { static_cast<uint32_t>(width), static_cast<uint32_t>(height), static_cast<uint32_t>(nrChannels), data };
+			unsigned char* data = stbi_load(file, &width, &height, &nrChannels, STBI_rgb);
+			if (stbi_failure_reason())
+				std::cout << stbi_failure_reason();
+			TextureData result = { static_cast<uint32_t>(width), static_cast<uint32_t>(height), static_cast<uint32_t>(nrChannels), data };
+			return result;
 		}
 		~Loader() { TIME_FUNCTION; }
 	private:

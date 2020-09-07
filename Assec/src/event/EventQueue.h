@@ -8,6 +8,23 @@ namespace assec::events
 	public:
 		EventQueue() { TIME_FUNCTION; }
 		~EventQueue() { TIME_FUNCTION; }
-		std::vector<ref<Event>> m_Events = std::vector<ref<Event>>();
+		const void submit(Event* event)
+		{
+			this->m_Events.push_back(event);
+		}
+		const void clear()
+		{
+			for (auto event : this->m_Events)
+			{
+				delete event;
+			}
+			this->m_Events.clear();
+		}
+		inline const std::vector<Event*>& getEventQueue() const
+		{
+			return this->m_Events;
+		}
+	private:
+		std::vector<Event*> m_Events = std::vector<Event*>();
 	};
 }

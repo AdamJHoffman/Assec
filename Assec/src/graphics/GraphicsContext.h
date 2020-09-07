@@ -11,6 +11,11 @@ namespace assec::graphics
 	class GraphicsContext
 	{
 	public:
+		struct ContextData
+		{
+			const char* m_Vendor = "", * m_Renderer = "", * m_Version = "";
+			int m_MaxTextures = 0;
+		};
 		GraphicsContext() { TIME_FUNCTION; }
 		virtual ~GraphicsContext()
 		{
@@ -19,7 +24,10 @@ namespace assec::graphics
 		}
 		virtual const void init() const = 0;
 		virtual void setActiveTexture(uint32_t texture) const = 0;
-		virtual int getMaxTextures() const = 0;
+		inline const ContextData& getContextData() const
+		{
+			return this->m_ContextData;
+		}
 		VertexBuffer& createVertexBuffer(const void* vertices, const size_t& size, const int& usage)
 		{
 			TIME_FUNCTION;
@@ -124,6 +132,7 @@ namespace assec::graphics
 		virtual ShaderProgram* createShaderProgram0(const char* vertexSource, const char* fragmentSource) const = 0;
 		virtual Texture2D* createTexture2D0(const void* data, Texture::TextureProps props) const = 0;
 		virtual FrameBuffer* createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const = 0;
+		mutable ContextData m_ContextData;
 	private:
 		std::vector<VertexBuffer*> m_VertexBuffers = std::vector<VertexBuffer*>();
 		std::vector<IndexBuffer*> m_IndexBuffers = std::vector<IndexBuffer*>();

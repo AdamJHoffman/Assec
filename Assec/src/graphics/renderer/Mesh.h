@@ -40,6 +40,7 @@ namespace assec::graphics
 		std::vector<Vertex> m_Vertices;
 		const std::vector<float>& getVerticesData();
 		const size_t* calculateSize() const;
+		void setTransformationMatrix(const glm::mat4&);
 	private:
 		std::vector<float> m_VerticesData;
 		mutable size_t m_Size;

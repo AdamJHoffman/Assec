@@ -8,8 +8,12 @@
 namespace assec::graphics
 {
 	glm::mat4& Renderer::m_ViewProjectionMatrix = glm::mat4(1.0f);
-	graphics::VertexArray* Renderer::m_VertexArray = nullptr;
-	BatchManager Renderer::m_BatchManager = BatchManager(BATCH_MAX_SIZE, BATCH_MAX_TEXTURES);
+	VertexArray* Renderer::m_VertexArray = nullptr;
+	BatchManager Renderer::m_BatchManager = BatchManager(0, 0);
+	void Renderer::init(const int& maxSize, const int& maxTextures)
+	{
+		m_BatchManager = BatchManager(maxSize, maxTextures);
+	}
 	void Renderer::beginScene(const glm::mat4& viewProjectionMatrix)
 	{
 		TIME_FUNCTION;
@@ -39,6 +43,6 @@ namespace assec::graphics
 	void Renderer::submit(const Window& target, const Renderable& renderable)
 	{
 		TIME_FUNCTION;
-		m_BatchManager.pushBack(target, renderable);
+		m_BatchManager.submit(target, renderable);
 	}
 }

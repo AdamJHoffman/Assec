@@ -6,8 +6,8 @@ namespace assec::graphics
 {
 	std::vector<assec::ref<Window>> WindowManager::m_Windows = std::vector<assec::ref<Window>>();
 	ref<WindowContext> WindowManager::m_WindowContext = nullptr;
-	std::function<void(ref<events::Event>)> WindowManager::m_EventCallBack = nullptr;
-	void WindowManager::init(const ref<WindowContext> windowContext, std::function<void(ref<events::Event>)> eventCallBackFn)
+	std::function<void(events::Event*)> WindowManager::m_EventCallBack = nullptr;
+	void WindowManager::init(const ref<WindowContext> windowContext, std::function<void(events::Event*)> eventCallBackFn)
 	{
 		m_WindowContext = windowContext;
 		m_EventCallBack = eventCallBackFn;
@@ -53,16 +53,18 @@ namespace assec::graphics
 			window->clear();
 		}
 	}
-	const void WindowManager::addWindow(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share)
+	const Window& WindowManager::addWindow(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share)
 	{
 		TIME_FUNCTION;
-		m_Windows.push_back(m_WindowContext->createWindow(width, height, title, monitor, share, [&](std::shared_ptr<events::Event> event)
+		auto window = m_WindowContext->createWindow(width, height, title, monitor, share, [&](events::Event* event)
 			{
 				TIME_FUNCTION;
 				onEvent(event);
-			}));
+			});
+		m_Windows.push_back(window);
+		return *window;
 	}
-	const void WindowManager::onEvent(ref<events::Event> event)
+	const void WindowManager::onEvent(events::Event* event)
 	{
 		TIME_FUNCTION;
 		events::Dispatcher dispatcher = events::Dispatcher(*event);

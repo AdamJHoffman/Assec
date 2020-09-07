@@ -51,25 +51,18 @@ namespace assec::editor
 				{
 					this->m_FrameBuffer->resize();
 				}
+
 				this->m_FrameBuffer->bind();
 				graphics::WindowManager::clear();
-
 				graphics::Renderer::beginScene(this->m_Application->m_ActiveScene->getActiveCamera());
-				this->m_Application->m_ActiveScene->reg().view<scene::MeshComponent>().each([&](auto entityID, auto& mesh)
+				this->m_Application->m_ActiveScene->reg().view<scene::MeshComponent, scene::MaterialComponent, scene::TransformComponent>().each([&](auto entityID, auto& mesh, auto& material, auto& transform)
 					{
-						scene::Entity entity = scene::Entity(entityID, this->m_Application->m_ActiveScene.get());
-						auto& transform = entity.getComponent<scene::TransformComponent>();
-						for (graphics::Vertex v : mesh.m_Mesh->m_Vertices)
-						{
-							v.transformationMatrix = transform;
-						}
-						auto& material = entity.getComponent<scene::MaterialComponent>();
-
+						mesh.m_Mesh->setTransformationMatrix(transform);
 						graphics::Renderer::submit(*graphics::WindowManager::getWindows()[0], graphics::Renderable2D(mesh, material));
 					});
 				graphics::Renderer::endScene();
-
 				this->m_FrameBuffer->unbind();
+
 				this->m_ViewportSize = { this->m_FrameBuffer->getFrameBufferProps().m_Width, this->m_FrameBuffer->getFrameBufferProps().m_Height };
 				return false;
 			});
@@ -83,7 +76,7 @@ namespace assec::editor
 		std::string vertex = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/texture/texture.vertex");
 		std::string fragment = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/texture/texture.fragment");
 
-		assec::util::Loader::TextureData data = assec::util::Loader::loadImage("res/textures/rock_cliff/albedo.jpg");
+		assec::util::Loader::TextureData data = assec::util::Loader::loadImage("C:/OneDrive/OneDrive - Kantonsschule Wettingen/Personal/Workspace/Visual Studio/Assec/Assec-Editor/res/textures/rock_cliff/albedo.jpg");
 		assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE };
 		assec::graphics::Texture& texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
 
@@ -159,17 +152,20 @@ namespace assec::editor
 		std::vector<assec::graphics::Vertex> verticesa = { v0a, v1a, v2a, v3a };
 		std::vector<int> indicesa = { 0, 1, 2, 0, 2, 3 };
 
-		auto& squareTwo = this->m_Application->m_ActiveScene->createEntity();
+		auto& squareTwo = this->m_Application->m_ActiveScene->createEntity("sqaure one");
 		squareTwo.addComponent<scene::MeshComponent>(vertices, indices);
-		squareTwo.addComponent<scene::MaterialComponent>(shader, texture);
+		squareTwo.addComponent<scene::MaterialComponent>(shader, texturea);
 
-		auto& squareOne = this->m_Application->m_ActiveScene->createEntity();
-		squareOne.addComponent<scene::MeshComponent>(verticesa, indicesa);
-		squareOne.addComponent<scene::MaterialComponent>(shader, texturea);
+		for (int i = 0; i < 1; ++i)
+		{
+			auto& squareOne = this->m_Application->m_ActiveScene->createEntity("square two");
+			squareOne.addComponent<scene::MeshComponent>(verticesa, indicesa);
+			squareOne.addComponent<scene::MaterialComponent>(shader, texture);
+		}
 
 		// TEMP ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		scene::Entity camera = this->m_Application->m_ActiveScene->createEntity();
+		scene::Entity camera = this->m_Application->m_ActiveScene->createEntity("camera");
 		camera.addComponent<scene::NativeScriptComponent>().bind<CameraController>();
 		this->m_Application->m_ActiveScene->setActiveCamera(camera.addComponent<scene::OrthoCameraComponent>(assec::scene::Camera(glm::ortho(-2.0f, 2.0f, -1.125f, 1.125f, -1.0f, 1.0f))).m_Camera.m_Projection);
 		camera.getComponent<scene::OrthoCameraComponent>().orthographic(2.0f, 1.0f, -1.0f);

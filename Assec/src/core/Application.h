@@ -17,18 +17,21 @@ namespace assec
 	public:
 		Application(const char* name = "Assec");
 		virtual ~Application();
-		const void onEvent(ref<events::Event> event);
+		const void onEvent(events::Event* event);
 		const void handleEvents();
 		const void run();
 		void close();
 		virtual void init() = 0;
-		ref<layersystem::LayerStack> AC_LAYER_STACK = std::make_shared<layersystem::LayerStack>();
-		ref<events::EventQueue> AC_EVENT_QUEUE = std::make_shared<events::EventQueue>();
-		ref<scene::Scene> m_ActiveScene = std::make_shared<scene::Scene>();
+		layersystem::LayerStack* AC_LAYER_STACK = new layersystem::LayerStack();
+		events::EventQueue* AC_EVENT_QUEUE = new events::EventQueue();
+		scene::Scene* m_ActiveScene = new scene::Scene();
 	private:
 		bool m_ShouldClose = false;
 		const void cleanup() const
 		{
+			delete this->AC_LAYER_STACK;
+			delete this->AC_EVENT_QUEUE;
+			delete this->m_ActiveScene;
 			util::Profiler::getProfiler().endSession();
 		}
 	};

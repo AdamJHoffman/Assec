@@ -61,5 +61,12 @@ namespace assec::graphics
 		this->m_Size = this->m_Vertices.size() * Vertex::getLayout().calculateVertexSize();
 		return &this->m_Size;
 	}
+	void Mesh::setTransformationMatrix(const glm::mat4& transform)
+	{
+		for (Vertex v : this->m_Vertices)
+		{
+			v.transformationMatrix = transform;
+		}
+	}
 
 }

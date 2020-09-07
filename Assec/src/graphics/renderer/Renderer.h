@@ -11,6 +11,7 @@ namespace assec::graphics
 	{
 	public:
 		virtual ~Renderer() { TIME_FUNCTION; }
+		static void init(const int&, const int&);
 		static void beginScene(const glm::mat4& viewProjectionMatrix);
 		static void endScene();
 		static void submit(const Window& target, const Renderable& renderable);

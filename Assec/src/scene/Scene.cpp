@@ -8,10 +8,10 @@ namespace assec::scene
 {
 	Scene::Scene() {}
 	Scene::~Scene() {}
-	Entity Scene::createEntity()
+	Entity Scene::createEntity(const char* name)
 	{
 		Entity result = { this->m_Registry.create(), this };
-		result.addComponent<TagComponent>("Unnamed Entity");
+		result.addComponent<TagComponent>(name);
 		result.addComponent<TransformComponent>();
 		return result;
 	}

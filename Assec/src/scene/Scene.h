@@ -11,7 +11,7 @@ namespace assec::scene
 	public:
 		Scene();
 		~Scene();
-		Entity createEntity();
+		Entity createEntity(const char* = "Unnamed Entity");
 		void setActiveCamera(glm::mat4& camera);
 		void onEvent(const events::Event& event);
 		inline const glm::mat4& getActiveCamera() const { return *this->m_ActiveCamera; }

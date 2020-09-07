@@ -9,28 +9,26 @@
 
 namespace assec::graphics
 {
-	OpenGLGraphicsContext::OpenGLGraphicsContext() : GraphicsContext::GraphicsContext() { TIME_FUNCTION; }
+	OpenGLGraphicsContext::OpenGLGraphicsContext()
+		: GraphicsContext::GraphicsContext() { TIME_FUNCTION; }
 	OpenGLGraphicsContext::~OpenGLGraphicsContext() { TIME_FUNCTION; }
 	const void OpenGLGraphicsContext::init() const
 	{
 		TIME_FUNCTION;
 		AC_CORE_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Assertion failed: {0}", "failed to initialize OpenGL");
-		assec::Logger::CORE_LOGGER->getLogger()->info("successfully initlialized OpenGL: ");
-		assec::Logger::CORE_LOGGER->getLogger()->info("	Vendor: {0}", glGetString(GL_VENDOR));
-		assec::Logger::CORE_LOGGER->getLogger()->info("	Renderer: {0}", glGetString(GL_RENDERER));
-		assec::Logger::CORE_LOGGER->getLogger()->info("	Version: {0}", glGetString(GL_VERSION));
+		int texture_units;
+		GLCall(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units));
+		this->m_ContextData = { (const char*)glGetString(GL_VENDOR), (const char*)glGetString(GL_RENDERER),
+			(const char*)glGetString(GL_VERSION), texture_units };
+		AC_CORE_INFO("successfully initialized OpenGL: ");
+		AC_CORE_INFO("	Vendor: {0}", this->m_ContextData.m_Vendor);
+		AC_CORE_INFO("	Renderer: {0}", this->m_ContextData.m_Renderer);
+		AC_CORE_INFO("	Version: {0}", this->m_ContextData.m_Version);
 	}
 	void OpenGLGraphicsContext::setActiveTexture(uint32_t texture) const
 	{
 		TIME_FUNCTION;
 		GLCall(glActiveTexture(GL_TEXTURE0 + texture));
-	}
-	int OpenGLGraphicsContext::getMaxTextures() const
-	{
-		TIME_FUNCTION;
-		int texture_units;
-		GLCall(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units));
-		return texture_units;
 	}
 	VertexBuffer* OpenGLGraphicsContext::createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const
 	{
