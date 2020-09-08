@@ -20,7 +20,7 @@ namespace assec::editor
 	void EditorGuiLayer::onEvent0(const events::Event& event)
 	{
 		events::Dispatcher dispatcher = events::Dispatcher(event);
-		dispatcher.dispatch<events::AppRenderEvent>([this](events::AppRenderEvent& event)
+		dispatcher.dispatch<events::AppRenderEvent>([this](const events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;
 

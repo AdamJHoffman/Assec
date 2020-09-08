@@ -20,7 +20,7 @@ namespace assec::events
 			}
 			this->m_Events.clear();
 		}
-		inline const std::vector<Event*>& getEventQueue() const
+		inline std::vector<Event*>& getEventQueue()
 		{
 			return this->m_Events;
 		}

@@ -50,120 +50,120 @@ namespace assec
 	void ImGuiLayer::onEvent(const events::Event& event)
 	{
 		events::Dispatcher dispatcher = events::Dispatcher(event);
-		dispatcher.dispatch<events::AppRenderEvent>([this](events::AppRenderEvent& event)
+		dispatcher.dispatch<events::AppRenderEvent>([this](const events::AppRenderEvent& event)
 			{
 				this->begin();
 				this->onEvent0(event);
 				this->end(event.m_Delta);
 				return false;
 			});
-		dispatcher.dispatch<events::AppUpdateEvent>([this](events::AppUpdateEvent& event)
+		dispatcher.dispatch<events::AppUpdateEvent>([this](const events::AppUpdateEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::PathDroppedEvent>([this](events::PathDroppedEvent& event)
+		dispatcher.dispatch<events::PathDroppedEvent>([this](const events::PathDroppedEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::KeyPressedEvent>([this](events::KeyPressedEvent& event)
+		dispatcher.dispatch<events::KeyPressedEvent>([this](const events::KeyPressedEvent& event)
 			{
 				this->onEvent0(event);
 				return this->m_BlockEvents;
 			});
-		dispatcher.dispatch<events::KeyRepeatedEvent>([this](events::KeyRepeatedEvent& event)
+		dispatcher.dispatch<events::KeyRepeatedEvent>([this](const events::KeyRepeatedEvent& event)
 			{
 				this->onEvent0(event);
 				return this->m_BlockEvents;
 			});
-		dispatcher.dispatch<events::KeyReleasedEvent>([this](events::KeyReleasedEvent& event)
+		dispatcher.dispatch<events::KeyReleasedEvent>([this](const events::KeyReleasedEvent& event)
 			{
 				this->onEvent0(event);
 				return this->m_BlockEvents;
 			});
-		dispatcher.dispatch<events::CharTypedEvent>([this](events::CharTypedEvent& event)
+		dispatcher.dispatch<events::CharTypedEvent>([this](const events::CharTypedEvent& event)
 			{
 				this->onEvent0(event);
 				return this->m_BlockEvents;
 			});
-		dispatcher.dispatch<events::MouseMovedEvent>([this](events::MouseMovedEvent& event)
+		dispatcher.dispatch<events::MouseMovedEvent>([this](const events::MouseMovedEvent& event)
 			{
 				this->onEvent0(event);
 				return this->m_BlockEvents;
 			});
-		dispatcher.dispatch<events::MouseButtonPressedEvent>([this](events::MouseButtonPressedEvent& event)
+		dispatcher.dispatch<events::MouseButtonPressedEvent>([this](const events::MouseButtonPressedEvent& event)
 			{
 				this->onEvent0(event);
 				return this->m_BlockEvents;
 			});
-		dispatcher.dispatch<events::MouseButtonReleasedEvent>([this](events::MouseButtonReleasedEvent& event)
+		dispatcher.dispatch<events::MouseButtonReleasedEvent>([this](const events::MouseButtonReleasedEvent& event)
 			{
 				this->onEvent0(event);
 				return this->m_BlockEvents;
 			});
-		dispatcher.dispatch<events::MouseScrolledEvent>([this](events::MouseScrolledEvent& event)
+		dispatcher.dispatch<events::MouseScrolledEvent>([this](const events::MouseScrolledEvent& event)
 			{
 				this->onEvent0(event);
 				return this->m_BlockEvents;
 			});
-		dispatcher.dispatch<events::CursorEnteredEvent>([this](events::CursorEnteredEvent& event)
+		dispatcher.dispatch<events::CursorEnteredEvent>([this](const events::CursorEnteredEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::CursorExitedEvent>([this](events::CursorExitedEvent& event)
+		dispatcher.dispatch<events::CursorExitedEvent>([this](const events::CursorExitedEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
 
-		dispatcher.dispatch<events::WindowCloseEvent>([this](events::WindowCloseEvent& event)
+		dispatcher.dispatch<events::WindowCloseEvent>([this](const events::WindowCloseEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowFocusEvent>([this](events::WindowFocusEvent& event)
+		dispatcher.dispatch<events::WindowFocusEvent>([this](const events::WindowFocusEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowFocusLostEvent>([this](events::WindowFocusLostEvent& event)
+		dispatcher.dispatch<events::WindowFocusLostEvent>([this](const events::WindowFocusLostEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowResizeEvent>([this](events::WindowResizeEvent& event)
+		dispatcher.dispatch<events::WindowResizeEvent>([this](const events::WindowResizeEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowContentScaleEvent>([this](events::WindowContentScaleEvent& event)
+		dispatcher.dispatch<events::WindowContentScaleEvent>([this](const events::WindowContentScaleEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowMoveEvent>([this](events::WindowMoveEvent& event)
+		dispatcher.dispatch<events::WindowMoveEvent>([this](const events::WindowMoveEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowMinimizeEvent>([this](events::WindowMinimizeEvent& event)
+		dispatcher.dispatch<events::WindowMinimizeEvent>([this](const events::WindowMinimizeEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowMaximizeEvent>([this](events::WindowMaximizeEvent& event)
+		dispatcher.dispatch<events::WindowMaximizeEvent>([this](const events::WindowMaximizeEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowRestoreEvent>([this](events::WindowRestoreEvent& event)
+		dispatcher.dispatch<events::WindowRestoreEvent>([this](const events::WindowRestoreEvent& event)
 			{
 				this->onEvent0(event);
 				return false;
 			});
-		dispatcher.dispatch<events::WindowRefreshEvent>([this](events::WindowRefreshEvent& event)
+		dispatcher.dispatch<events::WindowRefreshEvent>([this](const events::WindowRefreshEvent& event)
 			{
 				this->onEvent0(event);
 				return false;

@@ -46,7 +46,7 @@ namespace assec::scene
 		void onEvent(const events::Event& event)
 		{
 			events::Dispatcher dispatcher = events::Dispatcher(event);
-			dispatcher.dispatch<events::WindowResizeEvent>([this](events::WindowResizeEvent& event)
+			dispatcher.dispatch<events::WindowResizeEvent>([this](const events::WindowResizeEvent& event)
 				{
 					this->setViewportSize(event.m_Width, event.m_Height);
 					return false;

@@ -29,10 +29,9 @@ namespace assec::editor
 				ImGui::SameLine();
 				if (ImGui::Button("Load Different Texture", ImGui::GetContentRegionAvail()))
 				{
-					OPENFILENAME ofn;
-					wchar_t szFile[260];
+					OPENFILENAMEA ofn;
+					char szFile[260];
 					HWND hwnd = HWND();
-					HANDLE hf;
 
 					ZeroMemory(&ofn, sizeof(ofn));
 					ofn.lStructSize = sizeof(ofn);
@@ -40,7 +39,7 @@ namespace assec::editor
 					ofn.lpstrFile = szFile;
 					ofn.lpstrFile[0] = '\0';
 					ofn.nMaxFile = sizeof(szFile);
-					ofn.lpstrFilter = L"All\0*.*\0Text\0*.TXT\0";
+					ofn.lpstrFilter = "All\0*.*\0Image\0*.jpg\0";
 					ofn.nFilterIndex = 1;
 					ofn.lpstrFileTitle = NULL;
 					ofn.nMaxFileTitle = 0;
@@ -48,10 +47,9 @@ namespace assec::editor
 					ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 
-					if (GetOpenFileName(&ofn) == TRUE)
+					if (GetOpenFileNameA(&ofn) == TRUE)
 					{
-						std::wstring wpath(ofn.lpstrFile);
-						std::string path(wpath.begin(), wpath.end());
+						std::string path(ofn.lpstrFile);
 						std::replace(path.begin(), path.end(), '\\', '/');
 						assec::util::Loader::TextureData data = assec::util::Loader::loadImage(path.c_str());
 						assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE };

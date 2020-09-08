@@ -68,7 +68,7 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		events::Dispatcher dispatcher = events::Dispatcher(*event);
-		dispatcher.dispatch<events::WindowCloseEvent>([&](events::WindowCloseEvent& event)
+		dispatcher.dispatch<events::WindowCloseEvent>([&](const events::WindowCloseEvent& event)
 			{
 				TIME_FUNCTION;
 				m_Windows.erase(std::remove_if(m_Windows.begin(), m_Windows.end(), [](ref<Window> window)

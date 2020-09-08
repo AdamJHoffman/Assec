@@ -14,25 +14,25 @@ namespace assec
 		{
 			TIME_FUNCTION;
 			events::Dispatcher dispatcher = events::Dispatcher(event);
-			dispatcher.dispatch<events::KeyPressedEvent>([&](events::KeyPressedEvent& event)
+			dispatcher.dispatch<events::KeyPressedEvent>([&](const events::KeyPressedEvent& event)
 				{
 					TIME_FUNCTION;
 					m_Keys[event.m_Keycode] = true;
 					return false;
 				});
-			dispatcher.dispatch<events::KeyReleasedEvent>([&](events::KeyReleasedEvent& event)
+			dispatcher.dispatch<events::KeyReleasedEvent>([&](const events::KeyReleasedEvent& event)
 				{
 					TIME_FUNCTION;
 					m_Keys[event.m_Keycode] = false;
 					return false;
 				});
-			dispatcher.dispatch<events::MouseButtonPressedEvent>([&](events::MouseButtonPressedEvent& event)
+			dispatcher.dispatch<events::MouseButtonPressedEvent>([&](const events::MouseButtonPressedEvent& event)
 				{
 					TIME_FUNCTION;
 					m_MouseButtons[event.m_Button] = true;
 					return false;
 				});
-			dispatcher.dispatch<events::MouseButtonReleasedEvent>([&](events::MouseButtonReleasedEvent& event)
+			dispatcher.dispatch<events::MouseButtonReleasedEvent>([&](const events::MouseButtonReleasedEvent& event)
 				{
 					TIME_FUNCTION;
 					m_MouseButtons[event.m_Button] = false;

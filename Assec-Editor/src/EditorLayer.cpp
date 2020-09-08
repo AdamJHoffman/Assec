@@ -22,7 +22,7 @@ namespace assec::editor
 			float speed = 0.5f;
 
 			events::Dispatcher dispatcher = events::Dispatcher(event);
-			dispatcher.dispatch<events::AppUpdateEvent>([&](events::AppUpdateEvent& event)
+			dispatcher.dispatch<events::AppUpdateEvent>([&](const events::AppUpdateEvent& event)
 				{
 					TIME_FUNCTION;
 					if (Input::isKeyDown(AC_KEY_A))
@@ -44,7 +44,7 @@ namespace assec::editor
 	void EditorLayer::onEvent(const events::Event& event)
 	{
 		events::Dispatcher dispatcher = events::Dispatcher(event);
-		dispatcher.dispatch<events::AppRenderEvent>([&](events::AppRenderEvent& event)
+		dispatcher.dispatch<events::AppRenderEvent>([&](const events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;
 				if (this->m_ViewportSize.x != this->m_FrameBuffer->getFrameBufferProps().m_Width || this->m_ViewportSize.y != this->m_FrameBuffer->getFrameBufferProps().m_Height)
@@ -73,8 +73,8 @@ namespace assec::editor
 
 		//std::string fragment = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/color/color.fragment");
 		//std::string vertex = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/color/color.vertex");
-		std::string vertex = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/texture/texture.vertex");
-		std::string fragment = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/texture/texture.fragment");
+		std::string vertex = assec::util::Loader::loadFile("res/renderer2D/shaders/texture/texture.vertex");
+		std::string fragment = assec::util::Loader::loadFile("res/renderer2D/shaders/texture/texture.fragment");
 
 		assec::util::Loader::TextureData data = assec::util::Loader::loadImage("C:/OneDrive/OneDrive - Kantonsschule Wettingen/Personal/Workspace/Visual Studio/Assec/Assec-Editor/res/textures/rock_cliff/albedo.jpg");
 		assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE };
