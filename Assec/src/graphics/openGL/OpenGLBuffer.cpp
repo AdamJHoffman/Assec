@@ -1,6 +1,10 @@
 ﻿#include "acpch.h"
-#include "core/OpenGLConfig.h"
+
 #include "graphics/openGL/OpenGLBuffer.h"
+
+#include <glad/glad.h>
+
+#include "OpenGLGraphicsContext.h"
 #include "OpenGLTexture.h"
 
 namespace assec::graphics
@@ -22,7 +26,7 @@ namespace assec::graphics
 		this->bind();
 		GLCall(glBufferData(GL_ARRAY_BUFFER, size, vertices, usage));
 	}
-	void OpenGLVertexBuffer::addSubData(const void* data, const size_t& size, const int offset) const
+	void OpenGLVertexBuffer::addSubData(const void* data, const size_t& size, const int& offset) const
 	{
 		TIME_FUNCTION;
 		this->bind();
@@ -63,7 +67,7 @@ namespace assec::graphics
 		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, usage));
 		this->m_Count = indices == nullptr ? 0 : (size / sizeof(uint32_t));
 	}
-	void OpenGLIndexBuffer::addSubData(const void* data, const size_t& size, const int offset)
+	void OpenGLIndexBuffer::addSubData(const void* data, const size_t& size, const int& offset)
 	{
 		TIME_FUNCTION;
 		this->bind();
@@ -135,7 +139,7 @@ namespace assec::graphics
 	void OpenGLFrameBuffer::addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type)
 	{
 		this->bind();
-		this->m_TextureAttachments[attachment] = std::make_shared<OpenGLTexture2D>(nullptr, Texture::TextureProps{ this->m_FrameBufferProps.m_Width, this->m_FrameBufferProps.m_Height , assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, false, false, internalFormat, format, type });
+		this->m_TextureAttachments[attachment] = std::make_shared<OpenGLTexture2D>(nullptr, Texture::TextureProps{ this->m_FrameBufferProps.m_Width, this->m_FrameBufferProps.m_Height , assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, internalFormat, format, type, false, false });
 		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, toOpenGLType(attachment), GL_TEXTURE_2D, this->m_TextureAttachments[attachment]->m_RendererID, 0));
 		this->unbind();
 	}
@@ -153,4 +157,4 @@ namespace assec::graphics
 		}
 		return ID;
 	}
-}
+} // assec::graphics

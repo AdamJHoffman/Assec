@@ -1,6 +1,18 @@
 ﻿#pragma once
+
 #include "graphics/GraphicsContext.h"
-#include "core/OpenGLConfig.h"
+
+#ifdef AC_DEBUG
+#define GLClearError() while(glGetError() != GL_NO_ERROR)
+#define GLCall(x)   GLClearError();\
+                    x;\
+                    {\
+                    uint32_t error = glGetError();\
+					AC_CORE_ASSERT(!error, "Assertion failed: [OPENGL ERROR {0}] in function \"{1}\" on line {2} in file \"{3}\"", error, #x, __LINE__, __FILE__)\
+					}
+#else
+#define GLCall(x) x
+#endif // AC_DEBUG
 
 namespace assec::graphics
 {
@@ -10,14 +22,18 @@ namespace assec::graphics
 		OpenGLGraphicsContext();
 		virtual ~OpenGLGraphicsContext();
 		virtual const void init() const override;
-		virtual void setActiveTexture(uint32_t texture) const override;
-		virtual VertexBuffer* createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const override;
-		virtual IndexBuffer* createIndexBuffer0(const void* indices, const size_t& size, const int& usage) const override;
-		virtual VertexArray* createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const override;
-		virtual VertexArray* createVertexArray0(Type& usage, const size_t& size) const override;
-		virtual Shader* createShader0(const char* source, Type& type) const override;
-		virtual ShaderProgram* createShaderProgram0(const char* vertexSource, const char* fragmentSource) const override;
-		virtual Texture2D* createTexture2D0(const void* data, Texture::TextureProps props) const override;
-		virtual FrameBuffer* createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const override;
+		virtual void setActiveTexture(const uint32_t& texture) const override;
+		virtual void setClearColor(const glm::vec4& color) const override;
+		virtual ref<VertexBuffer> createVertexBuffer(const void* vertices, const size_t& size, const int& usage) const override;
+		virtual ref<IndexBuffer> createIndexBuffer(const void* indices, const size_t& size, const int& usage) const override;
+		virtual ref<VertexArray> createVertexArray(const VertexArray::VertexArrayProps& vertexArrayData) const override;
+		virtual ref<VertexArray> createVertexArray(const Type& usage, const size_t& size) const override;
+		virtual ref<Shader> createShader(const std::string& source, const Type& type) const override;
+		virtual ref<ShaderProgram> createShaderProgram(const std::string& vertexSource, const std::string& fragmentSource) const override;
+		virtual ref<ShaderProgram> createShaderProgram(const std::string& source) const override;
+		virtual ref<Texture2D> createTexture2D(const void* data, const Texture::TextureProps& props) const override;
+		virtual ref<FrameBuffer> createFrameBuffer(const FrameBuffer::FrameBufferProps& frameBufferProps) const override;
 	};
-}
+
+	uint32_t toOpenGLType(const Type& type);
+} // assec::graphics

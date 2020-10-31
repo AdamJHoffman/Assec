@@ -7,7 +7,6 @@
 #include "event/WindowEvents.h"
 #include "event/KeyEvents.h"
 #include "event/MouseEvents.h"
-#include "graphics/WindowManager.h"
 #include "event/EngineEvents.h"
 
 #include "layers/LayerStack.h"
@@ -20,6 +19,7 @@
 #include "scene/Scene.h"
 #include "scene/Components.h"
 
+#include "graphics/WindowManager.h"
 #include "graphics/Buffer.h"
 #include "graphics/VertexArray.h"
 #include "graphics/Shader.h"

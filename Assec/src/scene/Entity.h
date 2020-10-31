@@ -24,22 +24,24 @@ namespace assec::scene
 		}
 		template<typename T> T& getComponent()
 		{
-			AC_CORE_ASSERT_(this->hasComponent<T>(), "Entity already has component");
+			AC_CORE_ASSERT_(this->hasComponent<T>(), "Entity does not have component");
 			return this->m_Scene->m_Registry.get<T>(this->m_EntityHandle);
 		}
 		template<typename T> const T& getComponent() const
 		{
-			AC_CORE_ASSERT_(this->hasComponent<T>(), "Entity already has component");
+			AC_CORE_ASSERT_(this->hasComponent<T>(), "Entity does not have component");
 			return this->m_Scene->m_Registry.get<T>(this->m_EntityHandle);
 		}
 		template<typename T> void removeComponent()
 		{
-			AC_CORE_ASSERT_(this->hasComponent<T>(), "Entity already has component");
+			AC_CORE_ASSERT_(this->hasComponent<T>(), "Entity does not have component");
 			this->m_Scene->m_Registry.remove<T>(this->m_EntityHandle);
 		}
-		operator bool() const { return this->m_EntityHandle != entt::null; }
+		operator bool() { return this->m_EntityHandle != entt::null; }
 		operator uint32_t () { return (uint32_t)this->m_EntityHandle; }
-		operator const uint32_t() const { (uint32_t)this->m_EntityHandle; }
+
+		operator entt::entity() const { return m_EntityHandle; }
+
 		bool operator==(const Entity& other) const
 		{
 			return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;

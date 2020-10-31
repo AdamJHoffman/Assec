@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "Event.h"
 
 namespace assec::events
@@ -6,7 +7,7 @@ namespace assec::events
 	class AppTickEvent : public Event
 	{
 	public:
-		AppTickEvent(void* window, float delta) : Event::Event(window), m_Delta(delta) { TIME_FUNCTION; }
+		AppTickEvent(const void* window, const float& delta) : Event::Event(window), m_Delta(delta) { TIME_FUNCTION; }
 		~AppTickEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::AppTick);
 		float m_Delta;
@@ -15,7 +16,7 @@ namespace assec::events
 	class AppUpdateEvent : public Event
 	{
 	public:
-		AppUpdateEvent(float delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
+		AppUpdateEvent(const float& delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
 		~AppUpdateEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::AppUpdate);
 		float m_Delta;
@@ -24,7 +25,7 @@ namespace assec::events
 	class AppRenderEvent : public Event
 	{
 	public:
-		AppRenderEvent(float delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
+		AppRenderEvent(const float& delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
 		~AppRenderEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::AppRender);
 		float m_Delta;
@@ -33,10 +34,10 @@ namespace assec::events
 	class PathDroppedEvent : public Event
 	{
 	public:
-		PathDroppedEvent(void* window, int count, const char** paths) : Event::Event(window), m_Count(count), m_Paths(paths) { TIME_FUNCTION; }
+		PathDroppedEvent(const void* window, const int& count, const char** paths) : Event::Event(window), m_Count(count), m_Paths(paths) { TIME_FUNCTION; }
 		~PathDroppedEvent() { TIME_FUNCTION; }
 		EVENT_CLASS_TYPE(EventType::PathDropped);
 		int m_Count;
 		const char** m_Paths;
 	};
-}
+} // assec::events

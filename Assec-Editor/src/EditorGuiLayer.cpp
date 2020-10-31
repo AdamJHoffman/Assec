@@ -1,12 +1,18 @@
 ﻿#include "EditorGuiLayer.h"
+
 #include <imgui.h>
+
+#include "util/Loader.h"
+
+#include "scene/SceneSerializer.h"
 
 namespace assec::editor
 {
-	EditorGuiLayer::EditorGuiLayer(assec::Application& application, graphics::FrameBuffer* frameBuffer) : ImGuiLayer(application), m_FrameBuffer(frameBuffer) {}
+	EditorGuiLayer::EditorGuiLayer(assec::Application& application, ref<graphics::FrameBuffer> frameBuffer) : ImGuiLayer(application), m_FrameBuffer(frameBuffer) {}
 	EditorGuiLayer::~EditorGuiLayer() {}
 	void EditorGuiLayer::onAttach0()
 	{
+		this->setDarkThemecolors();
 		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
 		this->m_SceneHierarchyPanel.setSelectionCallback([&](const scene::Entity& entity)
 			{
@@ -64,6 +70,11 @@ namespace assec::editor
 					if (ImGui::BeginMenu("File"))
 					{
 						if (ImGui::MenuItem("Exit")) this->m_Application->close();
+						if (ImGui::MenuItem("Save"))
+						{
+							scene::SceneSerializer serializer = scene::SceneSerializer(this->m_Application->m_ActiveScene);
+							serializer.serialize("res/scene.yaml");
+						}
 						ImGui::EndMenu();
 					}
 
@@ -73,8 +84,8 @@ namespace assec::editor
 				this->m_SceneHierarchyPanel.renderImGUI();
 				this->m_InspectorPanel.renderImGUI();
 
-				bool show = true;
-				ImGui::ShowDemoWindow(&show);
+				//bool show = true;
+				//ImGui::ShowDemoWindow(&show);
 
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 				ImGui::Begin("Viewport");

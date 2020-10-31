@@ -11,7 +11,6 @@ namespace assec::graphics
 	{
 		static const VertexBuffer::VertexBufferLayout& getLayout()
 		{
-			//TIME_FUNCTION;
 			static const VertexBuffer::VertexBufferLayout s_Layout = VertexBuffer::VertexBufferLayout({
 			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
 			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
@@ -35,14 +34,18 @@ namespace assec::graphics
 	{
 	public:
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices);
+		Mesh() {}
 		~Mesh() { TIME_FUNCTION; }
-		const std::vector<int> m_Indices;
-		std::vector<Vertex> m_Vertices;
-		const std::vector<float>& getVerticesData();
-		const size_t* calculateSize() const;
+		const std::vector<float> createVerticesData();
+		const size_t calculateSize();
+		const inline std::vector<Vertex>& getVertices() const { return this->m_Vertices; }
+		const inline std::vector<int>& getIndices() const { return this->m_Indices; }
+		inline std::vector<Vertex>& getVertices() { return this->m_Vertices; }
+		inline std::vector<int>& getIndices() { return this->m_Indices; }
 		void setTransformationMatrix(const glm::mat4&);
+		void setTextureIndex(const float&);
 	private:
-		std::vector<float> m_VerticesData;
-		mutable size_t m_Size;
+		std::vector<int> m_Indices = std::vector<int>();
+		std::vector<Vertex> m_Vertices = std::vector<Vertex>();
 	};
 }

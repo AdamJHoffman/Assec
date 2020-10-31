@@ -1,9 +1,14 @@
 ﻿#include "acpch.h"
+
 #include "OpenGLTexture.h"
+
+#include <glad/glad.h>
+
+#include "OpenGLGraphicsContext.h"
 
 namespace assec::graphics
 {
-	OpenGLTexture2D::OpenGLTexture2D(const void* data, Texture::TextureProps props) : Texture2D::Texture2D(this->genTexture(), props)
+	OpenGLTexture2D::OpenGLTexture2D(const void* data, const Texture::TextureProps& props) : Texture2D::Texture2D(this->genTexture(), props)
 	{
 		TIME_FUNCTION;
 		this->bind();
@@ -42,4 +47,4 @@ namespace assec::graphics
 		GLCall(glCreateTextures(GL_TEXTURE_2D, 1, &ID));
 		return ID;
 	}
-}
+} // assec::graphics

@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "core/Application.h"
 
 namespace assec
@@ -12,6 +13,7 @@ namespace assec
 		virtual void onAttach() final override;
 		virtual void onDetach() final override;
 		void BlockEvents(bool block) { this->m_BlockEvents = block; }
+		void setDarkThemecolors();
 	protected:
 		virtual void onEvent0(const events::Event& event) = 0;
 		virtual void onAttach0() = 0;

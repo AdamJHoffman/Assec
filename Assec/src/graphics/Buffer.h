@@ -1,5 +1,7 @@
 ﻿#pragma once
+
 #include "core/Config.h"
+
 #include "graphics/Texture.h"
 
 namespace assec::graphics
@@ -9,7 +11,7 @@ namespace assec::graphics
 	public:
 		struct VertexBufferAttribute
 		{
-			VertexBufferAttribute(Type type, int count, bool normalized) : m_Type(type), m_Count(count), m_Normalized(normalized) { TIME_FUNCTION; }
+			VertexBufferAttribute(const Type& type, const int& count, const bool& normalized) : m_Type(type), m_Count(count), m_Normalized(normalized) { TIME_FUNCTION; }
 			const size_t getSize() const
 			{
 				TIME_FUNCTION;
@@ -34,8 +36,8 @@ namespace assec::graphics
 		};
 		struct VertexBufferLayout
 		{
-			VertexBufferLayout() : m_Attributes(std::vector<VertexBufferAttribute>()) { TIME_FUNCTION; }
-			VertexBufferLayout(std::vector<VertexBufferAttribute> attributes) : m_Attributes(attributes) { TIME_FUNCTION; }
+			VertexBufferLayout() { TIME_FUNCTION; }
+			VertexBufferLayout(const std::vector<VertexBufferAttribute>& attributes) : m_Attributes(attributes) { TIME_FUNCTION; }
 			const size_t calculateVertexSize() const
 			{
 				TIME_FUNCTION;
@@ -46,16 +48,16 @@ namespace assec::graphics
 				}
 				return result;
 			}
-			std::vector<VertexBufferAttribute> m_Attributes;
+			std::vector<VertexBufferAttribute> m_Attributes = std::vector<VertexBufferAttribute>();
 		};
 		virtual ~VertexBuffer() { TIME_FUNCTION; }
 		virtual void addData(const void* data, const size_t& size, const int& usage) const = 0;
-		virtual void addSubData(const void* data, const size_t& size, const int offset) const = 0;
+		virtual void addSubData(const void* data, const size_t& size, const int& offset) const = 0;
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
 		uint32_t m_RendererID;
 	protected:
-		VertexBuffer(uint32_t ID) : m_RendererID(ID) { TIME_FUNCTION; }
+		VertexBuffer(const uint32_t& ID) : m_RendererID(ID) { TIME_FUNCTION; }
 		virtual const uint32_t genBuffer() const = 0;
 	};
 
@@ -64,13 +66,13 @@ namespace assec::graphics
 	public:
 		virtual ~IndexBuffer() { TIME_FUNCTION; }
 		virtual void addData(const void* vertices, const size_t& size, const int& usage) = 0;
-		virtual void addSubData(const void* data, const size_t& size, const int offset) = 0;
+		virtual void addSubData(const void* data, const size_t& size, const int& offset) = 0;
 		virtual void bind() const = 0;
 		virtual void cleanup() const = 0;
 		uint32_t m_RendererID;
 		size_t m_Count;
 	protected:
-		IndexBuffer(uint32_t ID, const size_t& count) : m_RendererID(ID), m_Count(count) { TIME_FUNCTION; }
+		IndexBuffer(const uint32_t& ID, const size_t& count) : m_RendererID(ID), m_Count(count) { TIME_FUNCTION; }
 		virtual const uint32_t genBuffer() const = 0;
 	};
 
@@ -99,7 +101,7 @@ namespace assec::graphics
 		virtual void addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type) = 0;
 		uint32_t m_RendererID;
 	protected:
-		FrameBuffer(uint32_t ID, const FrameBufferProps& frameBufferProps) : m_RendererID(ID), m_FrameBufferProps(frameBufferProps) { TIME_FUNCTION; }
+		FrameBuffer(const uint32_t& ID, const FrameBufferProps& frameBufferProps) : m_RendererID(ID), m_FrameBufferProps(frameBufferProps) { TIME_FUNCTION; }
 		virtual const uint32_t genBuffer(const FrameBufferProps& frameBufferProps) const = 0;
 		FrameBufferProps m_FrameBufferProps;
 		std::unordered_map<Type, std::shared_ptr<Texture>> m_TextureAttachments = std::unordered_map<Type, std::shared_ptr<Texture>>();

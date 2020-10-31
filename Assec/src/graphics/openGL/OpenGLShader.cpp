@@ -1,20 +1,26 @@
 ﻿#include "acpch.h"
+
 #include "OpenGLShader.h"
+
+#include <glad/glad.h>
+
+#include "OpenGLGraphicsContext.h"
 
 namespace assec::graphics
 {
-	OpenGLShader::OpenGLShader(const char* source, Type type) : Shader::Shader(this->genShader(type))
+	OpenGLShader::OpenGLShader(const std::string& source, const Type& type) : Shader::Shader(this->genShader(type))
 	{
 		TIME_FUNCTION;
-		int success;
-		char infoLog[512];
-		GLCall(glShaderSource(this->m_RendererID, 1, &source, NULL));
+		const GLchar* sourceCStr = source.c_str();
+		GLCall(glShaderSource(this->m_RendererID, 1, &sourceCStr, NULL));
 		GLCall(glCompileShader(this->m_RendererID));
+		int success;
 		GLCall(glGetShaderiv(this->m_RendererID, GL_COMPILE_STATUS, &success));
 		if (!success)
 		{
+			char infoLog[512];
 			GLCall(glGetShaderInfoLog(this->m_RendererID, 512, NULL, infoLog));
-			AC_CORE_ASSERT(false, "Assertion failed: \n{0}", infoLog);
+			AC_CORE_ASSERT(false, "Failed to compile shader: \n{0}", infoLog);
 		};
 	}
 	OpenGLShader::~OpenGLShader() { TIME_FUNCTION; }
@@ -23,30 +29,54 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		GLCall(glDeleteShader(this->m_RendererID));
 	}
-	const uint32_t OpenGLShader::genShader(Type& type) const
+	const uint32_t OpenGLShader::genShader(const Type& type) const
 	{
 		TIME_FUNCTION;
 		GLCall(uint32_t ID = glCreateShader(toOpenGLType(type)));
 		return ID;
 	}
-	OpenGLShaderProgram::OpenGLShaderProgram(const char* vertexSource, const char* fragmentSource) : ShaderProgram::ShaderProgram(this->genShaderProgram())
+	OpenGLShaderProgram::OpenGLShaderProgram(const std::string& vertexSource, const std::string& fragmentSource) : ShaderProgram::ShaderProgram(this->genShaderProgram())
 	{
 		TIME_FUNCTION;
-		int success;
-		char infoLog[512];
-		assec::scope<Shader> vertexShader = std::make_unique<OpenGLShader>(vertexSource, Type::VERTEX_SHADER);
-		assec::scope<Shader> fragmentShader = std::make_unique<OpenGLShader>(fragmentSource, Type::FRAGMENT_SHADER);
+		scope<Shader> vertexShader = std::make_unique<OpenGLShader>(vertexSource, Type::VERTEX_SHADER);
+		scope<Shader> fragmentShader = std::make_unique<OpenGLShader>(fragmentSource, Type::FRAGMENT_SHADER);
 		GLCall(glAttachShader(this->m_RendererID, vertexShader->m_RendererID));
 		GLCall(glAttachShader(this->m_RendererID, fragmentShader->m_RendererID));
 		glLinkProgram(this->m_RendererID);
+		int success;
 		glGetProgramiv(this->m_RendererID, GL_LINK_STATUS, &success);
 		if (!success)
 		{
+			char infoLog[512];
 			glGetProgramInfoLog(this->m_RendererID, 512, NULL, infoLog);
-			AC_CORE_ASSERT(false, "Assertion failed: \n{0}", infoLog);
+			AC_CORE_ASSERT(false, "Shaderprogram compilation failed: \n{0}", infoLog);
 		}
 		vertexShader->cleanup();
 		fragmentShader->cleanup();
+	}
+	OpenGLShaderProgram::OpenGLShaderProgram(const std::string& source) : ShaderProgram::ShaderProgram(this->genShaderProgram())
+	{
+		TIME_FUNCTION;
+		size_t pos;
+		if ((pos = source.find("fragment:")) != std::string::npos)
+		{
+			std::string vertexSource = source.substr(11, pos - 12), fragmentSource = source.substr(pos + 10, source.length() - (pos + 11));
+			scope<Shader> vertexShader = std::make_unique<OpenGLShader>(vertexSource, Type::VERTEX_SHADER);
+			scope<Shader> fragmentShader = std::make_unique<OpenGLShader>(fragmentSource, Type::FRAGMENT_SHADER);
+			GLCall(glAttachShader(this->m_RendererID, vertexShader->m_RendererID));
+			GLCall(glAttachShader(this->m_RendererID, fragmentShader->m_RendererID));
+			glLinkProgram(this->m_RendererID);
+			int success;
+			glGetProgramiv(this->m_RendererID, GL_LINK_STATUS, &success);
+			if (!success)
+			{
+				char infoLog[512];
+				glGetProgramInfoLog(this->m_RendererID, 512, NULL, infoLog);
+				AC_CORE_ASSERT(false, "Shaderprogram compilation failed: \n{0}", infoLog);
+			}
+			vertexShader->cleanup();
+			fragmentShader->cleanup();
+		}
 	}
 	OpenGLShaderProgram::~OpenGLShaderProgram() { TIME_FUNCTION; }
 	void OpenGLShaderProgram::cleanup() const
@@ -59,25 +89,25 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		GLCall(glUseProgram(this->m_RendererID));
 	}
-	void OpenGLShaderProgram::loadInt(std::string name, int value)
+	void OpenGLShaderProgram::loadInt(const std::string& name, const int& value)
 	{
 		TIME_FUNCTION;
 		this->bind();
 		GLCall(glUniform1i(this->getLocation(name), value));
 	}
-	void OpenGLShaderProgram::loadIntArray(std::string name, size_t size, int* value)
+	void OpenGLShaderProgram::loadIntArray(const std::string& name, const size_t& size, const int* value)
 	{
 		TIME_FUNCTION;
 		this->bind();
 		GLCall(glUniform1iv(this->getLocation(name), static_cast<GLsizei>(size), value));
 	}
-	void OpenGLShaderProgram::loadVec4(std::string name, glm::vec4 value)
+	void OpenGLShaderProgram::loadVec4(const std::string& name, const glm::vec4& value)
 	{
 		TIME_FUNCTION;
 		this->bind();
 		GLCall(glUniform4fv(this->getLocation(name), 1, glm::value_ptr(value)));
 	}
-	void OpenGLShaderProgram::loadMat4(std::string name, glm::mat4 value)
+	void OpenGLShaderProgram::loadMat4(const std::string& name, const glm::mat4& value)
 	{
 		TIME_FUNCTION;
 		this->bind();
@@ -98,4 +128,4 @@ namespace assec::graphics
 		}
 		return this->m_LocationCache[name];
 	}
-}
+} // assec::graphics

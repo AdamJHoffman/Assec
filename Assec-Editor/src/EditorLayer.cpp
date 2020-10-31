@@ -1,5 +1,9 @@
 ﻿#include "EditorLayer.h"
 
+#include "core/Input.h"
+
+#include "util/Loader.h"
+
 namespace assec::editor
 {
 
@@ -18,28 +22,27 @@ namespace assec::editor
 
 		void onEvent(const events::Event& event)
 		{
-			auto& transform = this->getComponent<scene::TransformComponent>().m_Transform;
 			float speed = 0.5f;
 
 			events::Dispatcher dispatcher = events::Dispatcher(event);
 			dispatcher.dispatch<events::AppUpdateEvent>([&](const events::AppUpdateEvent& event)
 				{
 					TIME_FUNCTION;
-					if (Input::isKeyDown(AC_KEY_A))
-						transform[3][0] -= speed * event.m_Delta;
-					if (Input::isKeyDown(AC_KEY_D))
-						transform[3][0] += speed * event.m_Delta;
-					if (Input::isKeyDown(AC_KEY_W))
-						transform[3][1] += speed * event.m_Delta;
-					if (Input::isKeyDown(AC_KEY_S))
-						transform[3][1] -= speed * event.m_Delta;
-					this->getComponent<scene::OrthoCameraComponent>().setViewMatrix(transform);
+					if (Input::isKeyDown(KEY::KEY_A))
+						this->getComponent<scene::TransformComponent>().translation.x -= speed * event.m_Delta;
+					if (Input::isKeyDown(KEY::KEY_D))
+						this->getComponent<scene::TransformComponent>().translation.x += speed * event.m_Delta;
+					if (Input::isKeyDown(KEY::KEY_W))
+						this->getComponent<scene::TransformComponent>().translation.y += speed * event.m_Delta;
+					if (Input::isKeyDown(KEY::KEY_S))
+						this->getComponent<scene::TransformComponent>().translation.y -= speed * event.m_Delta;
+					this->getComponent<scene::CameraComponent>().setViewMatrix(this->getComponent<scene::TransformComponent>().toMatrix());
 					return false;
 				});
 		}
 	};
 
-	EditorLayer::EditorLayer(const assec::Application& application, graphics::FrameBuffer* frameBuffer) : m_Application(&application), m_FrameBuffer(frameBuffer) {}
+	EditorLayer::EditorLayer(const assec::Application& application, ref<graphics::FrameBuffer> frameBuffer) : m_Application(&application), m_FrameBuffer(frameBuffer) {}
 	EditorLayer::~EditorLayer() {}
 	void EditorLayer::onEvent(const events::Event& event)
 	{
@@ -57,7 +60,7 @@ namespace assec::editor
 				graphics::Renderer::beginScene(this->m_Application->m_ActiveScene->getActiveCamera());
 				this->m_Application->m_ActiveScene->reg().view<scene::MeshComponent, scene::MaterialComponent, scene::TransformComponent>().each([&](auto entityID, auto& mesh, auto& material, auto& transform)
 					{
-						mesh.m_Mesh->setTransformationMatrix(transform);
+						mesh.m_Mesh->setTransformationMatrix(transform.toMatrix());
 						graphics::Renderer::submit(*graphics::WindowManager::getWindows()[0], graphics::Renderable2D(mesh, material));
 					});
 				graphics::Renderer::endScene();
@@ -73,14 +76,14 @@ namespace assec::editor
 
 		//std::string fragment = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/color/color.fragment");
 		//std::string vertex = assec::util::Loader::getLoader().loadFile("res/renderer2D/shaders/color/color.vertex");
-		std::string vertex = assec::util::Loader::loadFile("res/renderer2D/shaders/texture/texture.vertex");
-		std::string fragment = assec::util::Loader::loadFile("res/renderer2D/shaders/texture/texture.fragment");
+		//std::string vertex = assec::util::Loader::loadFile("res/renderer2D/shaders/texture/texture.vertex");
+		//std::string fragment = assec::util::Loader::loadFile("res/renderer2D/shaders/texture/texture.fragment");
 
 		assec::util::Loader::TextureData data = assec::util::Loader::loadImage("C:/OneDrive/OneDrive - Kantonsschule Wettingen/Personal/Workspace/Visual Studio/Assec/Assec-Editor/res/textures/rock_cliff/albedo.jpg");
-		assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE };
-		assec::graphics::Texture& texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
+		assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE, true, true };
+		auto texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
 
-		assec::graphics::ShaderProgram& shader = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(vertex.c_str(), fragment.c_str());
+		auto shader = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(assec::util::Loader::loadFile("res/renderer2D/shaders/texture/texture.shader"));
 
 		assec::graphics::Vertex v0;
 		v0.position = glm::vec3(-0.5f, -0.5f, 0.0f);
@@ -110,8 +113,8 @@ namespace assec::editor
 		std::vector<int> indices = { 0, 1, 2, 0, 2, 3 };
 
 		assec::util::Loader::TextureData dataa = assec::util::Loader::loadImage("res/textures/rock_cliff/normal.jpg");
-		assec::graphics::Texture::TextureProps propsa = { dataa.m_Width, dataa.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE };
-		assec::graphics::Texture& texturea = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(dataa.m_Data, propsa);
+		assec::graphics::Texture::TextureProps propsa = { dataa.m_Width, dataa.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE, true, true };
+		auto texturea = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(dataa.m_Data, propsa);
 
 
 		assec::graphics::Vertex v0a;
@@ -152,24 +155,24 @@ namespace assec::editor
 		std::vector<assec::graphics::Vertex> verticesa = { v0a, v1a, v2a, v3a };
 		std::vector<int> indicesa = { 0, 1, 2, 0, 2, 3 };
 
-		auto& squareTwo = this->m_Application->m_ActiveScene->createEntity("sqaure one");
-		squareTwo.addComponent<scene::MeshComponent>(vertices, indices);
-		squareTwo.addComponent<scene::MaterialComponent>(shader, texturea);
-
 		for (int i = 0; i < 1; ++i)
 		{
-			auto& squareOne = this->m_Application->m_ActiveScene->createEntity("square two");
-			squareOne.addComponent<scene::MeshComponent>(verticesa, indicesa);
+			auto& squareOne = this->m_Application->m_ActiveScene->createEntity("square one");
+			squareOne.addComponent<scene::MeshComponent>(vertices, indices);
 			squareOne.addComponent<scene::MaterialComponent>(shader, texture);
 		}
+
+		auto& squareTwo = this->m_Application->m_ActiveScene->createEntity("sqaure two");
+		squareTwo.addComponent<scene::MeshComponent>(vertices, indices);
+		squareTwo.addComponent<scene::MaterialComponent>(shader, texturea);
 
 		// TEMP ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 		scene::Entity camera = this->m_Application->m_ActiveScene->createEntity("camera");
 		camera.addComponent<scene::NativeScriptComponent>().bind<CameraController>();
-		this->m_Application->m_ActiveScene->setActiveCamera(camera.addComponent<scene::OrthoCameraComponent>(assec::scene::Camera(glm::ortho(-2.0f, 2.0f, -1.125f, 1.125f, -1.0f, 1.0f))).m_Camera.m_Projection);
-		camera.getComponent<scene::OrthoCameraComponent>().orthographic(2.0f, 1.0f, -1.0f);
-		camera.getComponent<scene::OrthoCameraComponent>().setViewportSize(graphics::WindowManager::getWindows()[0]->getWindowData().m_Width, graphics::WindowManager::getWindows()[0]->getWindowData().m_Height);
+		camera.addComponent<scene::CameraComponent>(assec::scene::Camera(glm::ortho(-2.0f, 2.0f, -1.125f, 1.125f, -1.0f, 1.0f)), assec::scene::Camera::projectionType::ORTHOGRAPHIC).m_Primary = true;
+		camera.getComponent<scene::CameraComponent>().orthographic(2.0f, 1.0f, -1.0f);
+		camera.getComponent<scene::CameraComponent>().setViewportSize(graphics::WindowManager::getWindows()[0]->getWindowData().m_Width, graphics::WindowManager::getWindows()[0]->getWindowData().m_Height);
 		//this->m_Application->m_ActiveScene->setActiveCamera(this->m_EditorCamera->getViewProjectionMatrix());
 
 	}

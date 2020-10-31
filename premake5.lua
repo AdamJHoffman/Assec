@@ -18,12 +18,15 @@ workspace "Assec"
 	IncludeDir["imgui"] = "Assec/vendor/imgui"
 	IncludeDir["glm"] = "Assec/vendor/glm"
 	IncludeDir["entt"] = "Assec/vendor/entt/single_include"
+	IncludeDir["tinygltf"] = "Assec/vendor/tinygltf"
+	IncludeDir["yaml_cpp"] = "Assec/vendor/yaml-cpp/include"
 
 
 	group "Dependencies"
 		include "Assec/vendor/glfw"
 		include "Assec/vendor/glad"
 		include "Assec/vendor/imgui"
+		include "Assec/vendor/yaml-cpp"
 	group ""
 
 	project "Assec"
@@ -61,7 +64,9 @@ workspace "Assec"
 			"%{IncludeDir.glad}",
 			"%{IncludeDir.imgui}",
 			"%{IncludeDir.glm}",
-			"%{IncludeDir.entt}"
+			"%{IncludeDir.entt}",
+			"%{IncludeDir.tinygltf}",
+			"%{IncludeDir.yaml_cpp}"
 		}
 
 		links
@@ -69,6 +74,7 @@ workspace "Assec"
 			"glfw",
 			"glad",
 			"imgui",
+			"yaml-cpp",
 			"opengl32.lib"
 		}
 

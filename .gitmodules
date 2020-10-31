@@ -16,3 +16,9 @@
 [submodule "Assec/vendor/entt"]
 	path = Assec/vendor/entt
 	url = https://github.com/skypjack/entt
+[submodule "Assec/vendor/tinygltf"]
+	path = Assec/vendor/tinygltf
+	url = https://github.com/syoyo/tinygltf
+[submodule "Assec/vendor/yaml-cpp"]
+	path = Assec/vendor/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp

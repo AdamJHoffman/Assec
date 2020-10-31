@@ -1,24 +1,24 @@
 ﻿#pragma once
-#include <glm/glm.hpp>
 #include "acpch.h"
+
+#include <glm/glm.hpp>
 
 namespace assec::graphics
 {
 	class Videomode
 	{
 	public:
-		Videomode(const int& width, const int& height, const int& redBits, const int& greenBits, const int& blueBits, const int& refreshRate)
-			: m_Width(width), m_Height(height), m_RedBits(redBits), m_GreenBits(greenBits), m_BlueBits(blueBits), m_RefreshRate(refreshRate)
+		struct VideomodeProps
+		{
+			int m_Width, m_Height, m_RedBits, m_GreenBits, m_BlueBits, m_RefreshRate;
+		};
+		Videomode(const VideomodeProps& props)
+			: m_Width(props.m_Width), m_Height(props.m_Height), m_RedBits(props.m_RedBits), m_GreenBits(props.m_GreenBits), m_BlueBits(props.m_BlueBits), m_RefreshRate(props.m_RefreshRate)
 		{
 			TIME_FUNCTION;
 		}
 		~Videomode() { TIME_FUNCTION; }
-		const int& m_Width;
-		const int& m_Height;
-		const int& m_RedBits;
-		const int& m_GreenBits;
-		const int& m_BlueBits;
-		const int& m_RefreshRate;
+		const int m_Width, m_Height, m_RedBits, m_GreenBits, m_BlueBits, m_RefreshRate;
 	};
 	class GammaRamp
 	{
@@ -29,36 +29,42 @@ namespace assec::graphics
 			TIME_FUNCTION;
 		}
 		~GammaRamp() { TIME_FUNCTION; }
-		unsigned short* m_Red;
-		unsigned short* m_Green;
-		unsigned short* m_Blue;
+		unsigned short* m_Red, * m_Green, * m_Blue;
 		size_t m_Size;
 	};
 	class Monitor
 	{
 	public:
-		Monitor(void* nativeMonitor, Videomode& currentVideoMode, std::vector<Videomode> supportedVideoModes, int supportedVideoModesCount,
-			glm::vec<2, int>& virtualPosition, const char* name, glm::vec<2, int>& physicalSize, glm::vec2& contentScale, glm::vec<4, int>& workArea)
-			: m_NativeMonitor(nativeMonitor), m_CurrentVideoMode(currentVideoMode), m_SupportedVideoModes(supportedVideoModes), m_SupportedVideoModeCount(supportedVideoModesCount),
-			m_VirtualPosition(virtualPosition), m_Name(name), m_PhysicalSize(physicalSize), m_ContentScale(contentScale), m_WorkArea(workArea)
+		struct MonitorProps
+		{
+			void* m_NativeMonitor;
+			Videomode m_CrrentVideoMode;
+			std::vector<Videomode> m_SupportedVideoModes;
+			glm::vec<2, int> m_VirtualPosition, m_PhysicalSize;
+			std::string m_Name;
+			glm::vec2& m_ContentScale;
+			glm::vec<4, int> m_WorkArea;
+		};
+		Monitor(const MonitorProps& props)
+			: m_NativeMonitor(props.m_NativeMonitor), m_CurrentVideoMode(props.m_CrrentVideoMode), m_SupportedVideoModes(props.m_SupportedVideoModes),
+			m_VirtualPosition(props.m_VirtualPosition), m_Name(props.m_Name), m_PhysicalSize(props.m_PhysicalSize), m_ContentScale(props.m_ContentScale), m_WorkArea(props.m_WorkArea)
 		{
 			TIME_FUNCTION;
 		}
 		~Monitor() { TIME_FUNCTION; }
-		void* m_NativeMonitor;
-		Videomode& m_CurrentVideoMode;
+		const void* m_NativeMonitor;
+		Videomode m_CurrentVideoMode;
 		std::vector<Videomode> m_SupportedVideoModes;
-		int& m_SupportedVideoModeCount;
-		glm::vec<2, int>& m_VirtualPosition;
-		const char* m_Name;
-		glm::vec<2, int>& m_PhysicalSize;
-		glm::vec2& m_ContentScale;
-		glm::vec<4, int>& m_WorkArea;
+		glm::vec<2, int> m_VirtualPosition;
+		std::string m_Name;
+		glm::vec<2, int> m_PhysicalSize;
+		glm::vec2 m_ContentScale;
+		glm::vec<4, int> m_WorkArea;
 
 		virtual void setUserPointer(void* userPointer) const = 0;
 		virtual void* getUserPointer() const = 0;
 		virtual GammaRamp getGammaRamp() const = 0;
-		virtual void setGammaRamp(const GammaRamp* gammaRamp) const = 0;
-		virtual void setGamma(float gamma) const = 0;
+		virtual void setGammaRamp(const GammaRamp& gammaRamp) const = 0;
+		virtual void setGamma(const float& gamma) const = 0;
 	};
 }

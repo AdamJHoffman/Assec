@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "graphics/renderer/Material.h"
 #include "graphics/renderer/Mesh.h"
 #include "graphics/renderer/Renderable.h"
@@ -12,30 +13,30 @@ namespace assec::graphics
 	public:
 		Batch(const Material& material);
 		~Batch();
-		const ref<Mesh> getMesh();
+		const ref<Mesh> createMesh();
 		void submit(const Renderable& renderable);
-		void clear() { TIME_FUNCTION; this->vertices.clear(); this->indices.clear(); this->m_Textures.clear(); }
-		void prepare(glm::mat4 viewProjectionMatrix, GraphicsContext* graphicscontext);
-		const size_t* calulateSize();
-		const Material m_Material;
-		std::vector<Texture*> m_Textures = std::vector<Texture*>();
+		void clear() { TIME_FUNCTION; this->m_Vertices.clear(); this->m_Indices.clear(); this->m_Textures.clear(); }
+		void prepare(const glm::mat4& viewProjectionMatrix, const GraphicsContext* graphicscontext);
+		const size_t calulateSize();
 	private:
-		size_t m_Size = 0;
-		std::vector<Vertex> vertices = std::vector<Vertex>();
-		std::vector<int> indices = std::vector<int>();
+		Material m_Material = Material();
+		std::vector<ref<Texture>> m_Textures = std::vector<ref<Texture>>();
+		std::vector<Vertex> m_Vertices = std::vector<Vertex>();
+		std::vector<int> m_Indices = std::vector<int>();
+		friend class BatchManager;
 	};
 
 	class BatchManager
 	{
 	public:
-		BatchManager(size_t batchSize, size_t maxTexture);
+		BatchManager(const size_t& batchSize, const size_t& maxTexture);
 		~BatchManager();
-		const inline std::unordered_map<const Window*, std::vector<ref<Batch>>>* getBatches() const { TIME_FUNCTION; return &this->m_Batches; }
+		const inline std::unordered_map<const Window*, std::vector<Batch>>& getBatches() const { TIME_FUNCTION; return this->m_Batches; }
 		void submit(const Window& target, const Renderable& renderable);
 		void clear() { TIME_FUNCTION; this->m_Batches.clear(); }
 	private:
-		std::unordered_map<const Window*, std::vector<ref<Batch>>> m_Batches = std::unordered_map<const Window*, std::vector<ref<Batch>>>();
-		size_t m_BatchSize;
-		size_t m_MaxTextures;
+		std::unordered_map<const Window*, std::vector<Batch>> m_Batches = std::unordered_map<const Window*, std::vector<Batch>>();
+		size_t m_BatchSize = 0;
+		size_t m_MaxTextures = 0;
 	};
 }

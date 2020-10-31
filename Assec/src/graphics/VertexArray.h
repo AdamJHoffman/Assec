@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "graphics/Buffer.h"
 
 namespace assec::graphics
@@ -6,12 +7,12 @@ namespace assec::graphics
 	class VertexArray
 	{
 	public:
-		struct VertexArrayData
+		struct VertexArrayProps
 		{
 			const void* vertices, * indices;
-			const size_t verticesSize, indicesSize;
-			const uint32_t usage;
-			VertexBuffer::VertexBufferLayout& layout;
+			size_t verticesSize, indicesSize;
+			uint32_t usage;
+			VertexBuffer::VertexBufferLayout layout;
 		};
 		virtual ~VertexArray() { TIME_FUNCTION; }
 		virtual void bind() const = 0;
@@ -22,7 +23,7 @@ namespace assec::graphics
 		scope<VertexBuffer> m_VertexBuffer;
 		scope<IndexBuffer> m_IndexBuffer;
 	protected:
-		VertexArray(int ID) : m_RendererID(ID), m_VertexBuffer(nullptr), m_IndexBuffer(nullptr) { TIME_FUNCTION; }
+		VertexArray(const uint32_t& ID) : m_RendererID(ID), m_VertexBuffer(nullptr), m_IndexBuffer(nullptr) { TIME_FUNCTION; }
 		virtual const uint32_t genVertexArray() const = 0;
 	};
 }

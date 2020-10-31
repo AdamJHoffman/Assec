@@ -1,7 +1,10 @@
 ﻿#pragma once
-#include "core/Config.h"
-#include "graphics/renderer/Batch.h"
+
 #include <glm/glm.hpp>
+
+#include "core/Config.h"
+
+#include "graphics/renderer/Batch.h"
 #include "graphics/renderer/Renderable.h"
 #include "graphics/Window.h"
 
@@ -18,7 +21,7 @@ namespace assec::graphics
 	protected:
 		Renderer() { TIME_FUNCTION; }
 		static glm::mat4& m_ViewProjectionMatrix;
-		static graphics::VertexArray* m_VertexArray;
+		static ref<graphics::VertexArray> m_VertexArray;
 		static BatchManager m_BatchManager;
 	};
 }

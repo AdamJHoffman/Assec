@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "Window.h"
 #include "Monitor.h"
 
@@ -14,27 +15,13 @@ namespace assec::graphics
 			this->init0();
 			this->m_Initialized = true;
 		}
-		void cleanup()
-		{
-			for (auto window : this->m_Windows)
-			{
-				window->cleanup();
-			}
-		}
-		virtual float getCurrentTime() const = 0;
-		virtual ref<Monitor> getPrimaryMonitor() const = 0;
-		virtual ref<std::vector<ref<Monitor>>> getMonitors() const = 0;
-		ref<Window> createWindow(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack)
-		{
-			auto result = this->createWindow0(width, height, title, monitor, share, eventCallBack);
-			this->m_Windows.push_back(result);
-			return result;
-		}
+		virtual const float getCurrentTime() const = 0;
+		virtual const scope<Monitor> getPrimaryMonitor() const = 0;
+		virtual const std::vector<scope<Monitor>> getMonitors() const = 0;
+		virtual ref<Window> createWindow(const uint32_t& width, const uint32_t& height, const std::string& title, const Monitor* monitor, const Window* share, const EventCallBackFn& eventCallBack) = 0;
 		bool m_Initialized = false;
 	protected:
 		WindowContext() { TIME_FUNCTION; }
 		virtual void init0() const = 0;
-		virtual ref<Window> createWindow0(uint32_t width, uint32_t height, const char* title, Monitor* monitor, Window* share, EventCallBackFn eventCallBack) = 0;
-		std::vector<ref<Window>> m_Windows = std::vector<ref<Window>>();
 	};
 }

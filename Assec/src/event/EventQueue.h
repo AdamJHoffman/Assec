@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include "Event.h"
 
 namespace assec::events
@@ -8,23 +9,10 @@ namespace assec::events
 	public:
 		EventQueue() { TIME_FUNCTION; }
 		~EventQueue() { TIME_FUNCTION; }
-		const void submit(Event* event)
-		{
-			this->m_Events.push_back(event);
-		}
-		const void clear()
-		{
-			for (auto event : this->m_Events)
-			{
-				delete event;
-			}
-			this->m_Events.clear();
-		}
-		inline std::vector<Event*>& getEventQueue()
-		{
-			return this->m_Events;
-		}
+		void submit(Event* event);
+		void clear();
+		inline std::vector<Event*>& getEventQueue() { return this->m_Events; }
 	private:
 		std::vector<Event*> m_Events = std::vector<Event*>();
 	};
-}
+} // assec::events

@@ -1,16 +1,18 @@
 ﻿#include "acpch.h"
+
 #include "OpenGLGraphicsContext.h"
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "OpenGLBuffer.h"
 #include "OpenGLVertexArray.h"
 #include "OpenGLShader.h"
 #include "OpenGLTexture.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
 namespace assec::graphics
 {
-	OpenGLGraphicsContext::OpenGLGraphicsContext()
-		: GraphicsContext::GraphicsContext() { TIME_FUNCTION; }
+	OpenGLGraphicsContext::OpenGLGraphicsContext() : GraphicsContext::GraphicsContext() { TIME_FUNCTION; }
 	OpenGLGraphicsContext::~OpenGLGraphicsContext() { TIME_FUNCTION; }
 	const void OpenGLGraphicsContext::init() const
 	{
@@ -24,51 +26,151 @@ namespace assec::graphics
 		AC_CORE_INFO("	Vendor: {0}", this->m_ContextData.m_Vendor);
 		AC_CORE_INFO("	Renderer: {0}", this->m_ContextData.m_Renderer);
 		AC_CORE_INFO("	Version: {0}", this->m_ContextData.m_Version);
+
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+
+
 	}
-	void OpenGLGraphicsContext::setActiveTexture(uint32_t texture) const
+	void OpenGLGraphicsContext::setActiveTexture(const uint32_t& texture) const
 	{
 		TIME_FUNCTION;
 		GLCall(glActiveTexture(GL_TEXTURE0 + texture));
 	}
-	VertexBuffer* OpenGLGraphicsContext::createVertexBuffer0(const void* vertices, const size_t& size, const int& usage) const
+	void OpenGLGraphicsContext::setClearColor(const glm::vec4& color) const
 	{
 		TIME_FUNCTION;
-		return new OpenGLVertexBuffer(vertices, size, usage);
+		GLCall(glClearColor(color.x, color.y, color.z, color.w));
 	}
-	IndexBuffer* OpenGLGraphicsContext::createIndexBuffer0(const void* indices, const size_t& size, const int& usage) const
+	ref<VertexBuffer> OpenGLGraphicsContext::createVertexBuffer(const void* vertices, const size_t& size, const int& usage) const
 	{
 		TIME_FUNCTION;
-		return new OpenGLIndexBuffer(indices, size, usage);
+		return std::make_shared<OpenGLVertexBuffer>(vertices, size, usage);
 	}
-	VertexArray* OpenGLGraphicsContext::createVertexArray0(VertexArray::VertexArrayData vertexArrayData) const
+	ref<IndexBuffer> OpenGLGraphicsContext::createIndexBuffer(const void* indices, const size_t& size, const int& usage) const
 	{
 		TIME_FUNCTION;
-		return new OpenGLVertexArray(vertexArrayData);
+		return std::make_shared<OpenGLIndexBuffer>(indices, size, usage);
 	}
-	VertexArray* OpenGLGraphicsContext::createVertexArray0(Type& usage, const size_t& size) const
+	ref<VertexArray> OpenGLGraphicsContext::createVertexArray(const VertexArray::VertexArrayProps& vertexArrayData) const
 	{
 		TIME_FUNCTION;
-		return new OpenGLVertexArray(toOpenGLType(usage), size);
+		return std::make_shared<OpenGLVertexArray>(vertexArrayData);
 	}
-	Shader* OpenGLGraphicsContext::createShader0(const char* source, Type& type) const
+	ref<VertexArray> OpenGLGraphicsContext::createVertexArray(const Type& usage, const size_t& size) const
 	{
 		TIME_FUNCTION;
-		return new OpenGLShader(source, type);
+		return std::make_shared<OpenGLVertexArray>(toOpenGLType(usage), size);
 	}
-	ShaderProgram* OpenGLGraphicsContext::createShaderProgram0(const char* vertexSource, const char* fragmentSource) const
+	ref<Shader> OpenGLGraphicsContext::createShader(const std::string& source, const Type& type) const
 	{
 		TIME_FUNCTION;
-		return new OpenGLShaderProgram(vertexSource, fragmentSource);
+		return std::make_shared<OpenGLShader>(source, type);
 	}
-	Texture2D* OpenGLGraphicsContext::createTexture2D0(const void* data, Texture::TextureProps props) const
+	ref<ShaderProgram> OpenGLGraphicsContext::createShaderProgram(const std::string& vertexSource, const std::string& fragmentSource) const
 	{
 		TIME_FUNCTION;
-		return new OpenGLTexture2D(data, props);
+		return std::make_shared<OpenGLShaderProgram>(vertexSource, fragmentSource);
 	}
-	FrameBuffer* OpenGLGraphicsContext::createFrameBuffer0(const FrameBuffer::FrameBufferProps& frameBufferProps) const
+	ref<ShaderProgram> OpenGLGraphicsContext::createShaderProgram(const std::string& source) const
 	{
 		TIME_FUNCTION;
-		return new OpenGLFrameBuffer(frameBufferProps);
+		return std::make_shared<OpenGLShaderProgram>(source);
 	}
-
-}
+	ref<Texture2D> OpenGLGraphicsContext::createTexture2D(const void* data, const Texture::TextureProps& props) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLTexture2D>(data, props);
+	}
+	ref<FrameBuffer> OpenGLGraphicsContext::createFrameBuffer(const FrameBuffer::FrameBufferProps& frameBufferProps) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLFrameBuffer>(frameBufferProps);
+	}
+	uint32_t toOpenGLType(const Type& type)
+	{
+		TIME_FUNCTION;
+		switch (type)
+		{
+		case Type::FLOAT:
+			return GL_FLOAT;
+			break;
+		case Type::UNSIGNED_INT:
+			return GL_UNSIGNED_INT;
+			break;
+		case Type::UNSIGNED_BYTE:
+			return GL_UNSIGNED_BYTE;
+			break;
+		case Type::UNSIGNED_INT_24_8:
+			return GL_UNSIGNED_INT_24_8;
+			break;
+		case Type::VERTEX_SHADER:
+			return GL_VERTEX_SHADER;
+			break;
+		case Type::FRAGMENT_SHADER:
+			return GL_FRAGMENT_SHADER;
+			break;
+		case Type::STATIC_DRAW:
+			return GL_STATIC_DRAW;
+			break;
+		case Type::DYNAMIC_DRAW:
+			return GL_DYNAMIC_DRAW;
+			break;
+		case Type::REPEAT:
+			return GL_REPEAT;
+			break;
+		case Type::MIRRORED_REPEAT:
+			return GL_MIRRORED_REPEAT;
+			break;
+		case Type::CLAMP_TO_EDGE:
+			return GL_CLAMP_TO_EDGE;
+			break;
+		case Type::CLAMP_TO_BORDER:
+			return GL_CLAMP_TO_BORDER;
+			break;
+		case Type::LINEAR:
+			return GL_LINEAR;
+			break;
+		case Type::NEAREST:
+			return GL_NEAREST;
+			break;
+		case Type::NEAREST_MIPMAP_NEAREST:
+			return GL_NEAREST_MIPMAP_NEAREST;
+			break;
+		case Type::LINEAR_MIPMAP_NEAREST:
+			return GL_LINEAR_MIPMAP_NEAREST;
+			break;
+		case Type::NEAREST_MIPMAP_LINEAR:
+			return GL_NEAREST_MIPMAP_LINEAR;
+			break;
+		case Type::LINEAR_MIPMAP_LINEAR:
+			return GL_LINEAR_MIPMAP_LINEAR;
+			break;
+		case Type::RGB:
+			return GL_RGB;
+			break;
+		case Type::RGBA:
+			return GL_RGBA;
+			break;
+		case Type::RGBA8:
+			return GL_RGBA8;
+			break;
+		case Type::DEPTH24_STENCIL8:
+			return GL_DEPTH24_STENCIL8;
+			break;
+		case Type::DEPTH_STENCIL:
+			return GL_DEPTH_STENCIL;
+			break;
+		case Type::COLOR_ATTACHMENT_0:
+			return GL_COLOR_ATTACHMENT0;
+			break;
+		case Type::DEPTH_STENCIL_ATTACHMENT:
+			return GL_DEPTH_STENCIL_ATTACHMENT;
+			break;
+		default:
+			return NULL;
+			break;
+		}
+	}
+} // assec::graphics

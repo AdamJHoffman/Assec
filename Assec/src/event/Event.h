@@ -1,6 +1,8 @@
 ﻿#pragma once
-#include "util/Profiler.h"
+
 #include "acpch.h"
+
+#include "util/Profiler.h"
 
 namespace assec::events
 {
@@ -21,26 +23,27 @@ namespace assec::events
 	class Event
 	{
 	public:
-		Event(void* window) : m_Window(window), m_Handled(true) { TIME_FUNCTION; }
+		Event(const void* window) : m_Window(window), m_Handled(true) { TIME_FUNCTION; }
 		virtual ~Event() { TIME_FUNCTION; }
-		inline void* getWindow() { TIME_FUNCTION; return this->m_Window; }
+		inline const void* getWindow() { TIME_FUNCTION; return this->m_Window; }
 		virtual EventType getEventType() const = 0;
 		virtual const char* toString() const = 0;
 		bool m_Handled;
+		void operator delete(void* ptr) { free(ptr); }
 	private:
-		void* m_Window;
+		const void* m_Window;
 	};
 
 	class MouseEvent : public Event
 	{
 	public:
-		MouseEvent(void* window) : Event::Event(window) {}
+		MouseEvent(const void* window) : Event::Event(window) {}
 		virtual ~MouseEvent() { TIME_FUNCTION; }
 	};
 	class KeyEvent : public Event
 	{
 	public:
-		KeyEvent(void* window) : Event::Event(window) {}
+		KeyEvent(const void* window) : Event::Event(window) {}
 		virtual ~KeyEvent() { TIME_FUNCTION; }
 	};
 
@@ -63,4 +66,4 @@ namespace assec::events
 	private:
 		Event& m_Event;
 	};
-}
+} // assec::events

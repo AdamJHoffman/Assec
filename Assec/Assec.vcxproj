@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;vendor\tinygltf;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -97,7 +97,7 @@
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;vendor\tinygltf;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -121,7 +121,7 @@
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;vendor\tinygltf;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -144,10 +144,6 @@
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Config.h" />
     <ClInclude Include="src\core\Input.h" />
-    <ClInclude Include="src\core\OpenGLConfig.h" />
-    <ClInclude Include="src\scene\Camera.h" />
-    <ClInclude Include="src\scene\Components.h" />
-    <ClInclude Include="src\scene\Entity.h" />
     <ClInclude Include="src\event\EngineEvents.h" />
     <ClInclude Include="src\event\Event.h" />
     <ClInclude Include="src\event\EventQueue.h" />
@@ -181,9 +177,12 @@
     <ClInclude Include="src\layers\Layer.h" />
     <ClInclude Include="src\layers\LayerStack.h" />
     <ClInclude Include="src\log\Logger.h" />
+    <ClInclude Include="src\scene\Camera.h" />
+    <ClInclude Include="src\scene\Components.h" />
+    <ClInclude Include="src\scene\Entity.h" />
     <ClInclude Include="src\scene\Scene.h" />
+    <ClInclude Include="src\scene\SceneSerializer.h" />
     <ClInclude Include="src\util\Loader.h" />
-    <ClInclude Include="src\util\MemoryManager.h" />
     <ClInclude Include="src\util\Profiler.h" />
     <ClInclude Include="src\util\misc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -603,6 +602,8 @@
     <ClCompile Include="src\core\ImGuiImplmentation.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\StbImageImplementation.cpp" />
+    <ClCompile Include="src\core\TinyGLTFImplementation.cpp" />
+    <ClCompile Include="src\event\EventQueue.cpp" />
     <ClCompile Include="src\graphics\WindowManager.cpp" />
     <ClCompile Include="src\graphics\glfw\GLFWMonitor.cpp" />
     <ClCompile Include="src\graphics\glfw\GLFWWindow.cpp" />
@@ -623,8 +624,8 @@
     <ClCompile Include="src\scene\Camera.cpp" />
     <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
+    <ClCompile Include="src\scene\SceneSerializer.cpp" />
     <ClCompile Include="src\util\Loader.cpp" />
-    <ClCompile Include="src\util\MemoryManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\glfw\GLFW.vcxproj">
@@ -635,6 +636,9 @@
     </ProjectReference>
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\yaml-cpp\yaml-cpp.vcxproj">
+      <Project>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

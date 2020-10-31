@@ -31,6 +31,9 @@
     <Filter Include="src\log">
       <UniqueIdentifier>{9E1930A9-0AF9-AE44-1311-3A1B7F6F15A6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{2A1615B6-9680-C92C-DFBE-7AD24B68A781}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\util">
       <UniqueIdentifier>{BA5238CF-A61F-93DA-CF38-8182BB64C868}</UniqueIdentifier>
     </Filter>
@@ -67,9 +70,6 @@
       <Filter>src\core</Filter>
     </ClInclude>
     <ClInclude Include="src\core\Input.h">
-      <Filter>src\core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\OpenGLConfig.h">
       <Filter>src\core</Filter>
     </ClInclude>
     <ClInclude Include="src\event\EngineEvents.h">
@@ -171,10 +171,19 @@
     <ClInclude Include="src\log\Logger.h">
       <Filter>src\log</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\Loader.h">
-      <Filter>src\util</Filter>
+    <ClInclude Include="src\scene\Camera.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\MemoryManager.h">
+    <ClInclude Include="src\scene\Components.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Entity.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Scene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Loader.h">
       <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\util\Profiler.h">
@@ -1407,10 +1416,7 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\Entity.h" />
-    <ClInclude Include="src\scene\Scene.h" />
-    <ClInclude Include="src\scene\Components.h" />
-    <ClInclude Include="src\scene\Camera.h" />
+    <ClInclude Include="src\scene\SceneSerializer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1422,8 +1428,17 @@
     <ClCompile Include="src\core\ImGuiImplmentation.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\Input.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
     <ClCompile Include="src\core\StbImageImplementation.cpp">
       <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\core\TinyGLTFImplementation.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\event\EventQueue.cpp">
+      <Filter>src\event</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\WindowManager.cpp">
       <Filter>src\graphics</Filter>
@@ -1476,13 +1491,18 @@
     <ClCompile Include="src\log\Logger.cpp">
       <Filter>src\log</Filter>
     </ClCompile>
-    <ClCompile Include="src\util\MemoryManager.cpp">
+    <ClCompile Include="src\scene\Camera.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Entity.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Scene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\Loader.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\Scene.cpp" />
-    <ClCompile Include="src\scene\Entity.cpp" />
-    <ClCompile Include="src\scene\Camera.cpp" />
-    <ClCompile Include="src\core\Input.cpp" />
-    <ClCompile Include="src\util\Loader.cpp" />
+    <ClCompile Include="src\scene\SceneSerializer.cpp" />
   </ItemGroup>
 </Project>

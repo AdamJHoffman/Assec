@@ -1,13 +1,14 @@
 ﻿#include "acpch.h"
+
 #include "LayerStack.h"
 
 namespace assec::layersystem
 {
-	LayerStack::LayerStack() : m_Layers(std::vector<ref<Layer>>()), m_LayerInsertIndex(0) { TIME_FUNCTION; }
+	LayerStack::LayerStack() { TIME_FUNCTION; }
 	LayerStack::~LayerStack()
 	{
 		TIME_FUNCTION;
-		for (ref<Layer> layer : this->m_Layers)
+		for (auto& layer : this->m_Layers)
 		{
 			layer->onDetach();
 		}
@@ -58,10 +59,10 @@ namespace assec::layersystem
 			}
 		}
 	}
-	void LayerStack::onEvent(const events::Event& event) const
+	void LayerStack::onEvent(const events::Event& event)
 	{
 		TIME_FUNCTION;
-		for (auto layer : this->m_Layers)
+		for (auto& layer : this->m_Layers)
 		{
 			if (layer->m_Enabled)
 			{

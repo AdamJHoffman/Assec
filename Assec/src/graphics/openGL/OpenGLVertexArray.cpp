@@ -1,10 +1,15 @@
 ﻿#include "acpch.h"
-#include "core/OpenGLConfig.h"
+
 #include "OpenGLVertexArray.h"
+
+#include <glad/glad.h>
+
+#include "OpenGLGraphicsContext.h"
+#include "OpenGLBuffer.h"
 
 namespace assec::graphics
 {
-	OpenGLVertexArray::OpenGLVertexArray(VertexArrayData vertexArrayData)
+	OpenGLVertexArray::OpenGLVertexArray(const VertexArrayProps& vertexArrayData)
 		: VertexArray::VertexArray(this->genVertexArray())
 	{
 		TIME_FUNCTION;
@@ -60,4 +65,4 @@ namespace assec::graphics
 		GLCall(glCreateVertexArrays(1, &ID));
 		return ID;
 	}
-}
+} // assec::graphics

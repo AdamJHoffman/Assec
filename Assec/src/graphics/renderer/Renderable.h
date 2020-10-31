@@ -1,9 +1,11 @@
 ﻿#pragma once
 
+#include "Mesh.h"
+
+#include <glm/gtx/string_cast.hpp>
+
 #include "graphics/VertexArray.h"
 #include "graphics/renderer/Material.h"
-#include "Mesh.h"
-#include "glm/gtx/string_cast.hpp"
 
 namespace assec::graphics
 {
@@ -11,16 +13,16 @@ namespace assec::graphics
 	{
 	public:
 		~Renderable();
-		const Mesh& m_Mesh;
-		const Material& m_Material;
+		Mesh& m_Mesh;
+		Material& m_Material;
 	protected:
-		Renderable(const Mesh& mesh, const Material& material);
+		Renderable(Mesh& mesh, Material& material);
 	};
 
 	class Renderable2D : public Renderable
 	{
 	public:
-		Renderable2D(const Mesh& mesh, const Material& material);
+		Renderable2D(Mesh& mesh, Material& material);
 		~Renderable2D();
 	};
 }
