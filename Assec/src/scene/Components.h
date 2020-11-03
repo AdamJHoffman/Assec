@@ -5,7 +5,6 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/quaternion.hpp> 
 #include <glm/gtx/quaternion.hpp>
-#include <imgui.h>
 
 #include "Camera.h"
 
@@ -14,7 +13,7 @@
 #include "event/Event.h"
 #include "event/WindowEvents.h"
 
-#include "Entity.h"
+#include "ScriptableEntity.h"
 
 
 namespace assec::scene
@@ -51,7 +50,7 @@ namespace assec::scene
 
 		glm::mat4 toMatrix()
 		{
-			return glm::translate(glm::mat4(1.0f), this->translation)
+			return glm::mat4(1.0f) * glm::translate(glm::mat4(1.0f), this->translation)
 				* glm::toMat4(glm::quat(glm::radians(this->rotation)))
 				* glm::scale(glm::mat4(1.0f), this->scale);
 		}
@@ -59,8 +58,8 @@ namespace assec::scene
 
 	struct CameraComponent
 	{
-		Camera m_Camera;
-		Camera::projectionType m_Type;
+		Camera m_Camera = Camera();
+		Camera::projectionType m_Type = Camera::projectionType::PERSPECTIVE;
 		bool m_Primary = false, m_FixedAspectRatio = false;
 
 		CameraComponent() = default;
@@ -98,8 +97,11 @@ namespace assec::scene
 
 		void setViewportSize(uint32_t width, uint32_t height)
 		{
-			m_AspectRatio = (float)width / (float)height;
-			recalculateProjection();
+			if ((width * height) > 0)
+			{
+				m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+				recalculateProjection();
+			}
 		}
 
 		void recalculateProjection()
@@ -139,7 +141,7 @@ namespace assec::scene
 
 	struct MeshComponent
 	{
-		ref<graphics::Mesh> m_Mesh = nullptr;
+		ref<graphics::Mesh> m_Mesh = std::make_shared<graphics::Mesh>();
 		std::string m_Path = "";
 
 		~MeshComponent() {}
@@ -148,7 +150,7 @@ namespace assec::scene
 		MeshComponent()
 			: m_Mesh(std::make_shared<graphics::Mesh>()) {}
 		MeshComponent(const MeshComponent& other)
-			: m_Mesh(std::make_shared<graphics::Mesh>(other.m_Mesh->getVertices(), other.m_Mesh->getIndices())) {}
+			: m_Mesh(std::make_shared<graphics::Mesh>(other.m_Mesh->getVertices(), other.m_Mesh->getIndices())), m_Path(other.m_Path) {}
 
 		operator graphics::Mesh& () { return *this->m_Mesh; }
 		operator const graphics::Mesh& () const { return *this->m_Mesh; }
@@ -165,7 +167,7 @@ namespace assec::scene
 		MaterialComponent()
 			: m_Material(std::make_shared<graphics::Material>()) {}
 		MaterialComponent(const MaterialComponent& other)
-			: m_Material(std::make_shared<graphics::Material>(other.m_Material->m_ShaderProgram, other.m_Material->m_Texture)) {}
+			: m_Material(std::make_shared<graphics::Material>(other.m_Material->m_ShaderProgram, other.m_Material->m_Texture)), m_TexturePath(other.m_TexturePath), m_ShaderPath(other.m_ShaderPath) {}
 
 		operator graphics::Material& () { return *this->m_Material; }
 		operator const graphics::Material& () const { return *this->m_Material; }
@@ -173,29 +175,27 @@ namespace assec::scene
 
 	struct NativeScriptComponent
 	{
-		Entity* m_Instance = nullptr;
+		ScriptableEntity* m_Instance = nullptr;
 
-		std::function<void(entt::entity, Scene*)> m_InstantiateFunction;
-		std::function<void()> m_DestroyInstanceFunction;
+		ScriptableEntity*(*InstantiateScript)(const entt::entity&, Scene*);
+		void (*DestroyScript)(NativeScriptComponent*);
 
-		template<typename T> void bind()
+		template<typename T>
+		void bind()
 		{
-			this->m_OnCreateFunction = [&]() { ((T*)this->m_Instance)->onCreate(); };
-			this->m_OnDestroyFunction = [&]() { ((T*)this->m_Instance)->onDestroy(); };
-			this->m_OnEventFunction = [&](const events::Event& event) { ((T*)this->m_Instance)->onEvent(event); };
-
-			this->m_InstantiateFunction = [&](entt::entity handle, Scene* scene) { this->m_Instance = new T(handle, scene); this->m_OnCreateFunction(); };
-			this->m_DestroyInstanceFunction = [&]() { this->m_OnDestroyFunction(); delete (T*)this->m_Instance; this->m_Instance = nullptr; };
+			InstantiateScript = [](const entt::entity& entity, Scene* scene)
+			{ 
+				auto instance = static_cast<ScriptableEntity*>(new T(entity, scene));
+				instance->onCreate();
+				return instance;
+			};
+			DestroyScript = [](NativeScriptComponent* ncs)
+			{ 
+				ncs->m_Instance->onDestroy();
+				delete ncs->m_Instance;
+				ncs->m_Instance = nullptr;
+			};
 		}
 
-		void onEvent(const events::Event& event)
-		{
-			this->m_OnEventFunction(event);
-		}
-
-	private:
-		std::function<void()> m_OnCreateFunction;
-		std::function<void()> m_OnDestroyFunction;
-		std::function<void(const events::Event&)> m_OnEventFunction;
 	};
 }

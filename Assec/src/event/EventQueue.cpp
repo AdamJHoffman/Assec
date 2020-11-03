@@ -4,16 +4,12 @@
 
 namespace assec::events
 {
-	void EventQueue::submit(Event* event)
+	void EventQueue::submit(ref<events::Event> event)
 	{
 		this->m_Events.push_back(event);
 	}
 	void EventQueue::clear()
 	{
-		for (auto event : this->m_Events)
-		{
-			delete event;
-		}
 		this->m_Events.clear();
 	}
 } // assec::events

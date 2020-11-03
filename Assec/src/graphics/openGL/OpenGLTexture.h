@@ -9,7 +9,6 @@ namespace assec::graphics
 		OpenGLTexture2D(const void* data, const TextureProps& props);
 		virtual ~OpenGLTexture2D();
 		virtual void bind() const override;
-		virtual void cleanup() const override;
 	protected:
 		virtual const uint32_t genTexture() const override;
 	};

@@ -197,6 +197,9 @@ namespace assec
 		VERTEX_SHADER,
 		FRAGMENT_SHADER,
 
+		DEPTH_TEST,
+		LESS,
+
 		STATIC_DRAW,
 		DYNAMIC_DRAW,
 

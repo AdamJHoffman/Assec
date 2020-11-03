@@ -26,7 +26,11 @@ namespace assec::graphics
 		this->m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(usage, size);
 		this->m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(usage, size);
 	}
-	OpenGLVertexArray::~OpenGLVertexArray() { TIME_FUNCTION; }
+	OpenGLVertexArray::~OpenGLVertexArray() 
+	{ 
+		TIME_FUNCTION; 
+		GLCall(glDeleteVertexArrays(1, &this->m_RendererID));
+	}
 	void OpenGLVertexArray::bind() const
 	{
 		TIME_FUNCTION;
@@ -37,13 +41,6 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		this->bind();
 		GLCall(glDrawElements(GL_TRIANGLES, (int)this->m_IndexBuffer->m_Count, GL_UNSIGNED_INT, nullptr));
-	}
-	void OpenGLVertexArray::cleanup() const
-	{
-		TIME_FUNCTION;
-		this->m_VertexBuffer->cleanup();
-		this->m_VertexBuffer->cleanup();
-		GLCall(glDeleteVertexArrays(1, &this->m_RendererID));
 	}
 	void OpenGLVertexArray::mapVertexAttributes(const size_t& verticesSize, const VertexBuffer::VertexBufferLayout& layout) const
 	{

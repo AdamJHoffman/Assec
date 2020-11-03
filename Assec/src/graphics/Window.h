@@ -9,7 +9,7 @@
 
 namespace assec::graphics
 {
-	using EventCallBackFn = std::function<void(events::Event*)>;
+	using EventCallBackFn = std::function<void(ref<events::Event>)>;
 
 	struct WindowData
 	{
@@ -63,9 +63,12 @@ namespace assec::graphics
 		virtual const int getMouseButtonState(const int& button) const = 0;
 		virtual void setClipboardString(const char* string) const = 0;
 		virtual const char* getClipboardString() const = 0;
+		inline const bool& isMinimized() const { return this->m_Minimzed; }
+		inline void setMinimized(const bool& minimized) { this->m_Minimzed = minimized; }
 	protected:
 		virtual void* createWindow(const uint32_t& width, const uint32_t& height, const std::string& title, const Monitor* monitor, const Window* share) const = 0;
 		virtual void setupCallbacks() const = 0;
 		WindowData m_WindowData;
+		bool m_Minimzed = false;
 	};
 }

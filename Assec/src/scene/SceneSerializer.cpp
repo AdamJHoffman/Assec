@@ -2,8 +2,13 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include "graphics/WindowManager.h"
+
 #include "SceneSerializer.h"
 #include "Entity.h"
+#include "Components.h"
+
+#include "util/Loader.h"
 
 namespace YAML {
 
@@ -16,6 +21,7 @@ namespace YAML {
 			node.push_back(rhs.x);
 			node.push_back(rhs.y);
 			node.push_back(rhs.z);
+			node.SetStyle(EmitterStyle::Flow);
 			return node;
 		}
 
@@ -41,6 +47,7 @@ namespace YAML {
 			node.push_back(rhs.y);
 			node.push_back(rhs.z);
 			node.push_back(rhs.w);
+			node.SetStyle(EmitterStyle::Flow);
 			return node;
 		}
 
@@ -114,7 +121,6 @@ namespace assec::scene
 			out << YAML::BeginMap; // CameraComponent
 
 			auto& cameraComponent = entity.getComponent<CameraComponent>();
-			auto& camera = cameraComponent.m_Camera;
 
 			out << YAML::Key << "Camera" << YAML::Value;
 			out << YAML::BeginMap; // Camera
@@ -139,7 +145,7 @@ namespace assec::scene
 			out << YAML::BeginMap; // MeshComponent
 
 			auto& meshComponent = entity.getComponent<MeshComponent>();
-			//out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
+			out << YAML::Key << "Path" << YAML::Value << meshComponent.m_Path;
 
 			out << YAML::EndMap; // MeshComponent
 		}
@@ -150,7 +156,8 @@ namespace assec::scene
 			out << YAML::BeginMap; // MaterialComponent
 
 			auto& materialComponent = entity.getComponent<MaterialComponent>();
-			//out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
+			out << YAML::Key << "TexturePath" << YAML::Value << materialComponent.m_TexturePath;
+			out << YAML::Key << "ShaderPath" << YAML::Value << materialComponent.m_ShaderPath;
 
 			out << YAML::EndMap; // MaterialComponent
 		}
@@ -186,11 +193,7 @@ namespace assec::scene
 
 	bool SceneSerializer::deserialize(const std::string& path)
 	{
-		std::ifstream stream(path);
-		std::stringstream strStream;
-		strStream << stream.rdbuf();
-
-		YAML::Node data = YAML::Load(strStream.str());
+		YAML::Node data = YAML::LoadFile(path);
 		if (!data["Scene"])
 			return false;
 
@@ -240,15 +243,34 @@ namespace assec::scene
 					cc.m_OrthographicFar = cameraProps["OrthographicFar"].as<float>();
 
 					cc.m_Primary = cameraComponent["Primary"].as<bool>();
-					cc.m_AspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+					cc.m_FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
 				}
 
-				//auto spriteRendererComponent = entity["SpriteRendererComponent"];
-				//if (spriteRendererComponent)
-				//{
-				//	auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
-				//	src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
-				//}
+				auto meshComponent = entity["MeshComponent"];
+				if (meshComponent)
+				{
+					auto& mesh = deserializedEntity.addComponent<MeshComponent>();
+					mesh.m_Path = meshComponent["Path"].as<std::string>();
+					*mesh.m_Mesh = util::Loader::loadgltfMesh(mesh.m_Path.c_str())[0];
+				}
+
+				auto materialComponent = entity["MaterialComponent"];
+				if (materialComponent)
+				{
+					auto& material = deserializedEntity.addComponent<MaterialComponent>();
+					material.m_TexturePath = materialComponent["TexturePath"].as<std::string>();
+					material.m_ShaderPath = materialComponent["ShaderPath"].as<std::string>();
+
+					auto& data = assec::util::Loader::loadImage(material.m_TexturePath.c_str());
+
+
+					assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE, true, true };
+
+
+					auto& texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
+					auto& shader = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(assec::util::Loader::loadFile(material.m_ShaderPath.c_str()));
+					material.m_Material = std::make_shared<graphics::Material>(shader, texture);
+				}
 			}
 		}
 

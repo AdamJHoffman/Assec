@@ -26,12 +26,6 @@ namespace assec::graphics
 		AC_CORE_INFO("	Vendor: {0}", this->m_ContextData.m_Vendor);
 		AC_CORE_INFO("	Renderer: {0}", this->m_ContextData.m_Renderer);
 		AC_CORE_INFO("	Version: {0}", this->m_ContextData.m_Version);
-
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-
-
 	}
 	void OpenGLGraphicsContext::setActiveTexture(const uint32_t& texture) const
 	{
@@ -42,6 +36,16 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		GLCall(glClearColor(color.x, color.y, color.z, color.w));
+	}
+	void OpenGLGraphicsContext::enable(const Type& type) const
+	{
+		TIME_FUNCTION;
+		GLCall(glEnable(toOpenGLType(type)));
+	}
+	void OpenGLGraphicsContext::setDepthFunction(const Type& type) const
+	{
+		TIME_FUNCTION;
+		GLCall(glDepthFunc(toOpenGLType(type)));
 	}
 	ref<VertexBuffer> OpenGLGraphicsContext::createVertexBuffer(const void* vertices, const size_t& size, const int& usage) const
 	{
@@ -110,6 +114,12 @@ namespace assec::graphics
 			break;
 		case Type::FRAGMENT_SHADER:
 			return GL_FRAGMENT_SHADER;
+			break;
+		case Type::DEPTH_TEST:
+			return GL_DEPTH_TEST;
+			break;
+		case Type::LESS:
+			return GL_LESS;
 			break;
 		case Type::STATIC_DRAW:
 			return GL_STATIC_DRAW;

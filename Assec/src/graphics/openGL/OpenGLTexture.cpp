@@ -29,16 +29,15 @@ namespace assec::graphics
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aniso);
 		}
 	}
-	OpenGLTexture2D::~OpenGLTexture2D() { TIME_FUNCTION; }
+	OpenGLTexture2D::~OpenGLTexture2D() 
+	{ 
+		TIME_FUNCTION; 
+		GLCall(glDeleteTextures(1, &this->m_RendererID));
+	}
 	void OpenGLTexture2D::bind() const
 	{
 		TIME_FUNCTION;
 		GLCall(glBindTexture(GL_TEXTURE_2D, this->m_RendererID));
-	}
-	void OpenGLTexture2D::cleanup() const
-	{
-		TIME_FUNCTION;
-		GLCall(glDeleteTextures(1, &this->m_RendererID));
 	}
 	const uint32_t OpenGLTexture2D::genTexture() const
 	{

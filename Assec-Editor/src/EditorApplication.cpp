@@ -18,6 +18,8 @@ namespace assec::editor
 			this->AC_LAYER_STACK->addLayer(std::make_shared<EditorLayer>(*this, this->m_FrameBuffer));
 			this->AC_LAYER_STACK->addOverlay(std::make_shared<EditorGuiLayer>(*this, this->m_FrameBuffer));
 			graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->setClearColor(glm::vec4(0.09803921568, 0.09803921568, 0.11764705882, 1.0f));
+			graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->enable(Type::DEPTH_TEST);
+			graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->setDepthFunction(Type::LESS);
 		}
 	private:
 		ref<graphics::FrameBuffer> m_FrameBuffer = nullptr;

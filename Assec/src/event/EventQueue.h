@@ -9,10 +9,10 @@ namespace assec::events
 	public:
 		EventQueue() { TIME_FUNCTION; }
 		~EventQueue() { TIME_FUNCTION; }
-		void submit(Event* event);
+		void submit(ref<events::Event> event);
 		void clear();
-		inline std::vector<Event*>& getEventQueue() { return this->m_Events; }
+		inline std::vector<ref<events::Event>>& getEventQueue() { return this->m_Events; }
 	private:
-		std::vector<Event*> m_Events = std::vector<Event*>();
+		std::vector<ref<events::Event>> m_Events = std::vector<ref<events::Event>>();
 	};
 } // assec::events

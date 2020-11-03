@@ -12,7 +12,6 @@ namespace assec::graphics
 		virtual ~OpenGLVertexArray();
 		void bind() const override;
 		void render() const override;
-		virtual void cleanup() const override;
 		virtual void mapVertexAttributes(const size_t& verticesSize, const VertexBuffer::VertexBufferLayout& layout) const override;
 	protected:
 		const uint32_t genVertexArray() const override;

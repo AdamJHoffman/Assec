@@ -7,23 +7,21 @@
 namespace assec::editor
 {
 
-	class CameraController : public scene::Entity
+	class CameraController : public scene::ScriptableEntity
 	{
 	public:
-		CameraController(entt::entity handle, scene::Scene* scene) : Entity::Entity(handle, scene) {}
+		CameraController(const entt::entity& entity, scene::Scene* scene) : scene::ScriptableEntity(entity, scene){}
 		~CameraController() {}
-		void onCreate()
+
+
+		void onCreate() override
 		{
+			this->addField("speed", new assec::util::OrmField<float>(assec::util::Access::PUBLIC, 0.3f));
 		}
 
-		void onDestroy()
+		void onEvent(const events::Event& event) override
 		{
-		}
-
-		void onEvent(const events::Event& event)
-		{
-			float speed = 0.5f;
-
+			float speed = this->getField<float>("speed").getValue();
 			events::Dispatcher dispatcher = events::Dispatcher(event);
 			dispatcher.dispatch<events::AppUpdateEvent>([&](const events::AppUpdateEvent& event)
 				{
@@ -36,7 +34,6 @@ namespace assec::editor
 						this->getComponent<scene::TransformComponent>().translation.y += speed * event.m_Delta;
 					if (Input::isKeyDown(KEY::KEY_S))
 						this->getComponent<scene::TransformComponent>().translation.y -= speed * event.m_Delta;
-					this->getComponent<scene::CameraComponent>().setViewMatrix(this->getComponent<scene::TransformComponent>().toMatrix());
 					return false;
 				});
 		}
@@ -44,9 +41,9 @@ namespace assec::editor
 
 	EditorLayer::EditorLayer(const assec::Application& application, ref<graphics::FrameBuffer> frameBuffer) : m_Application(&application), m_FrameBuffer(frameBuffer) {}
 	EditorLayer::~EditorLayer() {}
-	void EditorLayer::onEvent(const events::Event& event)
+	void EditorLayer::onEvent(const ref<events::Event> event)
 	{
-		events::Dispatcher dispatcher = events::Dispatcher(event);
+		events::Dispatcher dispatcher = events::Dispatcher(*event);
 		dispatcher.dispatch<events::AppRenderEvent>([&](const events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;

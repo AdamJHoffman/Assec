@@ -14,6 +14,10 @@ namespace assec::editor
 		virtual void onAttach0() override;
 		virtual void onDetach0() override;
 	private:
+		void newScene();
+		void loadScene();
+		void saveScene();
+
 		ref<graphics::FrameBuffer> m_FrameBuffer;
 		bool m_ViewportFocused = false, m_ViewportHovered = false;
 		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };

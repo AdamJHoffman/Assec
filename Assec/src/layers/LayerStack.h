@@ -13,7 +13,7 @@ namespace assec::layersystem
 		void removeLayer(ref<Layer> layer);
 		void addOverlay(ref<Layer> layer);
 		void removeOverlay(ref<Layer> layer);
-		void onEvent(const events::Event& event);
+		void onEvent(const ref<events::Event> event);
 	private:
 		std::vector<ref<Layer>> m_Layers = std::vector<ref<Layer>>();
 		uint32_t m_LayerInsertIndex = 0;

@@ -2,7 +2,11 @@
 
 #include <imgui.h>
 
+#include "core/Input.h"
+#include "core/Config.h"
+
 #include "util/Loader.h"
+#include "util/PlatformUtils.h"
 
 #include "scene/SceneSerializer.h"
 
@@ -65,27 +69,25 @@ namespace assec::editor
 					ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 				}
 
+				this->m_SceneHierarchyPanel.renderImGUI();
+				this->m_InspectorPanel.renderImGUI();
+
 				if (ImGui::BeginMenuBar())
 				{
 					if (ImGui::BeginMenu("File"))
 					{
 						if (ImGui::MenuItem("Exit")) this->m_Application->close();
-						if (ImGui::MenuItem("Save"))
-						{
-							scene::SceneSerializer serializer = scene::SceneSerializer(this->m_Application->m_ActiveScene);
-							serializer.serialize("res/scene.yaml");
-						}
+						if (ImGui::MenuItem("New", "Ctrl+N"))
+							this->newScene();
+						if (ImGui::MenuItem("Open..", "Ctrl+O"))
+							this->loadScene();
+						if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+							this->saveScene();
 						ImGui::EndMenu();
 					}
 
 					ImGui::EndMenuBar();
 				}
-
-				this->m_SceneHierarchyPanel.renderImGUI();
-				this->m_InspectorPanel.renderImGUI();
-
-				//bool show = true;
-				//ImGui::ShowDemoWindow(&show);
 
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
 				ImGui::Begin("Viewport");
@@ -105,6 +107,67 @@ namespace assec::editor
 				ImGui::End();
 				return false;
 			});
+		dispatcher.dispatch<events::KeyPressedEvent>([&](const events::KeyPressedEvent& event)
+			{
+				bool control = Input::isKeyDown(KEY::KEY_LEFT_CONTROL) || Input::isKeyDown(KEY::KEY_RIGHT_CONTROL);
+				bool shift = Input::isKeyDown(KEY::KEY_LEFT_SHIFT) || Input::isKeyDown(KEY::KEY_RIGHT_SHIFT);
+				switch (event.m_Keycode)
+				{
+				case KEY::KEY_N:
+				{
+					if (control)
+						this->newScene();
+					return true;
+					break;
+				}
+				case KEY::KEY_O:
+				{
+					if (control)
+						this->loadScene();
+					return true;
+					break;
+				}
+				case KEY::KEY_S:
+				{
+					if (control && shift)
+						this->saveScene();
+					return true;
+					break;
+				}
+				}
+				return false;
+			});
 
+	}
+	void EditorGuiLayer::newScene()
+	{
+		this->m_Application->m_ActiveScene = std::make_shared<scene::Scene>();
+		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
+	}
+	void EditorGuiLayer::loadScene()
+	{
+		util::FileDialogs::OpenFile({ "Assec Scene (*.assec)\0*.assec\0", [&](const char* filepath)
+			{
+			if (strlen(filepath) != 0)
+				{
+					this->newScene();
+					scene::SceneSerializer serializer = scene::SceneSerializer(this->m_Application->m_ActiveScene);
+					serializer.deserialize(filepath);
+				}
+			}
+			});
+
+	}
+	void EditorGuiLayer::saveScene()
+	{
+		util::FileDialogs::SaveFile({ "Assec Scene (*.assec)\0*.assec\0", [&](const char* filepath)
+			{
+			if (strlen(filepath) != 0)
+				{
+					scene::SceneSerializer serializer(this->m_Application->m_ActiveScene);
+					serializer.serialize(filepath);
+				}
+			}
+			});
 	}
 }

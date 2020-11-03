@@ -1,10 +1,16 @@
-﻿#include "InspectorPanel.h"
-#include "scene/Components.h"
-#include "util/Loader.h"
+﻿
+#include "InspectorPanel.h"
+
 #include <windows.h>
 #include <string.h>
 
+#include <imgui.h>
 #include <imgui_internal.h>
+
+#include "scene/Components.h"
+
+#include "util/Loader.h"
+#include "util/PlatformUtils.h"
 
 namespace assec::editor
 {
@@ -189,18 +195,60 @@ namespace assec::editor
 
 						});
 				});
+			drawComponent<scene::NativeScriptComponent>("Native Script Component", this->m_SelectedEntity, [](auto& component)
+				{
+					auto& keys = util::Keys(component.m_Instance->getFields());
+					for (auto& key : keys)
+					{
+						auto& value = component.m_Instance->getFields().at(key);
+						if (value->getAccess() == util::Access::PUBLIC)
+						{
+							util::FieldDispatcher dispatcher = util::FieldDispatcher(*value);
+							dispatcher.dispatch<float>([&](float& value)
+								{
+									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
+										{
+											ImGui::DragFloat((std::string("##") + key).c_str(), &value);
+										});
+								});
+							dispatcher.dispatch<bool>([&](bool& value)
+								{
+									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
+										{
+											ImGui::Checkbox((std::string("##") + key).c_str(), &value);
+										});
+								});
+							dispatcher.dispatch<int>([&](int& value)
+								{
+									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
+										{
+											ImGui::DragInt((std::string("##") + key).c_str(), &value);
+										});
+								});
+							dispatcher.dispatch<char>([&](char& value)
+								{
+									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
+										{
+											ImGui::Text((std::string("##") + key).c_str(), &value);
+										});
+								});
+						}
+					}
+
+				});
 			drawComponent<scene::MeshComponent>("Mesh Component", this->m_SelectedEntity, [](auto& component)
 				{
 					drawUIColumned("path", 1, [&](auto& numOfElements)
 						{
 							if (ImGui::Button(component.m_Path.c_str(), ImVec2{ ImGui::GetContentRegionAvail().x, GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f }))
 							{
-								util::Loader::queueOpenFileDialogRequest(util::Loader::FileDialogData{ "gltf\0*.gltf\0glb\0*.glb\0All\0*.*\0", [&](const char* filepath)
-								{
-									auto& mesh = util::Loader::loadgltfMesh(filepath);
-									component.m_Path = std::string(filepath);
-									*component.m_Mesh = mesh[0];
-								} });
+								util::FileDialogs::OpenFile({ "gltf\0*.gltf\0glb\0*.glb\0", [&](const char* filepath)
+									   {
+										   component.m_Path = filepath;
+										   auto& mesh = util::Loader::loadgltfMesh(component.m_Path.c_str());
+										   *component.m_Mesh = mesh[0];
+									   }
+									});
 							}
 						});
 				});
@@ -210,28 +258,27 @@ namespace assec::editor
 						{
 							if (ImGui::Button(component.m_TexturePath.c_str(), ImVec2{ ImGui::GetContentRegionAvail().x, GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f }))
 							{
-								util::Loader::queueOpenFileDialogRequest(util::Loader::FileDialogData{ "jpg\0*.jpg\0png\0*.png\0All\0*.*\0", [&](const char* filepath)
-								{
-									std::string path(filepath);
-									std::replace(path.begin(), path.end(), '\\', '/');
-									component.m_TexturePath = path;
-									assec::util::Loader::TextureData data = assec::util::Loader::loadImage(path.c_str());
-									assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE, true, true };
-									component.m_Material->m_Texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
-								} });
+								util::FileDialogs::OpenFile({ "jpg\0*.jpg\0png\0*.png*\0", [&](const char* filepath)
+									   {
+										   component.m_TexturePath = filepath;
+										   std::replace(component.m_TexturePath.begin(), component.m_TexturePath.end(), '\\', '/');
+										   assec::util::Loader::TextureData data = assec::util::Loader::loadImage(component.m_TexturePath.c_str());
+										   assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE, true, true };
+										   component.m_Material->m_Texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
+									   }
+									});
 							}
 						});
 					drawUIColumned("shader", 1, [&](auto& numOfElements)
 						{
 							if (ImGui::Button(component.m_ShaderPath.c_str(), ImVec2{ ImGui::GetContentRegionAvail().x, GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f }))
 							{
-								util::Loader::queueOpenFileDialogRequest(util::Loader::FileDialogData{ "shader\0*.shader\0All\0*.*\0", [&](const char* filepath)
-								{
-									std::string path(filepath);
-									std::replace(path.begin(), path.end(), '\\', '/');
-									component.m_ShaderPath = path;
-									component.m_Material->m_ShaderProgram = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(util::Loader::loadFile(filepath));
-								}
+								util::FileDialogs::OpenFile({ "shader\0*.shader\0", [&](const char* filepath)
+									   {
+										   component.m_ShaderPath = filepath;
+										   std::replace(component.m_ShaderPath.begin(), component.m_ShaderPath.end(), '\\', '/');
+										   component.m_Material->m_ShaderProgram = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(util::Loader::loadFile(component.m_ShaderPath.c_str()));
+									   }
 									});
 							}
 						});
@@ -242,7 +289,6 @@ namespace assec::editor
 						{
 							ImGui::Checkbox("##PrimaryBox", &component.m_Primary);
 						});
-
 					drawUIColumned("Projection", 1, [&](auto& numOfElements)
 						{
 							const char* projectionTypeStrings[] = { "Orthographic", "Perspective" };
@@ -319,15 +365,52 @@ namespace assec::editor
 			{
 				if (ImGui::MenuItem("Mesh"))
 				{
-					this->m_SelectedEntity.addComponent<scene::MeshComponent>();
+					if (!this->m_SelectedEntity.hasComponent<scene::MeshComponent>())
+					{
+						this->m_SelectedEntity.addComponent<scene::MeshComponent>();
+					}
+					else
+					{
+						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_SelectedEntity), typeid(scene::MeshComponent).name());
+					}
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::MenuItem("Material"))
 				{
-					this->m_SelectedEntity.addComponent<scene::MaterialComponent>();
+					if (!this->m_SelectedEntity.hasComponent<scene::MaterialComponent>())
+					{
+						this->m_SelectedEntity.addComponent<scene::MaterialComponent>();
+					}
+					else
+					{
+						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_SelectedEntity), typeid(scene::MaterialComponent).name());
+					}
 					ImGui::CloseCurrentPopup();
 				}
-
+				if (ImGui::MenuItem("Camera"))
+				{
+					if (!this->m_SelectedEntity.hasComponent<scene::CameraComponent>())
+					{
+						this->m_SelectedEntity.addComponent<scene::CameraComponent>();
+					}
+					else
+					{
+						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_SelectedEntity), typeid(scene::CameraComponent).name());
+					}
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem("Native Script Component"))
+				{
+					if (!this->m_SelectedEntity.hasComponent<scene::NativeScriptComponent>())
+					{
+						this->m_SelectedEntity.addComponent<scene::NativeScriptComponent>();
+					}
+					else
+					{
+						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_SelectedEntity), typeid(scene::NativeScriptComponent).name());
+					}
+					ImGui::CloseCurrentPopup();
+				}
 				ImGui::EndPopup();
 			}
 		}

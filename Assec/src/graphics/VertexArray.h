@@ -17,7 +17,6 @@ namespace assec::graphics
 		virtual ~VertexArray() { TIME_FUNCTION; }
 		virtual void bind() const = 0;
 		virtual void render() const = 0;
-		virtual void cleanup() const = 0;
 		virtual void mapVertexAttributes(const size_t& verticesSize, const VertexBuffer::VertexBufferLayout& layout) const = 0;
 		uint32_t m_RendererID;
 		scope<VertexBuffer> m_VertexBuffer;

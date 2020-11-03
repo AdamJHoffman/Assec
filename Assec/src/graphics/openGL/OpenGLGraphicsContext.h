@@ -24,6 +24,8 @@ namespace assec::graphics
 		virtual const void init() const override;
 		virtual void setActiveTexture(const uint32_t& texture) const override;
 		virtual void setClearColor(const glm::vec4& color) const override;
+		virtual void enable(const Type& type) const override;
+		virtual void setDepthFunction(const Type& type) const override;
 		virtual ref<VertexBuffer> createVertexBuffer(const void* vertices, const size_t& size, const int& usage) const override;
 		virtual ref<IndexBuffer> createIndexBuffer(const void* indices, const size_t& size, const int& usage) const override;
 		virtual ref<VertexArray> createVertexArray(const VertexArray::VertexArrayProps& vertexArrayData) const override;

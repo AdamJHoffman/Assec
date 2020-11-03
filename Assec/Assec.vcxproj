@@ -182,7 +182,10 @@
     <ClInclude Include="src\scene\Entity.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\scene\SceneSerializer.h" />
+    <ClInclude Include="src\scene\ScriptableEntity.h" />
     <ClInclude Include="src\util\Loader.h" />
+    <ClInclude Include="src\util\Orm.h" />
+    <ClInclude Include="src\util\PlatformUtils.h" />
     <ClInclude Include="src\util\Profiler.h" />
     <ClInclude Include="src\util\misc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -621,6 +624,7 @@
     <ClCompile Include="src\layers\ImguiLayer.cpp" />
     <ClCompile Include="src\layers\LayerStack.cpp" />
     <ClCompile Include="src\log\Logger.cpp" />
+    <ClCompile Include="src\platform\windows\WindowsUtils.cpp" />
     <ClCompile Include="src\scene\Camera.cpp" />
     <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />

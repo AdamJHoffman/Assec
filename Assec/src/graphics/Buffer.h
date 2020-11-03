@@ -54,7 +54,6 @@ namespace assec::graphics
 		virtual void addData(const void* data, const size_t& size, const int& usage) const = 0;
 		virtual void addSubData(const void* data, const size_t& size, const int& offset) const = 0;
 		virtual void bind() const = 0;
-		virtual void cleanup() const = 0;
 		uint32_t m_RendererID;
 	protected:
 		VertexBuffer(const uint32_t& ID) : m_RendererID(ID) { TIME_FUNCTION; }
@@ -68,7 +67,6 @@ namespace assec::graphics
 		virtual void addData(const void* vertices, const size_t& size, const int& usage) = 0;
 		virtual void addSubData(const void* data, const size_t& size, const int& offset) = 0;
 		virtual void bind() const = 0;
-		virtual void cleanup() const = 0;
 		uint32_t m_RendererID;
 		size_t m_Count;
 	protected:
@@ -95,7 +93,6 @@ namespace assec::graphics
 		inline const Texture& getTextureAttachment(const Type& attachment) { return *this->m_TextureAttachments[attachment]; }
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
-		virtual void cleanup() = 0;
 		virtual void resize() = 0;
 		virtual void validate() const = 0;
 		virtual void addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type) = 0;

@@ -13,7 +13,6 @@ namespace assec::graphics
 		virtual void addData(const void* vertices, const size_t& size, const int& usage) const override;
 		virtual void addSubData(const void* data, const size_t& size, const int& offset) const override;
 		virtual void bind() const override;
-		virtual void cleanup() const override;
 	protected:
 		virtual const uint32_t genBuffer() const override;
 	private:
@@ -28,7 +27,6 @@ namespace assec::graphics
 		virtual void addData(const void* vertices, const size_t& size, const int& usage) override;
 		virtual void addSubData(const void* data, const size_t& size, const int& offset) override;
 		virtual void bind() const override;
-		virtual void cleanup() const override;
 	protected:
 		virtual const uint32_t genBuffer() const override;
 	};
@@ -40,7 +38,6 @@ namespace assec::graphics
 		~OpenGLFrameBuffer();
 		virtual void bind() const override;
 		virtual void unbind() const override;
-		virtual void cleanup() override;
 		virtual void resize() override;
 		virtual void validate() const override;
 		virtual void addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type) override;

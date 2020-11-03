@@ -24,17 +24,10 @@ namespace assec::util
 		};
 		static std::string loadFile(const char*);
 		static TextureData loadImage(const char*);
-		static void queueOpenFileDialogRequest(const FileDialogData&);
-		static void queueSaveFileDialogRequest(const FileDialogData&);
-		static void processDialogRequests();
-		static void savegltfScene(scene::Scene&);
 		static std::vector<graphics::Mesh> loadgltfMesh(const char*);
 		~Loader() { TIME_FUNCTION; }
 	private:
 		Loader() { TIME_FUNCTION; }
 		static std::ifstream m_InputStream;
-		static std::vector<FileDialogData> m_OpenFileDialogRequests;
-		static std::vector<FileDialogData> m_SaveFileDialogRequests;
-
 	};
 }

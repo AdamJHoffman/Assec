@@ -9,7 +9,6 @@ namespace assec::graphics
 	public:
 		OpenGLShader(const std::string& source, const Type& type);
 		~OpenGLShader();
-		virtual void cleanup() const override;
 	protected:
 		virtual const uint32_t genShader(const Type& type) const override;
 	};
@@ -20,7 +19,6 @@ namespace assec::graphics
 		OpenGLShaderProgram(const std::string& vertexSource, const std::string& fragmentSource);
 		OpenGLShaderProgram(const std::string& source);
 		virtual ~OpenGLShaderProgram();
-		virtual void cleanup() const override;
 		virtual void loadInt(const std::string& name, const int& value) override;
 		virtual void loadIntArray(const std::string& name, const size_t& size, const int* value) override;
 		virtual void loadVec4(const std::string& name, const glm::vec4& value) override;
@@ -29,5 +27,8 @@ namespace assec::graphics
 	protected:
 		virtual const uint32_t genShaderProgram() const override;
 		virtual int getLocation(const std::string& name) override;
+	private:
+		const std::string findVertexSubString(const std::string& source) const;
+		const std::string findFragmentSubString(const std::string& source) const;
 	};
 } // assec::graphics

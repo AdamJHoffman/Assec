@@ -6,8 +6,6 @@
 namespace assec::util
 {
 	std::ifstream Loader::m_InputStream;
-	std::vector<Loader::FileDialogData> Loader::m_OpenFileDialogRequests;
-	std::vector<Loader::FileDialogData> Loader::m_SaveFileDialogRequests;
 	std::string Loader::loadFile(const char* file)
 	{
 		TIME_FUNCTION;
@@ -31,115 +29,6 @@ namespace assec::util
 			std::cout << stbi_failure_reason();
 		TextureData result = { static_cast<uint32_t>(width), static_cast<uint32_t>(height), static_cast<uint32_t>(nrChannels), data };
 		return result;
-	}
-	void Loader::queueOpenFileDialogRequest(const Loader::FileDialogData& openFileDialog)
-	{
-		m_OpenFileDialogRequests.push_back(openFileDialog);
-	}
-	void Loader::queueSaveFileDialogRequest(const Loader::FileDialogData& saveFileDialog)
-	{
-		m_SaveFileDialogRequests.push_back(saveFileDialog);
-	}
-	void Loader::processDialogRequests()
-	{
-		OPENFILENAMEA ofn;
-		char szFile[260];
-		HWND hwnd = HWND();
-		for (auto& openFileDialog : m_OpenFileDialogRequests)
-		{
-			ZeroMemory(&ofn, sizeof(ofn));
-			ofn.lStructSize = sizeof(ofn);
-			ofn.hwndOwner = hwnd;
-			ofn.lpstrFile = szFile;
-			ofn.lpstrFile[0] = '\0';
-			ofn.nMaxFile = sizeof(szFile);
-			ofn.lpstrFilter = openFileDialog.m_FileTypes;
-			ofn.nFilterIndex = 1;
-			ofn.lpstrFileTitle = NULL;
-			ofn.nMaxFileTitle = 0;
-			ofn.lpstrInitialDir = NULL;
-			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-
-			if (GetOpenFileNameA(&ofn) == TRUE)
-			{
-				openFileDialog.m_FileFoundCallback(ofn.lpstrFile);
-			}
-		}
-		m_OpenFileDialogRequests.clear();
-		for (auto& saveFileDialog : m_SaveFileDialogRequests)
-		{
-			ZeroMemory(&ofn, sizeof(ofn));
-			ofn.lStructSize = sizeof(ofn);
-			ofn.hwndOwner = hwnd;
-			ofn.lpstrFile = szFile;
-			ofn.lpstrFile[0] = '\0';
-			ofn.nMaxFile = sizeof(szFile);
-			ofn.lpstrFilter = saveFileDialog.m_FileTypes;
-			ofn.nFilterIndex = 1;
-			ofn.lpstrFileTitle = NULL;
-			ofn.nMaxFileTitle = 0;
-			ofn.lpstrInitialDir = NULL;
-			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-
-			if (GetSaveFileNameA(&ofn) == TRUE)
-			{
-				saveFileDialog.m_FileFoundCallback(ofn.lpstrFile);
-			}
-		}
-		m_SaveFileDialogRequests.clear();
-	}
-	void Loader::savegltfScene(scene::Scene& scene)
-	{
-		tinygltf::Model* model = new tinygltf::Model();
-		tinygltf::TinyGLTF loader;
-
-		tinygltf::Accessor accessor = tinygltf::Accessor();
-		accessor.bufferView = -1;
-		accessor.byteOffset = -1;
-		accessor.componentType = -1;
-		accessor.count = -1;
-		accessor.maxValues.push_back(-1);
-		accessor.minValues.push_back(-1);
-		model->accessors.push_back(accessor);
-
-		tinygltf::Node root = tinygltf::Node();
-		root.name = "root";
-
-		int nodeIndex = 0;
-		scene.reg().each([&](auto entityID)
-			{
-				scene::Entity entity = { entityID, &scene };
-
-				tinygltf::Node node = tinygltf::Node();
-				node.name = "entity";
-
-				if (entity.hasComponent<scene::TagComponent>())
-				{
-					tinygltf::Node node = tinygltf::Node();
-					node.name = entity.getComponent<scene::TagComponent>().m_Tag;
-					model->nodes.push_back(node);
-					++nodeIndex;
-				}
-
-				root.children.push_back(nodeIndex);
-				model->nodes.push_back(node);
-				++nodeIndex;
-			});
-		model->nodes.push_back(root);
-
-		tinygltf::Scene gltfScene = tinygltf::Scene();
-		gltfScene.nodes.push_back(0);
-		model->scenes.push_back(gltfScene);
-
-		model->asset.copyright = "© Assec Engine - Adam Hoffman 2020/21";
-		model->asset.generator = "Assec Engine - Adam Hoffman 2020/21";
-
-		util::Loader::queueSaveFileDialogRequest(util::Loader::FileDialogData{ "gltf\0*.gltf\0glb\0*.glb", [&](const char* filepath)
-			{
-				loader.WriteGltfSceneToFile(model, filepath, false, false, true, false);
-			} });
 	}
 	std::vector<graphics::Mesh> Loader::loadgltfMesh(const char* cpath)
 	{

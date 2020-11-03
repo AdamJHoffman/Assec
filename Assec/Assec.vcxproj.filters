@@ -1417,6 +1417,9 @@
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\SceneSerializer.h" />
+    <ClInclude Include="src\util\PlatformUtils.h" />
+    <ClInclude Include="src\util\Orm.h" />
+    <ClInclude Include="src\scene\ScriptableEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1504,5 +1507,6 @@
       <Filter>src\util</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\SceneSerializer.cpp" />
+    <ClCompile Include="src\platform\windows\WindowsUtils.cpp" />
   </ItemGroup>
 </Project>

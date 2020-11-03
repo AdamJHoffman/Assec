@@ -12,7 +12,7 @@ namespace assec
 	public:
 		Application(const std::string name = "Assec");
 		virtual ~Application();
-		void onEvent(events::Event* event);
+		void onEvent(ref<events::Event> event);
 		void handleEvents();
 		void run();
 		void close();

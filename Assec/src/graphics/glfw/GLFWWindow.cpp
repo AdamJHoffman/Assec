@@ -223,7 +223,7 @@ namespace assec::graphics
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(new events::WindowResizeEvent((void*)&window, (uint32_t&)width, (uint32_t&)height));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowResizeEvent>((void*)&window, (uint32_t&)width, (uint32_t&)height));
 				window.getWindowData().m_Height = height;
 				window.getWindowData().m_Width = width;
 			});
@@ -236,7 +236,7 @@ namespace assec::graphics
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(new events::WindowContentScaleEvent((void*)&window, xscale, yscale));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowContentScaleEvent>((void*)&window, xscale, yscale));
 			});
 		glfwSetWindowCloseCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow)
 			{
@@ -244,7 +244,7 @@ namespace assec::graphics
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				glfwSetWindowShouldClose(nativeWindow, true);
 				window.getWindowData().m_Open = false;
-				window.getWindowData().m_EventCallBack(new events::WindowCloseEvent((void*)&window));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowCloseEvent>((void*)&window));
 			});
 		glfwSetWindowIconifyCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int isIcon)
 			{
@@ -252,11 +252,13 @@ namespace assec::graphics
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				if (isIcon)
 				{
-					window.getWindowData().m_EventCallBack(new events::WindowMinimizeEvent((void*)&window));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowMinimizeEvent>((void*)&window));
+					window.setMinimized(true);
 				}
 				else
 				{
-					window.getWindowData().m_EventCallBack(new events::WindowRestoreEvent((void*)&window));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowRestoreEvent>((void*)&window));
+					window.setMinimized(false);
 				}
 			});
 		glfwSetWindowMaximizeCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int maximized)
@@ -265,11 +267,11 @@ namespace assec::graphics
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				if (maximized)
 				{
-					window.getWindowData().m_EventCallBack(new events::WindowMaximizeEvent((void*)&window));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowMaximizeEvent>((void*)&window));
 				}
 				else
 				{
-					window.getWindowData().m_EventCallBack(new events::WindowRestoreEvent((void*)&window));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowRestoreEvent>((void*)&window));
 				}
 			});
 		glfwSetWindowFocusCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int focused)
@@ -278,25 +280,25 @@ namespace assec::graphics
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				if (focused)
 				{
-					window.getWindowData().m_EventCallBack(new events::WindowFocusEvent((void*)&window));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowFocusEvent>((void*)&window));
 				}
 				else
 				{
-					window.getWindowData().m_EventCallBack(new events::WindowFocusLostEvent((void*)&window));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::WindowFocusLostEvent>((void*)&window));
 				}
 			});
 		glfwSetWindowRefreshCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow)
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(new events::WindowRefreshEvent((void*)&window));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowRefreshEvent>((void*)&window));
 				window.swapBuffers();
 			});
 		glfwSetWindowPosCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int x, int y)
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(new events::WindowMoveEvent((void*)&window, (int&)x, (int&)y));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::WindowMoveEvent>((void*)&window, (int&)x, (int&)y));
 			});
 		glfwSetKeyCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int keycode, int scancode, int action, int mods)
 			{
@@ -305,13 +307,13 @@ namespace assec::graphics
 				switch (action)
 				{
 				case GLFW_PRESS:
-					window.getWindowData().m_EventCallBack(new events::KeyPressedEvent((void*)&window, keyFromGLFWType(keycode), scancode, mods));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::KeyPressedEvent>((void*)&window, keyFromGLFWType(keycode), scancode, mods));
 					break;
 				case GLFW_REPEAT:
-					window.getWindowData().m_EventCallBack(new events::KeyRepeatedEvent((void*)&window, keyFromGLFWType(keycode), scancode, mods));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::KeyRepeatedEvent>((void*)&window, keyFromGLFWType(keycode), scancode, mods));
 					break;
 				case GLFW_RELEASE:
-					window.getWindowData().m_EventCallBack(new events::KeyReleasedEvent((void*)&window, keyFromGLFWType(keycode), scancode));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::KeyReleasedEvent>((void*)&window, keyFromGLFWType(keycode), scancode));
 					break;
 				}
 			});
@@ -319,13 +321,13 @@ namespace assec::graphics
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(new events::CharTypedEvent((void*)&window, unicode));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::CharTypedEvent>((void*)&window, unicode));
 			});
 		glfwSetCursorPosCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, double x, double y)
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(new events::MouseMovedEvent((void*)&window, glm::vec2((float)x, (float)y)));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::MouseMovedEvent>((void*)&window, glm::vec2((float)x, (float)y)));
 			});
 		glfwSetCursorEnterCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int entered)
 			{
@@ -333,11 +335,11 @@ namespace assec::graphics
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				if (entered)
 				{
-					window.getWindowData().m_EventCallBack(new events::CursorEnteredEvent((void*)&window));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::CursorEnteredEvent>((void*)&window));
 				}
 				else
 				{
-					window.getWindowData().m_EventCallBack(new events::CursorExitedEvent((void*)&window));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::CursorExitedEvent>((void*)&window));
 				}
 			});
 		glfwSetMouseButtonCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int button, int action, int mods)
@@ -347,10 +349,10 @@ namespace assec::graphics
 				switch (action)
 				{
 				case GLFW_PRESS:
-					window.getWindowData().m_EventCallBack(new events::MouseButtonPressedEvent((void*)&window, buttonFromGLFWType(button), mods));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::MouseButtonPressedEvent>((void*)&window, buttonFromGLFWType(button), mods));
 					break;
 				case GLFW_RELEASE:
-					window.getWindowData().m_EventCallBack(new events::MouseButtonReleasedEvent((void*)&window, buttonFromGLFWType(button)));
+					window.getWindowData().m_EventCallBack(std::make_shared<events::MouseButtonReleasedEvent>((void*)&window, buttonFromGLFWType(button)));
 					break;
 				}
 			});
@@ -358,13 +360,13 @@ namespace assec::graphics
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(new events::MouseScrolledEvent((void*)&window, glm::vec2(xOffset, yOffset)));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::MouseScrolledEvent>((void*)&window, glm::vec2(xOffset, yOffset)));
 			});
 		glfwSetDropCallback((GLFWwindow*)this->m_WindowData.m_NativeWindow, [](GLFWwindow* nativeWindow, int count, const char** paths)
 			{
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
-				window.getWindowData().m_EventCallBack(new events::PathDroppedEvent((void*)&window, count, paths));
+				window.getWindowData().m_EventCallBack(std::make_shared<events::PathDroppedEvent>((void*)&window, count, paths));
 			});
 	}
 } // assec::graphics

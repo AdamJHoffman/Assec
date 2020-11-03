@@ -9,7 +9,6 @@ namespace assec::graphics
 	{
 	public:
 		virtual ~Shader() { TIME_FUNCTION; }
-		virtual void cleanup() const = 0;
 		uint32_t m_RendererID;
 	protected:
 		Shader(const uint32_t& ID) : m_RendererID(ID) { TIME_FUNCTION; }
@@ -23,7 +22,6 @@ namespace assec::graphics
 		ShaderProgram(const ShaderProgram& other)
 			: m_RendererID(other.m_RendererID), m_LocationCache(other.m_LocationCache) {}
 		virtual void bind() const = 0;
-		virtual void cleanup() const = 0;
 		virtual void loadInt(const std::string& name, const int& value) = 0;
 		virtual void loadIntArray(const std::string& name, const size_t& size, const int* value) = 0;
 		virtual void loadVec4(const std::string& name, const glm::vec4& value) = 0;

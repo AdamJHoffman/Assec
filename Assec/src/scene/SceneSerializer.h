@@ -15,7 +15,7 @@ namespace assec::scene
 
 		bool deserialize(const std::string& path);
 		bool deserializeRuntime(const std::string& path);
-	private:
+
 		ref<Scene> m_Scene;
 	};
 } // assec::scene

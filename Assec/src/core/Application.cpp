@@ -11,16 +11,17 @@
 
 #include "util/Profiler.h"
 #include "util/Loader.h"
+#include "util/PlatformUtils.h"
 
 namespace assec
 {
 	Application::Application(const std::string name)
 	{
-		graphics::WindowManager::init(std::make_shared<graphics::GLFWWindowContext>(), [this](events::Event* event) {return this->onEvent(event); });
+		graphics::WindowManager::init(std::make_shared<graphics::GLFWWindowContext>(), [this](ref<events::Event> event) {return this->onEvent(event); });
 		util::Profiler::getProfiler().beginSession(name);
 	}
 	Application::~Application() {}
-	void Application::onEvent(events::Event* event)
+	void Application::onEvent(ref<events::Event> event)
 	{
 		TIME_FUNCTION;
 		Input::onEvent(*event);
@@ -34,12 +35,12 @@ namespace assec
 			for (auto& event : this->AC_EVENT_QUEUE->getEventQueue())
 			{
 				AC_CORE_TRACE(event->toString());
-				this->AC_LAYER_STACK->onEvent(*event);
-				util::Loader::processDialogRequests();
-				this->m_ActiveScene->onEvent(*event);
+				this->AC_LAYER_STACK->onEvent(event);
+				this->m_ActiveScene->onEvent(event);
 			}
 		}
 		this->AC_EVENT_QUEUE->clear();
+		util::FileDialogs::processDialogRequests();
 	}
 	void Application::run()
 	{
@@ -51,11 +52,14 @@ namespace assec
 		while (!graphics::WindowManager::empty())
 		{
 			TIME_FUNCTION;
-			float time = graphics::WindowManager::m_WindowContext->getCurrentTime();
-			float timeStep = time - lastFrameTime;
-			lastFrameTime = time;
-			this->onEvent(new events::AppUpdateEvent(timeStep));
-			this->onEvent(new events::AppRenderEvent(timeStep));
+			if (!window.isMinimized())
+			{
+				float time = graphics::WindowManager::m_WindowContext->getCurrentTime();
+				float timeStep = time - lastFrameTime;
+				lastFrameTime = time;
+				this->onEvent(std::make_shared<events::AppUpdateEvent>(timeStep));
+				this->onEvent(std::make_shared<events::AppRenderEvent>(timeStep));
+			}
 			graphics::WindowManager::prepare();
 			this->handleEvents();
 			graphics::WindowManager::finish();

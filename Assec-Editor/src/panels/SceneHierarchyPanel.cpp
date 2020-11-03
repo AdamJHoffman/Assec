@@ -1,5 +1,7 @@
 ﻿#include "SceneHierarchyPanel.h"
 
+#include <imgui.h>
+
 namespace assec::editor
 {
 	SceneHierarchyPanel::SceneHierarchyPanel(scene::Scene& context) : m_Context(&context) {}
@@ -7,6 +9,11 @@ namespace assec::editor
 	void SceneHierarchyPanel::setContext(scene::Scene& context)
 	{
 		this->m_Context = &context;
+		this->m_SelectedEntity = {};
+		if (this->m_SelectionCallback)
+		{
+			this->m_SelectionCallback(this->m_SelectedEntity);
+		}
 	}
 	void SceneHierarchyPanel::setSelectionCallback(const std::function<void(const scene::Entity&)>& callback)
 	{
@@ -47,7 +54,7 @@ namespace assec::editor
 		if (ImGui::IsItemClicked())
 		{
 			this->m_SelectedEntity = entity;
-			this->m_SelectionCallback(entity);
+			this->m_SelectionCallback(this->m_SelectedEntity);
 		}
 
 		bool entityDeleted = false;
@@ -66,9 +73,13 @@ namespace assec::editor
 
 		if (entityDeleted)
 		{
-			m_Context->destroyEntity(entity);
 			if (this->m_SelectedEntity == entity)
+			{
 				this->m_SelectedEntity = {};
+				this->m_SelectionCallback(this->m_SelectedEntity);
+			}
+			m_Context->destroyEntity(entity);
+
 		}
 	}
 

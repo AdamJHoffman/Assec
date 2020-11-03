@@ -1,7 +1,10 @@
 ﻿#pragma once
+
+#include <entt/entt.hpp>
+
 #include "Scene.h"
-#include "entt/entt.hpp"
-#include "Components.h"
+
+#include "util/Orm.h"
 
 namespace assec::scene
 {
@@ -15,12 +18,18 @@ namespace assec::scene
 
 		template<typename T> bool hasComponent() const
 		{
-			return this->m_Scene->m_Registry.has<T>(this->m_EntityHandle);
+			if (this->m_Scene->m_Registry.valid(this->m_EntityHandle))
+			{
+				return this->m_Scene->m_Registry.has<T>(this->m_EntityHandle);
+			}
+			return false;
 		}
 		template<typename T, typename... Args> T& addComponent(Args&&... args)
 		{
 			AC_CORE_ASSERT_(!this->hasComponent<T>(), "Entity already has component");
-			return this->m_Scene->m_Registry.emplace<T>(this->m_EntityHandle, std::forward<Args>(args)...);
+			auto& component = this->m_Scene->m_Registry.emplace<T>(this->m_EntityHandle, std::forward<Args>(args)...);
+			this->m_Scene->onComponentAdded<T>(*this, component);
+			return component;
 		}
 		template<typename T> T& getComponent()
 		{
@@ -37,7 +46,7 @@ namespace assec::scene
 			AC_CORE_ASSERT_(this->hasComponent<T>(), "Entity does not have component");
 			this->m_Scene->m_Registry.remove<T>(this->m_EntityHandle);
 		}
-		operator bool() { return this->m_EntityHandle != entt::null; }
+		operator bool() { return this->m_EntityHandle != entt::null && this->m_Scene != nullptr; }
 		operator uint32_t () { return (uint32_t)this->m_EntityHandle; }
 
 		operator entt::entity() const { return m_EntityHandle; }

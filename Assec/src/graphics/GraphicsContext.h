@@ -23,6 +23,8 @@ namespace assec::graphics
 		virtual const void init() const = 0;
 		virtual void setActiveTexture(const uint32_t& texture) const = 0;
 		virtual void setClearColor(const glm::vec4& color) const = 0;
+		virtual void enable(const Type& type) const = 0;
+		virtual void setDepthFunction(const Type& type) const = 0;
 		inline const ContextData& getContextData() const { return this->m_ContextData; }
 		virtual ref<VertexBuffer> createVertexBuffer(const void* vertices, const size_t& size, const int& usage) const = 0;
 		virtual ref<IndexBuffer> createIndexBuffer(const void* indices, const size_t& size, const int& usage) const = 0;
