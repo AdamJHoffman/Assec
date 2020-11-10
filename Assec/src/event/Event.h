@@ -2,6 +2,8 @@
 
 #include "acpch.h"
 
+#include "core/KeyCode.h"
+
 #include "util/Profiler.h"
 
 namespace assec::events

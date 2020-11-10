@@ -1,52 +1,11 @@
-﻿#pragma once
-
-#define AC_CORE_TRACE(...)		assec::Logger::CORE_LOGGER->getLogger()->trace(__VA_ARGS__)
-#define AC_CORE_INFO(...)		assec::Logger::CORE_LOGGER->getLogger()->info(__VA_ARGS__)
-#define AC_CORE_WARNING(...)	assec::Logger::CORE_LOGGER->getLogger()->warn(__VA_ARGS__)
-#define AC_CORE_CRITICAL(...)	assec::Logger::CORE_LOGGER->getLogger()->critical(__VA_ARGS__)
-
-#define AC_CLIENT_TRACE(...)	assec::Logger::CLIENT_LOGGER->getLogger()->trace(__VA_ARGS__)
-#define AC_CLIENT_INFO(...)		assec::Logger::CLIENT_LOGGER->getLogger()->info(__VA_ARGS__)
-#define AC_CLIENT_WARNING(...)	assec::Logger::CLIENT_LOGGER->getLogger()->warn(__VA_ARGS__)
-#define AC_CLIENT_CRITICAL(...)	assec::Logger::CLIENT_LOGGER->getLogger()->critical(__VA_ARGS__)
-
-#ifdef AC_DEBUG
-#define TIME_FUNCTION assec::util::Timer timer = assec::util::Timer(__FUNCSIG__)
-#ifdef AC_PLATFORM_WINDOWS
-#define AC_CLIENT_ASSERT(x, y, ...) {if(!(x)) { AC_CLIENT_CRITICAL(y, __VA_ARGS__); __debugbreak(); } }
-#define AC_CLIENT_ASSERT_(x, y) {if(!(x)) { AC_CLIENT_CRITICAL(y); __debugbreak(); } }
-#define AC_CORE_ASSERT(x, y, ...) {if(!(x)) { AC_CORE_CRITICAL(y, __VA_ARGS__); __debugbreak(); } }
-#define AC_CORE_ASSERT_(x, y) {if(!(x)) { AC_CORE_CRITICAL(y); __debugbreak(); } }
-#endif //AC_PLATFORM_WINDOWS
-#else //AC_DEBUG
-#define TIME_FUNCTION
-#define AC_CLIENT_ASSERT(x, ...) x;
-#define AC_CORE_ASSERT(x, ...) x;
-#define AC_CORE_ASSERT_(x, y) x;
-#endif //AC_DEBUG
-
-// TEMP----------------------------------------------------
-#define AC_SHADER_TEXTURE_NAME "u_image"
-#define AC_SHADER_COLOR_NAME "u_color"
-#define AC_SHADER_VIEWPROJECTIONMATRIX_NAME "u_viewProjection"
-#define AC_SHADER_TRANSFORM_NAME "u_transform"
-//--------------------------------------------------------
-
-#define BATCH_MAX_SIZE 1000000
-#define BATCH_MAX_TEXTURES 32
+#pragma once
 
 
 namespace assec
 {
-	template<typename T>
-	using ref = std::shared_ptr<T>;
-
-	template<typename T>
-	using scope = std::unique_ptr<T>;
-
 	enum class KEY
 	{
-		KEY_UNKNOWN = -1,
+		KEY_UNKNOWN = 0,
 		KEY_SPACE,
 		KEY_APOSTROPHE,
 		KEY_COMMA,
@@ -216,13 +175,18 @@ namespace assec
 		NEAREST_MIPMAP_LINEAR,
 		LINEAR_MIPMAP_LINEAR,
 
+		RED,
+		R8,
+		RG,
+		RG8,
 		RGB,
+		RGB8,
 		RGBA,
 		RGBA8,
 		DEPTH24_STENCIL8,
 		DEPTH_STENCIL,
 
-		COLOR_ATTACHMENT_0,
+		COLOR_ATTACHMENT0,
 		DEPTH_STENCIL_ATTACHMENT
 	};
-} // assec
+}

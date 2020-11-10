@@ -131,7 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Launcher.cpp" />
+    <ClCompile Include="src\ExilusApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Assec\Assec.vcxproj">

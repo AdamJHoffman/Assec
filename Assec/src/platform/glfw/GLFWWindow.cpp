@@ -1,8 +1,12 @@
 ﻿#include "acpch.h"
 
+#include <stb_image.h>
+
 #include "GLFWWindow.h"
 
 #include "GLFWWindowContext.h"
+
+#include "platform/opengl/OpenGLGraphicsContext.h"
 
 #include "event/WindowEvents.h"
 #include "event/KeyEvents.h"
@@ -48,7 +52,7 @@ namespace assec::graphics
 	void GLFWWindow::validate() const
 	{
 		TIME_FUNCTION;
-		AC_CORE_ASSERT(!this->m_WindowData.m_NativeWindow == NULL, "Assertion failed: {0}", "failed to create GLFW window");
+		AC_CORE_ASSERT(!this->m_WindowData.m_NativeWindow == NULL, "failed to create GLFW window");
 		AC_CORE_INFO("successfully created GLFW window: ");
 		AC_CORE_INFO("	Version: {0}", glfwGetVersionString());
 	}
@@ -130,7 +134,8 @@ namespace assec::graphics
 	void GLFWWindow::setTitle(const char* title) const
 	{
 		TIME_FUNCTION;
-		glfwSetWindowTitle((GLFWwindow*)this->m_WindowData.m_NativeWindow, title);
+		this->m_WindowData.m_Title = std::string(title);
+		glfwSetWindowTitle((GLFWwindow*)this->m_WindowData.m_NativeWindow, this->m_WindowData.m_Title.c_str());
 	}
 	void GLFWWindow::minimize() const
 	{
@@ -203,13 +208,29 @@ namespace assec::graphics
 		this->m_WindowData.m_SwapInterval = interval;
 		glfwSwapInterval(interval);
 	}
+	void GLFWWindow::setIcon(const std::vector<std::string>& paths) const
+	{
+		std::vector<GLFWimage> icons;
+		for (auto& path : paths)
+		{
+			GLFWimage image;
+			image.pixels = stbi_load(path.c_str(), &image.width, &image.height, 0, STBI_rgb_alpha); //rgba channels 
+			icons.push_back(image);
+		}
+		glfwSetWindowIcon((GLFWwindow*)this->m_WindowData.m_NativeWindow, static_cast<int>(icons.size()), &icons[0]);
+		for (auto& icon : icons)
+		{
+			stbi_image_free(icon.pixels);
+
+		}
+	}
 	void* GLFWWindow::createWindow(const uint32_t& width, const uint32_t& height, const std::string& title, const Monitor* monitor, const Window* share) const
 	{
 		TIME_FUNCTION;
 		if (!s_GLFWInitialized)
 		{
 			int success = glfwInit();
-			AC_CORE_ASSERT(success, "Assertion failed: {0}", "Could not initialze GLFW!");
+			AC_CORE_ASSERT(success, "Assertion failed: {0} Could not initialze GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}

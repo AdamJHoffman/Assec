@@ -20,7 +20,7 @@ namespace assec::graphics
 		{
 			char infoLog[512];
 			GLCall(glGetShaderInfoLog(this->m_RendererID, 512, NULL, infoLog));
-			AC_CORE_ASSERT(false, "Failed to compile shader: \n{0}", infoLog);
+			AC_CORE_ASSERT(false, ("Failed to compile shader: \n{0}", infoLog));
 		};
 	}
 	OpenGLShader::~OpenGLShader() 
@@ -48,7 +48,7 @@ namespace assec::graphics
 		{
 			char infoLog[512];
 			glGetProgramInfoLog(this->m_RendererID, 512, NULL, infoLog);
-			AC_CORE_ASSERT(false, "Shaderprogram compilation failed: \n{0}", infoLog);
+			AC_CORE_ASSERT(false, ("Shaderprogram compilation failed: \n{0}", infoLog));
 		}
 	}
 	OpenGLShaderProgram::OpenGLShaderProgram(const std::string& source) : OpenGLShaderProgram::OpenGLShaderProgram(this->findVertexSubString(source), this->findFragmentSubString(source)) { TIME_FUNCTION; }

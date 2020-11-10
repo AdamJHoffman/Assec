@@ -1,6 +1,6 @@
 ﻿#include "acpch.h"
 
-#include "graphics/openGL/OpenGLBuffer.h"
+#include "OpenGLBuffer.h"
 
 #include <glad/glad.h>
 
@@ -114,10 +114,10 @@ namespace assec::graphics
 		for (auto key : util::Keys(this->m_TextureAttachments))
 		{
 			const Type& attachment = key;
-			const Type& internalForamat = this->m_TextureAttachments.at(key)->getProps().m_Internalformat;
-			const Type& format = this->m_TextureAttachments.at(key)->getProps().m_Format;
-			const Type& type = this->m_TextureAttachments.at(key)->getProps().m_Type;
-			this->addTextureAttachment(attachment, internalForamat, format, type);
+			const Type& internalForamat = this->m_TextureAttachments.at(key)->getProps().m_InternalFormat;
+			const Type& dataFormat = this->m_TextureAttachments.at(key)->getProps().m_DataFormat;
+			const Type& dataType = this->m_TextureAttachments.at(key)->getProps().m_DataType;
+			this->addTextureAttachment(attachment, internalForamat, dataFormat, dataType);
 		}
 		this->validate();
 	}
@@ -125,14 +125,14 @@ namespace assec::graphics
 	{
 		this->bind();
 		GLCall(bool result = (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE));
-		AC_CLIENT_ASSERT(result, "framebuffer {0} incomplete", this->m_RendererID);
+		AC_ASSERT(result, ("framebuffer {0} incomplete", this->m_RendererID));
 		this->unbind();
 	}
-	void OpenGLFrameBuffer::addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type)
+	void OpenGLFrameBuffer::addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& dataFormat, const Type& dataType)
 	{
 		this->bind();
-		this->m_TextureAttachments[attachment] = std::make_shared<OpenGLTexture2D>(nullptr, Texture::TextureProps{ this->m_FrameBufferProps.m_Width, this->m_FrameBufferProps.m_Height , assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, internalFormat, format, type, false, false });
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, toOpenGLType(attachment), GL_TEXTURE_2D, this->m_TextureAttachments[attachment]->m_RendererID, 0));
+		this->m_TextureAttachments[attachment] = std::make_shared<OpenGLTexture2D>(this->m_FrameBufferProps.m_Width, this->m_FrameBufferProps.m_Height, Texture::TextureProps{ assec::Type::CLAMP_TO_EDGE, internalFormat, dataFormat, dataType, glm::vec4(1.0), assec::Type::LINEAR, assec::Type::LINEAR, false, false });
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, toOpenGLType(attachment), GL_TEXTURE_2D, this->m_TextureAttachments[attachment]->getNativeTexture(), 0));
 		this->unbind();
 	}
 	const uint32_t OpenGLFrameBuffer::genBuffer(const FrameBufferProps& frameBufferProps) const

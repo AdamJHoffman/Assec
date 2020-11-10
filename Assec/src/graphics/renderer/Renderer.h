@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "core/Config.h"
+#include "core/Base.h"
 
 #include "graphics/renderer/Batch.h"
 #include "graphics/renderer/Renderable.h"

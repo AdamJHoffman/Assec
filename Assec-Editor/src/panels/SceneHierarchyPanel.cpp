@@ -19,6 +19,10 @@ namespace assec::editor
 	{
 		this->m_SelectionCallback = callback;
 	}
+	void SceneHierarchyPanel::setTransactionCallback(const std::function<void(ref<transactions::Transaction>)>& transactionCallback)
+	{
+		this->m_TransactionCallback = transactionCallback;
+	}
 	void SceneHierarchyPanel::renderImGUI()
 	{
 		ImGui::Begin("Scene Hierarchy");
@@ -38,8 +42,9 @@ namespace assec::editor
 		if (ImGui::BeginPopupContextWindow(0, 1, false))
 		{
 			if (ImGui::MenuItem("Create Empty Entity"))
-				m_Context->createEntity("Empty Entity");
-
+			{
+				this->m_TransactionCallback(std::make_shared<transactions::EntityCreationTransaction>());
+			}
 			ImGui::EndPopup();
 		}
 
@@ -61,7 +66,14 @@ namespace assec::editor
 		if (ImGui::BeginPopupContextItem())
 		{
 			if (ImGui::MenuItem("Delete Entity"))
-				entityDeleted = true;
+			{
+				if (this->m_SelectedEntity == entity)
+				{
+					this->m_SelectedEntity = {};
+					this->m_SelectionCallback(this->m_SelectedEntity);
+				}
+				this->m_TransactionCallback(std::make_shared<transactions::EntityRemovalTransaction>(entity.getNative()));
+			}
 
 			ImGui::EndPopup();
 		}
@@ -69,17 +81,6 @@ namespace assec::editor
 		if (opened)
 		{
 			ImGui::TreePop();
-		}
-
-		if (entityDeleted)
-		{
-			if (this->m_SelectedEntity == entity)
-			{
-				this->m_SelectedEntity = {};
-				this->m_SelectionCallback(this->m_SelectedEntity);
-			}
-			m_Context->destroyEntity(entity);
-
 		}
 	}
 

@@ -6,7 +6,6 @@
 #include <glad/glad.h>
 
 #include "graphics/Monitor.h"
-#include "graphics/openGL/OpenGLGraphicsContext.h"
 
 namespace assec::graphics
 {
@@ -46,6 +45,7 @@ namespace assec::graphics
 		virtual const int getMouseButtonState(const int& button) const override;
 		virtual void setClipboardString(const char* string) const override;
 		virtual const char* getClipboardString() const override;
+		virtual void setIcon(const std::vector<std::string>& path) const override;
 	protected:
 		virtual void* createWindow(const uint32_t& width, const uint32_t& height, const std::string& title, const Monitor* monitor, const Window* share) const override;
 		virtual void setupCallbacks() const override;

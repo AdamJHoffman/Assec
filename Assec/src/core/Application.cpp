@@ -3,7 +3,7 @@
 #include "Application.h"
 #include "Input.h"
 
-#include "graphics/glfw/GLFWWindowContext.h"
+#include "platform/glfw/GLFWWindowContext.h"
 #include "graphics/WindowManager.h"
 #include "graphics/renderer/Renderer.h"
 
@@ -34,19 +34,48 @@ namespace assec
 		{
 			for (auto& event : this->AC_EVENT_QUEUE->getEventQueue())
 			{
-				AC_CORE_TRACE(event->toString());
-				this->AC_LAYER_STACK->onEvent(event);
-				this->m_ActiveScene->onEvent(event);
+				//AC_CORE_TRACE(event->toString());
+				this->AC_LAYER_STACK->onEvent(*event);
+				this->m_ActiveScene->onEvent(*event);
 			}
 		}
 		this->AC_EVENT_QUEUE->clear();
 		util::FileDialogs::processDialogRequests();
+	}
+	void Application::onTransaction(ref<transactions::Transaction> transaction)
+	{
+		TIME_FUNCTION;
+		this->AC_TRANSACTION_QUEUE->submit(transaction);
+	}
+	void Application::handleTransactions()
+	{
+		TIME_FUNCTION;
+		auto tempQueue = this->AC_TRANSACTION_QUEUE->getTransactionqueue();
+		size_t size = tempQueue.size();
+		for (size_t i = 0; i < size; i++)
+		{
+			auto& transaction = tempQueue[i];
+			AC_CORE_TRACE(transaction->toString());
+			transactions::Dispatcher dispatcher = transactions::Dispatcher(*transaction);
+			dispatcher.dispatch<transactions::AbstractValueChangedTransaction>([](const transactions::AbstractValueChangedTransaction& valueChanged)
+				{
+					valueChanged.changeValue();
+				});
+			this->AC_LAYER_STACK->onTransaction(*transaction);
+			this->m_ActiveScene->onTransaction(*transaction);
+			this->AC_TRANSACTION_ARCHIVE->submit(transaction);
+		}
+		this->AC_TRANSACTION_QUEUE->getTransactionqueue().erase(this->AC_TRANSACTION_QUEUE->getTransactionqueue().begin(), this->AC_TRANSACTION_QUEUE->getTransactionqueue().begin() + size);
 	}
 	void Application::run()
 	{
 		auto videomode = graphics::WindowManager::m_WindowContext->getPrimaryMonitor()->m_CurrentVideoMode;
 		auto& window = graphics::WindowManager::addWindow(videomode.m_Width, videomode.m_Height, "Assec", nullptr, nullptr);
 		graphics::Renderer::init(BATCH_MAX_SIZE, window.getWindowData().m_GraphicsContext->getContextData().m_MaxTextures);
+		this->m_ActiveScene->setTransactionCallback([&](ref<transactions::Transaction> transaction)
+			{
+				this->onTransaction(transaction);
+			});
 		this->init();
 		float lastFrameTime = 0;
 		while (!graphics::WindowManager::empty())
@@ -61,6 +90,7 @@ namespace assec
 				this->onEvent(std::make_shared<events::AppRenderEvent>(timeStep));
 			}
 			graphics::WindowManager::prepare();
+			this->handleTransactions();
 			this->handleEvents();
 			graphics::WindowManager::finish();
 			if (this->m_ShouldClose)
@@ -76,8 +106,6 @@ namespace assec
 	}
 	void Application::cleanup() const
 	{
-		delete this->AC_LAYER_STACK;
-		delete this->AC_EVENT_QUEUE;
 		util::Profiler::getProfiler().endSession();
 	}
 } // namespace assec

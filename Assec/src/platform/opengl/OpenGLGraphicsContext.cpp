@@ -17,7 +17,7 @@ namespace assec::graphics
 	const void OpenGLGraphicsContext::init() const
 	{
 		TIME_FUNCTION;
-		AC_CORE_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Assertion failed: {0}", "failed to initialize OpenGL");
+		AC_CORE_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Assertion failed: failed to initialize OpenGL");
 		int texture_units;
 		GLCall(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units));
 		this->m_ContextData = { (const char*)glGetString(GL_VENDOR), (const char*)glGetString(GL_RENDERER),
@@ -82,10 +82,15 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		return std::make_shared<OpenGLShaderProgram>(source);
 	}
-	ref<Texture2D> OpenGLGraphicsContext::createTexture2D(const void* data, const Texture::TextureProps& props) const
+	ref<Texture2D> OpenGLGraphicsContext::createTexture2D(const uint32_t& width, const uint32_t& height, const graphics::Texture::TextureProps& props) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLTexture2D>(data, props);
+		return std::make_shared<OpenGLTexture2D>(width, height, props);
+	}
+	ref<Texture2D> OpenGLGraphicsContext::createTexture2D(const std::string& path, const graphics::Texture::TextureProps& props) const
+	{
+		TIME_FUNCTION;
+		return std::make_shared<OpenGLTexture2D>(path, props);
 	}
 	ref<FrameBuffer> OpenGLGraphicsContext::createFrameBuffer(const FrameBuffer::FrameBufferProps& frameBufferProps) const
 	{
@@ -157,8 +162,23 @@ namespace assec::graphics
 		case Type::LINEAR_MIPMAP_LINEAR:
 			return GL_LINEAR_MIPMAP_LINEAR;
 			break;
+		case Type::RED:
+			return GL_RED;
+			break;
+		case Type::R8:
+			return GL_R8;
+			break;
+		case Type::RG:
+			return GL_RG;
+			break;
+		case Type::RG8:
+			return GL_RG8;
+			break;
 		case Type::RGB:
 			return GL_RGB;
+			break;
+		case Type::RGB8:
+			return GL_RGB8;
 			break;
 		case Type::RGBA:
 			return GL_RGBA;
@@ -172,7 +192,7 @@ namespace assec::graphics
 		case Type::DEPTH_STENCIL:
 			return GL_DEPTH_STENCIL;
 			break;
-		case Type::COLOR_ATTACHMENT_0:
+		case Type::COLOR_ATTACHMENT0:
 			return GL_COLOR_ATTACHMENT0;
 			break;
 		case Type::DEPTH_STENCIL_ATTACHMENT:
@@ -180,6 +200,111 @@ namespace assec::graphics
 			break;
 		default:
 			return NULL;
+			break;
+		}
+	}
+	Type fromOpenGLType(const uint32_t& type)
+	{
+		switch (type)
+		{
+		case GL_FLOAT:
+			return Type::FLOAT;
+			break;
+		case GL_UNSIGNED_INT:
+			return Type::UNSIGNED_INT;
+			break;
+		case GL_UNSIGNED_BYTE:
+			return Type::UNSIGNED_BYTE;
+			break;
+		case GL_UNSIGNED_INT_24_8:
+			return Type::UNSIGNED_INT_24_8;
+			break;
+		case GL_VERTEX_SHADER:
+			return Type::VERTEX_SHADER;
+			break;
+		case GL_FRAGMENT_SHADER:
+			return Type::FRAGMENT_SHADER;
+			break;
+		case GL_DEPTH_TEST:
+			return Type::DEPTH_TEST;
+			break;
+		case GL_LESS:
+			return Type::LESS;
+			break;
+		case GL_STATIC_DRAW:
+			return Type::STATIC_DRAW;
+			break;
+		case GL_DYNAMIC_DRAW:
+			return Type::DYNAMIC_DRAW;
+			break;
+		case GL_REPEAT:
+			return Type::REPEAT;
+			break;
+		case GL_MIRRORED_REPEAT:
+			return Type::MIRRORED_REPEAT;
+			break;
+		case GL_CLAMP_TO_EDGE:
+			return Type::CLAMP_TO_EDGE;
+			break;
+		case GL_CLAMP_TO_BORDER:
+			return Type::CLAMP_TO_BORDER;
+			break;
+		case GL_LINEAR:
+			return Type::LINEAR;
+			break;
+		case GL_NEAREST:
+			return Type::NEAREST;
+			break;
+		case GL_NEAREST_MIPMAP_NEAREST:
+			return Type::NEAREST_MIPMAP_NEAREST;
+			break;
+		case GL_LINEAR_MIPMAP_NEAREST:
+			return Type::LINEAR_MIPMAP_NEAREST;
+			break;
+		case GL_NEAREST_MIPMAP_LINEAR:
+			return Type::NEAREST_MIPMAP_LINEAR;
+			break;
+		case GL_LINEAR_MIPMAP_LINEAR:
+			return Type::LINEAR_MIPMAP_LINEAR;
+			break;
+		case GL_RED:
+			return Type::RED;
+			break;
+		case GL_R8:
+			return Type::R8;
+			break;
+		case GL_RG:
+			return Type::RG;
+			break;
+		case GL_RG8:
+			return Type::RG8;
+			break;
+		case GL_RGB:
+			return Type::RGB;
+			break;
+		case GL_RGB8:
+			return Type::RGB8;
+			break;
+		case GL_RGBA:
+			return Type::RGBA;
+			break;
+		case GL_RGBA8:
+			return Type::RGBA8;
+			break;
+		case GL_DEPTH24_STENCIL8:
+			return Type::DEPTH24_STENCIL8;
+			break;
+		case GL_DEPTH_STENCIL:
+			return Type::DEPTH_STENCIL;
+			break;
+		case GL_COLOR_ATTACHMENT0:
+			return Type::COLOR_ATTACHMENT0;
+			break;
+		case GL_DEPTH_STENCIL_ATTACHMENT:
+			return Type::DEPTH_STENCIL_ATTACHMENT;
+			break;
+		default:
+			return Type::NONE;
 			break;
 		}
 	}

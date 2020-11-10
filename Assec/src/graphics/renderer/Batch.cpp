@@ -21,7 +21,7 @@ namespace assec::graphics
 			this->m_Textures.push_back(renderable.m_Material.m_Texture);
 			texture = this->m_Textures.end() - 1;
 		}
-		renderable.m_Mesh.setTextureIndex(static_cast<int>(std::distance(this->m_Textures.begin(), texture)));
+		renderable.m_Mesh.setTextureIndex(static_cast<float>(std::distance(this->m_Textures.begin(), texture)));
 		this->m_Vertices.insert(this->m_Vertices.end(), renderable.m_Mesh.getVertices().begin(), renderable.m_Mesh.getVertices().end());
 		for (int i : renderable.m_Mesh.getIndices()) { this->m_Indices.push_back(indexOffset + i); }
 	}

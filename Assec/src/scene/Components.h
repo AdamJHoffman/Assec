@@ -18,15 +18,13 @@
 
 namespace assec::scene
 {
-
 	struct TagComponent
 	{
 		std::string m_Tag;
 
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
-		TagComponent(const std::string& tag)
-			: m_Tag(std::string(tag)) {}
+		TagComponent(const std::string& tag): m_Tag(std::string(tag)) {}
 
 		operator const char* () const { return this->m_Tag.c_str(); }
 	};
@@ -58,7 +56,7 @@ namespace assec::scene
 
 	struct CameraComponent
 	{
-		Camera m_Camera = Camera();
+		Camera m_Camera;
 		Camera::projectionType m_Type = Camera::projectionType::PERSPECTIVE;
 		bool m_Primary = false, m_FixedAspectRatio = false;
 
@@ -121,6 +119,7 @@ namespace assec::scene
 			case Camera::projectionType::PERSPECTIVE:
 				this->m_Camera.m_Projection = glm::perspective(this->m_PerspectiveFov,
 					this->m_AspectRatio, this->m_PerspectiveNear, this->m_PerspectiveFar) * glm::inverse(this->viewMatrix);
+				break;
 			}
 		}
 
@@ -129,9 +128,6 @@ namespace assec::scene
 			this->viewMatrix = viewmatrix;
 			this->recalculateProjection();
 		}
-
-		operator Camera& () { return m_Camera; }
-		operator const Camera& () const { return m_Camera; }
 
 		float m_OrthographicSize = 10.0f, m_OrthographicNear = -1.0f, m_OrthographicFar = 1.0f, m_AspectRatio = 1.0f;
 		float m_PerspectiveFov = 90.0f, m_PerspectiveNear = 0.1f, m_PerspectiveFar = 100.0f;
@@ -142,13 +138,12 @@ namespace assec::scene
 	struct MeshComponent
 	{
 		ref<graphics::Mesh> m_Mesh = std::make_shared<graphics::Mesh>();
-		std::string m_Path = "";
+		std::string m_Path;
 
+		MeshComponent() = default;
 		~MeshComponent() {}
 		MeshComponent(const std::vector<graphics::Vertex>& vertices, const std::vector<int>& indices)
 			: m_Mesh(std::make_shared<graphics::Mesh>(vertices, indices)) {}
-		MeshComponent()
-			: m_Mesh(std::make_shared<graphics::Mesh>()) {}
 		MeshComponent(const MeshComponent& other)
 			: m_Mesh(std::make_shared<graphics::Mesh>(other.m_Mesh->getVertices(), other.m_Mesh->getIndices())), m_Path(other.m_Path) {}
 
@@ -156,16 +151,15 @@ namespace assec::scene
 		operator const graphics::Mesh& () const { return *this->m_Mesh; }
 	};
 
-	struct MaterialComponent
+	struct MaterialComponent 
 	{
-		ref<graphics::Material> m_Material = nullptr;
+		ref<graphics::Material> m_Material = std::make_shared<graphics::Material>();
 		std::string m_TexturePath = "", m_ShaderPath = "";
 
-		~MaterialComponent() { }
+		MaterialComponent() = default;
+		~MaterialComponent() {}
 		MaterialComponent(ref<graphics::ShaderProgram> shaderProgram, ref<graphics::Texture> texture)
 			: m_Material(std::make_shared<graphics::Material>(shaderProgram, texture)) {}
-		MaterialComponent()
-			: m_Material(std::make_shared<graphics::Material>()) {}
 		MaterialComponent(const MaterialComponent& other)
 			: m_Material(std::make_shared<graphics::Material>(other.m_Material->m_ShaderProgram, other.m_Material->m_Texture)), m_TexturePath(other.m_TexturePath), m_ShaderPath(other.m_ShaderPath) {}
 

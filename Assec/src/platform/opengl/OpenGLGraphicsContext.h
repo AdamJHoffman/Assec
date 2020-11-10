@@ -8,7 +8,7 @@
                     x;\
                     {\
                     uint32_t error = glGetError();\
-					AC_CORE_ASSERT(!error, "Assertion failed: [OPENGL ERROR {0}] in function \"{1}\" on line {2} in file \"{3}\"", error, #x, __LINE__, __FILE__)\
+					AC_CORE_ASSERT(!error, ("Assertion failed: [OPENGL ERROR {0}] in function \"{1}\" on line {2} in file \"{3}\"", error, #x, __LINE__, __FILE__))\
 					}
 #else
 #define GLCall(x) x
@@ -33,9 +33,11 @@ namespace assec::graphics
 		virtual ref<Shader> createShader(const std::string& source, const Type& type) const override;
 		virtual ref<ShaderProgram> createShaderProgram(const std::string& vertexSource, const std::string& fragmentSource) const override;
 		virtual ref<ShaderProgram> createShaderProgram(const std::string& source) const override;
-		virtual ref<Texture2D> createTexture2D(const void* data, const Texture::TextureProps& props) const override;
+		virtual ref<Texture2D> createTexture2D(const uint32_t& width, const uint32_t& height, const graphics::Texture::TextureProps& props) const override;
+		virtual ref<Texture2D> createTexture2D(const std::string& path, const graphics::Texture::TextureProps& props) const override;
 		virtual ref<FrameBuffer> createFrameBuffer(const FrameBuffer::FrameBufferProps& frameBufferProps) const override;
 	};
 
-	uint32_t toOpenGLType(const Type& type);
+	uint32_t toOpenGLType(const Type&);
+	Type fromOpenGLType(const uint32_t&);
 } // assec::graphics

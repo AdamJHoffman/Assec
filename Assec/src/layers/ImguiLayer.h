@@ -9,7 +9,7 @@ namespace assec
 	public:
 		ImGuiLayer(assec::Application& application);
 		~ImGuiLayer();
-		virtual void onEvent(const ref<events::Event> event) final override;
+		virtual void onEvent(const events::Event& event) final override;
 		virtual void onAttach() final override;
 		virtual void onDetach() final override;
 		void BlockEvents(bool block) { this->m_BlockEvents = block; }

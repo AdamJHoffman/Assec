@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "graphics/glfw/GLFWWindow.h"
+#include "GLFWWindow.h"
 
 namespace assec::graphics
 {

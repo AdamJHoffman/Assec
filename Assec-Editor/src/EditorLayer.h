@@ -8,7 +8,8 @@ namespace assec::editor
 	public:
 		EditorLayer(const assec::Application& application, ref<graphics::FrameBuffer> frameBuffer);
 		~EditorLayer();
-		virtual void onEvent(const ref<events::Event> event) override;
+		virtual void onEvent(const events::Event& event) override;
+		virtual void onTransaction(const transactions::Transaction& event) override;
 		virtual void onAttach() override;
 		virtual void onDetach() override;
 	private:

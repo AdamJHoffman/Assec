@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#define TIME_FUNCTION assec::util::Timer timer = assec::util::Timer(__FUNCSIG__)
+
 namespace assec::util
 {
 	class Profiler

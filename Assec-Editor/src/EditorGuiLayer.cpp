@@ -3,7 +3,7 @@
 #include <imgui.h>
 
 #include "core/Input.h"
-#include "core/Config.h"
+#include "core/Base.h"
 
 #include "util/Loader.h"
 #include "util/PlatformUtils.h"
@@ -21,6 +21,14 @@ namespace assec::editor
 		this->m_SceneHierarchyPanel.setSelectionCallback([&](const scene::Entity& entity)
 			{
 				this->m_InspectorPanel.setSelectedEntity(entity);
+			});
+		this->m_SceneHierarchyPanel.setTransactionCallback([&](ref<transactions::Transaction> transaction) 
+			{
+				this->m_Application->onTransaction(transaction);
+			});
+		this->m_InspectorPanel.setTransactionCallback([&](ref<transactions::Transaction> transaction)
+			{
+				this->m_Application->onTransaction(transaction);
 			});
 	}
 	void EditorGuiLayer::onDetach0()
@@ -100,7 +108,7 @@ namespace assec::editor
 				this->m_FrameBuffer->getFrameBufferProps().m_Width = static_cast<uint32_t>(viewportPanelSize.x);
 				this->m_FrameBuffer->getFrameBufferProps().m_Height = static_cast<uint32_t>(viewportPanelSize.y);
 
-				ImGui::Image((void*)static_cast<intptr_t>(this->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT_0).m_RendererID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				ImGui::Image((void*)static_cast<intptr_t>(this->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT0).getNativeTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 				ImGui::End();
 				ImGui::PopStyleVar();
 
@@ -130,7 +138,16 @@ namespace assec::editor
 				case KEY::KEY_S:
 				{
 					if (control && shift)
+						this->saveSceneAs();
+					else if (control && !shift)
 						this->saveScene();
+					return true;
+					break;
+				}
+				case KEY::KEY_Y:
+				{
+					if (control)
+						//actions::ActionQueue::inverseBack();
 					return true;
 					break;
 				}
@@ -139,9 +156,17 @@ namespace assec::editor
 			});
 
 	}
+	void EditorGuiLayer::onTransaction(const transactions::Transaction& event)
+	{
+
+	}
 	void EditorGuiLayer::newScene()
 	{
 		this->m_Application->m_ActiveScene = std::make_shared<scene::Scene>();
+		this->m_Application->m_ActiveScene->setTransactionCallback([&](ref<transactions::Transaction> transaction)
+			{
+				this->m_Application->onTransaction(transaction);
+			});
 		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
 	}
 	void EditorGuiLayer::loadScene()
@@ -153,6 +178,15 @@ namespace assec::editor
 					this->newScene();
 					scene::SceneSerializer serializer = scene::SceneSerializer(this->m_Application->m_ActiveScene);
 					serializer.deserialize(filepath);
+					this->m_Application->m_ActiveScene->getSaveFilePath() = filepath;
+					std::vector<std::string> lines;
+					std::istringstream f(filepath);
+					std::string line;
+					while (getline(f, line, '\\')) {
+						lines.push_back(line);
+					}
+					std::string title = std::string("Assec ") + std::string(" - ") + std::string(lines.back()) + std::string("*");
+					graphics::WindowManager::getMainWindow().setTitle(title.c_str());
 				}
 			}
 			});
@@ -160,13 +194,24 @@ namespace assec::editor
 	}
 	void EditorGuiLayer::saveScene()
 	{
+		
+		if (!this->m_Application->m_ActiveScene->getSaveFilePath().empty())
+		{
+				scene::SceneSerializer serializer(this->m_Application->m_ActiveScene);
+				serializer.serialize(this->m_Application->m_ActiveScene->getSaveFilePath());
+				graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().m_Title.substr(0, graphics::WindowManager::getMainWindow().getWindowData().m_Title.size()-1).c_str());
+		}
+	}
+	void EditorGuiLayer::saveSceneAs()
+	{
 		util::FileDialogs::SaveFile({ "Assec Scene (*.assec)\0*.assec\0", [&](const char* filepath)
 			{
 			if (strlen(filepath) != 0)
 				{
 					scene::SceneSerializer serializer(this->m_Application->m_ActiveScene);
 					serializer.serialize(filepath);
-				}
+					graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().m_Title.substr(0, graphics::WindowManager::getMainWindow().getWindowData().m_Title.size() - 1).c_str());
+			}
 			}
 			});
 	}

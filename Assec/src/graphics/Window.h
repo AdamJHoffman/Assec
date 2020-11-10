@@ -15,7 +15,7 @@ namespace assec::graphics
 	{
 		WindowData(const uint32_t& width, const uint32_t& height, const std::string& title, const EventCallBackFn eventCallBack, const GraphicsContext* graphicsContext, const void* window) : m_Width(width), m_Height(height), m_Title(title), m_Open(true), m_EventCallBack(eventCallBack), m_GraphicsContext(graphicsContext), m_NativeWindow(window), m_SwapInterval(1) { TIME_FUNCTION; }
 		uint32_t m_Width, m_Height;
-		std::string m_Title;
+		mutable std::string m_Title;
 		bool m_Open;
 		EventCallBackFn m_EventCallBack;
 		const GraphicsContext* m_GraphicsContext;
@@ -63,6 +63,7 @@ namespace assec::graphics
 		virtual const int getMouseButtonState(const int& button) const = 0;
 		virtual void setClipboardString(const char* string) const = 0;
 		virtual const char* getClipboardString() const = 0;
+		virtual void setIcon(const std::vector<std::string>& path) const = 0;
 		inline const bool& isMinimized() const { return this->m_Minimzed; }
 		inline void setMinimized(const bool& minimized) { this->m_Minimzed = minimized; }
 	protected:

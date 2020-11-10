@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "core/Config.h"
+#include "core/Base.h"
 
 #include "graphics/Texture.h"
 

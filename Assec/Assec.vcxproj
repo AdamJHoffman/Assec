@@ -76,7 +76,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;AC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;vendor\tinygltf;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -96,7 +96,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;AC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;vendor\tinygltf;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -120,7 +120,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;AC_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;AC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;AC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\stb;vendor\glfw\include;vendor\glad\include;vendor\imgui;vendor\glm;vendor\entt\single_include;vendor\tinygltf;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -141,9 +141,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\acpch.h" />
+    <ClInclude Include="src\transactions\Transaction.h" />
     <ClInclude Include="src\core\Application.h" />
-    <ClInclude Include="src\core\Config.h" />
+    <ClInclude Include="src\core\Assert.h" />
+    <ClInclude Include="src\core\Base.h" />
     <ClInclude Include="src\core\Input.h" />
+    <ClInclude Include="src\core\KeyCode.h" />
+    <ClInclude Include="src\core\PlatformDetection.h" />
     <ClInclude Include="src\event\EngineEvents.h" />
     <ClInclude Include="src\event\Event.h" />
     <ClInclude Include="src\event\EventQueue.h" />
@@ -159,14 +163,6 @@
     <ClInclude Include="src\graphics\Window.h" />
     <ClInclude Include="src\graphics\WindowContext.h" />
     <ClInclude Include="src\graphics\WindowManager.h" />
-    <ClInclude Include="src\graphics\glfw\GLFWMonitor.h" />
-    <ClInclude Include="src\graphics\glfw\GLFWWindow.h" />
-    <ClInclude Include="src\graphics\glfw\GLFWWindowContext.h" />
-    <ClInclude Include="src\graphics\opengl\OpenGLBuffer.h" />
-    <ClInclude Include="src\graphics\opengl\OpenGLGraphicsContext.h" />
-    <ClInclude Include="src\graphics\opengl\OpenGLShader.h" />
-    <ClInclude Include="src\graphics\opengl\OpenGLTexture.h" />
-    <ClInclude Include="src\graphics\opengl\OpenGLVertexArray.h" />
     <ClInclude Include="src\graphics\renderer\Batch.h" />
     <ClInclude Include="src\graphics\renderer\Material.h" />
     <ClInclude Include="src\graphics\renderer\Mesh.h" />
@@ -177,6 +173,14 @@
     <ClInclude Include="src\layers\Layer.h" />
     <ClInclude Include="src\layers\LayerStack.h" />
     <ClInclude Include="src\log\Logger.h" />
+    <ClInclude Include="src\platform\glfw\GLFWMonitor.h" />
+    <ClInclude Include="src\platform\glfw\GLFWWindow.h" />
+    <ClInclude Include="src\platform\glfw\GLFWWindowContext.h" />
+    <ClInclude Include="src\platform\opengl\OpenGLBuffer.h" />
+    <ClInclude Include="src\platform\opengl\OpenGLGraphicsContext.h" />
+    <ClInclude Include="src\platform\opengl\OpenGLShader.h" />
+    <ClInclude Include="src\platform\opengl\OpenGLTexture.h" />
+    <ClInclude Include="src\platform\opengl\OpenGLVertexArray.h" />
     <ClInclude Include="src\scene\Camera.h" />
     <ClInclude Include="src\scene\Components.h" />
     <ClInclude Include="src\scene\Entity.h" />
@@ -601,6 +605,7 @@
     <ClCompile Include="src\acpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\transactions\Transaction.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\ImGuiImplmentation.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
@@ -608,14 +613,6 @@
     <ClCompile Include="src\core\TinyGLTFImplementation.cpp" />
     <ClCompile Include="src\event\EventQueue.cpp" />
     <ClCompile Include="src\graphics\WindowManager.cpp" />
-    <ClCompile Include="src\graphics\glfw\GLFWMonitor.cpp" />
-    <ClCompile Include="src\graphics\glfw\GLFWWindow.cpp" />
-    <ClCompile Include="src\graphics\glfw\GLFWWindowContext.cpp" />
-    <ClCompile Include="src\graphics\opengl\OpenGLBuffer.cpp" />
-    <ClCompile Include="src\graphics\opengl\OpenGLGraphicsContext.cpp" />
-    <ClCompile Include="src\graphics\opengl\OpenGLShader.cpp" />
-    <ClCompile Include="src\graphics\opengl\OpenGLTexture.cpp" />
-    <ClCompile Include="src\graphics\opengl\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\graphics\renderer\Batch.cpp" />
     <ClCompile Include="src\graphics\renderer\Material.cpp" />
     <ClCompile Include="src\graphics\renderer\Mesh.cpp" />
@@ -624,12 +621,22 @@
     <ClCompile Include="src\layers\ImguiLayer.cpp" />
     <ClCompile Include="src\layers\LayerStack.cpp" />
     <ClCompile Include="src\log\Logger.cpp" />
+    <ClCompile Include="src\platform\glfw\GLFWMonitor.cpp" />
+    <ClCompile Include="src\platform\glfw\GLFWWindow.cpp" />
+    <ClCompile Include="src\platform\glfw\GLFWWindowContext.cpp" />
+    <ClCompile Include="src\platform\opengl\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\platform\opengl\OpenGLGraphicsContext.cpp" />
+    <ClCompile Include="src\platform\opengl\OpenGLShader.cpp" />
+    <ClCompile Include="src\platform\opengl\OpenGLTexture.cpp" />
+    <ClCompile Include="src\platform\opengl\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\platform\windows\WindowsUtils.cpp" />
     <ClCompile Include="src\scene\Camera.cpp" />
     <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\scene\SceneSerializer.cpp" />
+    <ClCompile Include="src\scene\ScriptableEntity.cpp" />
     <ClCompile Include="src\util\Loader.cpp" />
+    <ClCompile Include="src\util\Orm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\glfw\GLFW.vcxproj">

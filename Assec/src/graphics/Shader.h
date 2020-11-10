@@ -3,6 +3,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "core/Base.h"
+#include "core/KeyCode.h"
+
 namespace assec::graphics
 {
 	class Shader

@@ -1,12 +1,16 @@
 ﻿#include "acpch.h"
 
 #include <yaml-cpp/yaml.h>
+#include <typeinfo>
+#include <type_traits>
 
 #include "graphics/WindowManager.h"
 
 #include "SceneSerializer.h"
 #include "Entity.h"
 #include "Components.h"
+
+#include "transactions/Transaction.h"
 
 #include "util/Loader.h"
 
@@ -124,7 +128,7 @@ namespace assec::scene
 
 			out << YAML::Key << "Camera" << YAML::Value;
 			out << YAML::BeginMap; // Camera
-			out << YAML::Key << "ProjectionType" << YAML::Value << (int)cameraComponent.m_Type;
+			out << YAML::Key << "ProjectionType" << YAML::Value << static_cast<int>(cameraComponent.m_Type);
 			out << YAML::Key << "PerspectiveFOV" << YAML::Value << cameraComponent.m_PerspectiveFov;
 			out << YAML::Key << "PerspectiveNear" << YAML::Value << cameraComponent.m_PerspectiveNear;
 			out << YAML::Key << "PerspectiveFar" << YAML::Value << cameraComponent.m_PerspectiveFar;
@@ -137,6 +141,17 @@ namespace assec::scene
 			out << YAML::Key << "FixedAspectRatio" << YAML::Value << cameraComponent.m_FixedAspectRatio;
 
 			out << YAML::EndMap; // CameraComponent
+		}
+
+		if (entity.hasComponent<NativeScriptComponent>())
+		{
+			out << YAML::Key << "NativeScriptComponent";
+			out << YAML::BeginMap; // NativeScriptComponent
+
+			auto& nativeScriptComponent = entity.getComponent<NativeScriptComponent>();
+			out << YAML::Key << "Type" << YAML::Value << typeid(*nativeScriptComponent.m_Instance).name();
+
+			out << YAML::EndMap; // NativeScriptComponent
 		}
 
 		if (entity.hasComponent<MeshComponent>())
@@ -188,7 +203,7 @@ namespace assec::scene
 
 	void SceneSerializer::serializeRuntime(const std::string& path)
 	{
-		AC_CORE_ASSERT_(false, "not implemeneted");
+		AC_CORE_ASSERT(false, "not implemeneted");
 	}
 
 	bool SceneSerializer::deserialize(const std::string& path)
@@ -229,47 +244,56 @@ namespace assec::scene
 				auto cameraComponent = entity["CameraComponent"];
 				if (cameraComponent)
 				{
-					auto& cc = deserializedEntity.addComponent<CameraComponent>();
+					this->m_Scene->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<CameraComponent>>(deserializedEntity, [=](CameraComponent& component) 
+						{
+							auto& cameraProps = cameraComponent["Camera"];
+							component.m_Type = static_cast<Camera::projectionType>(cameraProps["ProjectionType"].as<int>());
 
-					auto& cameraProps = cameraComponent["Camera"];
-					cc.m_Type = static_cast<Camera::projectionType>(cameraProps["ProjectionType"].as<int>());
+							component.m_PerspectiveFov = cameraProps["PerspectiveFOV"].as<float>();
+							component.m_PerspectiveNear = cameraProps["PerspectiveNear"].as<float>();
+							component.m_PerspectiveFar = cameraProps["PerspectiveFar"].as<float>();
 
-					cc.m_PerspectiveFov = cameraProps["PerspectiveFOV"].as<float>();
-					cc.m_PerspectiveNear = cameraProps["PerspectiveNear"].as<float>();
-					cc.m_PerspectiveFar = cameraProps["PerspectiveFar"].as<float>();
+							component.m_OrthographicSize = cameraProps["OrthographicSize"].as<float>();
+							component.m_OrthographicNear = cameraProps["OrthographicNear"].as<float>();
+							component.m_OrthographicFar = cameraProps["OrthographicFar"].as<float>();
 
-					cc.m_OrthographicSize = cameraProps["OrthographicSize"].as<float>();
-					cc.m_OrthographicNear = cameraProps["OrthographicNear"].as<float>();
-					cc.m_OrthographicFar = cameraProps["OrthographicFar"].as<float>();
+							component.m_Primary = cameraComponent["Primary"].as<bool>();
+							component.m_FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+						}));
+				}
 
-					cc.m_Primary = cameraComponent["Primary"].as<bool>();
-					cc.m_FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+				auto nativeScriptComponent = entity["NativeScriptComponent"];
+				if (nativeScriptComponent)
+				{
+					this->m_Scene->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<NativeScriptComponent>>(deserializedEntity, [=](NativeScriptComponent& component)
+						{
+							std::string type = nativeScriptComponent["Type"].as<std::string>();
+							auto scriptable = ScriptableEntity::s_Scripts[type];
+							scriptable->bind(component);
+						}));
 				}
 
 				auto meshComponent = entity["MeshComponent"];
 				if (meshComponent)
 				{
-					auto& mesh = deserializedEntity.addComponent<MeshComponent>();
-					mesh.m_Path = meshComponent["Path"].as<std::string>();
-					*mesh.m_Mesh = util::Loader::loadgltfMesh(mesh.m_Path.c_str())[0];
+					this->m_Scene->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<MeshComponent>>(deserializedEntity, [=](MeshComponent& component)
+						{
+							component.m_Path = meshComponent["Path"].as<std::string>();
+							*component.m_Mesh = util::Loader::loadgltfMesh(component.m_Path.c_str())[0];
+						}));
 				}
 
 				auto materialComponent = entity["MaterialComponent"];
 				if (materialComponent)
 				{
-					auto& material = deserializedEntity.addComponent<MaterialComponent>();
-					material.m_TexturePath = materialComponent["TexturePath"].as<std::string>();
-					material.m_ShaderPath = materialComponent["ShaderPath"].as<std::string>();
-
-					auto& data = assec::util::Loader::loadImage(material.m_TexturePath.c_str());
-
-
-					assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE, true, true };
-
-
-					auto& texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
-					auto& shader = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(assec::util::Loader::loadFile(material.m_ShaderPath.c_str()));
-					material.m_Material = std::make_shared<graphics::Material>(shader, texture);
+					this->m_Scene->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<MaterialComponent>>(deserializedEntity, [=](MaterialComponent& component)
+						{
+							component.m_TexturePath = materialComponent["TexturePath"].as<std::string>();
+							component.m_ShaderPath = materialComponent["ShaderPath"].as<std::string>();
+							auto& texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(component.m_TexturePath, graphics::Texture::TextureProps());
+							auto& shader = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(assec::util::Loader::loadFile(component.m_ShaderPath.c_str()));
+							component.m_Material = std::make_shared<graphics::Material>(shader, texture);
+						}));
 				}
 			}
 		}
@@ -278,7 +302,7 @@ namespace assec::scene
 	}
 	bool SceneSerializer::deserializeRuntime(const std::string& path)
 	{
-		AC_CORE_ASSERT_(false, "not implemeneted");
+		AC_CORE_ASSERT(false, "not implemeneted");
 		return false;
 	}
 }

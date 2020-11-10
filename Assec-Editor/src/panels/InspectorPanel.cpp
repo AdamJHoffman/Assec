@@ -19,6 +19,10 @@ namespace assec::editor
 	{
 		this->m_SelectedEntity = entity;
 	}
+	void InspectorPanel::setTransactionCallback(const std::function<void(ref<transactions::Transaction>)>& transactionCallback)
+	{
+		this->m_TransactionCallback = transactionCallback;
+	}
 	template<typename UIFunction>
 	void drawUIColumned(const char* label, int numOfElements, UIFunction uiFunction, float columnWidth = 150.0f)
 	{
@@ -41,7 +45,7 @@ namespace assec::editor
 		ImGui::PopID();
 	}
 	template<typename T, typename UIFunction>
-	void drawComponent(const char* name, scene::Entity entity, UIFunction uiFunction)
+	void InspectorPanel::drawComponent(const char* name, scene::Entity entity, UIFunction uiFunction)
 	{
 		const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 		if (entity.hasComponent<T>())
@@ -62,11 +66,10 @@ namespace assec::editor
 				ImGui::OpenPopup("ComponentSettings");
 			}
 
-			bool removeComponent = false;
 			if (ImGui::BeginPopup("ComponentSettings"))
 			{
 				if (ImGui::MenuItem("Remove component"))
-					removeComponent = true;
+					this->m_TransactionCallback(std::make_shared<transactions::ComponentRemovalTransaction<T>>(entity));
 
 				ImGui::EndPopup();
 			}
@@ -75,8 +78,6 @@ namespace assec::editor
 				uiFunction(component);
 				ImGui::TreePop();
 			}
-			if (removeComponent)
-				entity.removeComponent<T>();
 		}
 	}
 	void InspectorPanel::renderImGUI()
@@ -97,7 +98,7 @@ namespace assec::editor
 							}
 						});
 				});
-			drawComponent<scene::TransformComponent>("Transform Component", this->m_SelectedEntity, [](auto& component)
+			drawComponent<scene::TransformComponent>("Transform Component", this->m_SelectedEntity, [&](auto& component)
 				{
 					const char names[3][2] = { {"X"}, {"Y"}, {"Z"} };
 					const char ids[3][4] = { {"##X"}, {"##Y"}, {"##Z"} };
@@ -120,12 +121,14 @@ namespace assec::editor
 								ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[i][2]);
 								ImGui::PushFont(boldFont);
 								if (ImGui::Button(&names[i][0], buttonSize))
-									component.translation[i] = 0;
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.translation[i], 0.0f));
 								ImGui::PopFont();
 								ImGui::PopStyleColor(3);
 
 								ImGui::SameLine();
-								ImGui::DragFloat(&ids[i][0], &component.translation[i], 0.1f, 0.0f, 0.0f, "%.2f");
+								float value = component.translation[i];
+								if(ImGui::DragFloat(&ids[i][0], &value, 0.1f, 0.0f, 0.0f, "%.2f"))
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.translation[i], value));
 								ImGui::PopItemWidth();
 								if (i < numOfElements - 1)
 								{
@@ -150,12 +153,14 @@ namespace assec::editor
 								ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[i][2]);
 								ImGui::PushFont(boldFont);
 								if (ImGui::Button(&names[i][0], buttonSize))
-									component.rotation[i] = 0;
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.rotation[i], 0.0f));
 								ImGui::PopFont();
 								ImGui::PopStyleColor(3);
 
 								ImGui::SameLine();
-								ImGui::DragFloat(&ids[i][0], &component.rotation[i], 0.1f, 0.0f, 0.0f, "%.2f");
+								float value = component.rotation[i];
+								if (ImGui::DragFloat(&ids[i][0], &value, 0.1f, 0.0f, 0.0f, "%.2f"))
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.rotation[i], value));
 								ImGui::PopItemWidth();
 								if (i < numOfElements - 1)
 								{
@@ -180,12 +185,14 @@ namespace assec::editor
 								ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors[i][2]);
 								ImGui::PushFont(boldFont);
 								if (ImGui::Button(&names[i][0], buttonSize))
-									component.scale[i] = 1;
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.scale[i], 1.0f));
 								ImGui::PopFont();
 								ImGui::PopStyleColor(3);
 
 								ImGui::SameLine();
-								ImGui::DragFloat(&ids[i][0], &component.scale[i], 0.1f, 0.0f, 0.0f, "%.2f");
+								float value = component.scale[i];
+								if (ImGui::DragFloat(&ids[i][0], &value, 0.1f, 0.0f, 0.0f, "%.2f"))
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.scale[i], value));
 								ImGui::PopItemWidth();
 								if (i < numOfElements - 1)
 								{
@@ -195,7 +202,7 @@ namespace assec::editor
 
 						});
 				});
-			drawComponent<scene::NativeScriptComponent>("Native Script Component", this->m_SelectedEntity, [](auto& component)
+			drawComponent<scene::NativeScriptComponent>("Native Script Component", this->m_SelectedEntity, [&](auto& component)
 				{
 					auto& keys = util::Keys(component.m_Instance->getFields());
 					for (auto& key : keys)
@@ -208,35 +215,43 @@ namespace assec::editor
 								{
 									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
 										{
-											ImGui::DragFloat((std::string("##") + key).c_str(), &value);
+											float temp = value;
+											if(ImGui::DragFloat((std::string("##") + key).c_str(), &temp))
+												this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&value, temp));
 										});
 								});
 							dispatcher.dispatch<bool>([&](bool& value)
 								{
 									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
 										{
-											ImGui::Checkbox((std::string("##") + key).c_str(), &value);
+											bool temp = value;
+											if (ImGui::Checkbox((std::string("##") + key).c_str(), &temp))
+												this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<bool>>(&value, temp));
 										});
 								});
 							dispatcher.dispatch<int>([&](int& value)
 								{
 									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
 										{
-											ImGui::DragInt((std::string("##") + key).c_str(), &value);
+											int temp = value;
+											if (ImGui::DragInt((std::string("##") + key).c_str(), &temp))
+												this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<int>>(&value, temp));
 										});
 								});
-							dispatcher.dispatch<char>([&](char& value)
+							dispatcher.dispatch<std::string>([&](std::string &value)
 								{
 									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
 										{
-											ImGui::Text((std::string("##") + key).c_str(), &value);
+											char* temp = const_cast<char*>(value.c_str());
+											if (ImGui::InputText((std::string("##") + key).c_str() , temp, sizeof(temp)))
+												this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&value, std::string(temp)));
 										});
 								});
 						}
 					}
 
 				});
-			drawComponent<scene::MeshComponent>("Mesh Component", this->m_SelectedEntity, [](auto& component)
+			drawComponent<scene::MeshComponent>("Mesh Component", this->m_SelectedEntity, [&](auto& component)
 				{
 					drawUIColumned("path", 1, [&](auto& numOfElements)
 						{
@@ -244,15 +259,17 @@ namespace assec::editor
 							{
 								util::FileDialogs::OpenFile({ "gltf\0*.gltf\0glb\0*.glb\0", [&](const char* filepath)
 									   {
-										   component.m_Path = filepath;
-										   auto& mesh = util::Loader::loadgltfMesh(component.m_Path.c_str());
-										   *component.m_Mesh = mesh[0];
+										   this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_Path, filepath, [&](std::string& path) 
+											   {
+													auto& mesh = util::Loader::loadgltfMesh(path.c_str());
+													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<graphics::Mesh>>(&*component.m_Mesh, mesh[0]));
+											   }));
 									   }
 									});
 							}
 						});
 				});
-			drawComponent<scene::MaterialComponent>("Material Component", this->m_SelectedEntity, [](auto& component)
+			drawComponent<scene::MaterialComponent>("Material Component", this->m_SelectedEntity, [&](auto& component)
 				{
 					drawUIColumned("texture", 1, [&](auto& numOfElements)
 						{
@@ -260,11 +277,12 @@ namespace assec::editor
 							{
 								util::FileDialogs::OpenFile({ "jpg\0*.jpg\0png\0*.png*\0", [&](const char* filepath)
 									   {
-										   component.m_TexturePath = filepath;
-										   std::replace(component.m_TexturePath.begin(), component.m_TexturePath.end(), '\\', '/');
-										   assec::util::Loader::TextureData data = assec::util::Loader::loadImage(component.m_TexturePath.c_str());
-										   assec::graphics::Texture::TextureProps props = { data.m_Width, data.m_Height, assec::Type::CLAMP_TO_EDGE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, Type::RGB, Type::RGB, Type::UNSIGNED_BYTE, true, true };
-										   component.m_Material->m_Texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(data.m_Data, props);
+										   this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_TexturePath, std::string(filepath), [&](std::string& path) 
+											   {
+													std::replace(path.begin(), path.end(), '\\', '/');
+													assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, Type::RGB8, Type::RGB, Type::UNSIGNED_BYTE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
+													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<ref<graphics::Texture>>>(&component.m_Material->m_Texture, graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(path, props)));
+											   }));
 									   }
 									});
 							}
@@ -275,10 +293,12 @@ namespace assec::editor
 							{
 								util::FileDialogs::OpenFile({ "shader\0*.shader\0", [&](const char* filepath)
 									   {
-										   component.m_ShaderPath = filepath;
-										   std::replace(component.m_ShaderPath.begin(), component.m_ShaderPath.end(), '\\', '/');
-										   component.m_Material->m_ShaderProgram = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(util::Loader::loadFile(component.m_ShaderPath.c_str()));
-									   }
+										   this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_ShaderPath, std::string(filepath),[&](std::string& path)
+											   {
+												   std::replace(path.begin(), path.end(), '\\', '/');
+												   this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<ref<graphics::ShaderProgram>>>(&component.m_Material->m_ShaderProgram, graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(util::Loader::loadFile(component.m_ShaderPath.c_str()))));
+												}));
+										}
 									});
 							}
 						});
@@ -287,7 +307,9 @@ namespace assec::editor
 				{
 					drawUIColumned("Primary", 1, [&](auto& numOfElements)
 						{
-							ImGui::Checkbox("##PrimaryBox", &component.m_Primary);
+							bool value = component.m_Primary;
+							if(ImGui::Checkbox("##PrimaryBox", &value))
+								this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<bool>>(&component.m_Primary, value));
 						});
 					drawUIColumned("Projection", 1, [&](auto& numOfElements)
 						{
@@ -301,7 +323,7 @@ namespace assec::editor
 									if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
 									{
 										currentProjectionTypeString = projectionTypeStrings[i];
-										component.m_Type = static_cast<scene::Camera::projectionType>(i);
+										this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<scene::Camera::projectionType>>(&component.m_Type, static_cast<scene::Camera::projectionType>(i)));
 									}
 
 									if (isSelected)
@@ -317,19 +339,19 @@ namespace assec::editor
 							{
 								float perspectiveVerticalFov = glm::degrees(component.m_PerspectiveFov);
 								if (ImGui::DragFloat("##FOVFloat", &perspectiveVerticalFov))
-									component.m_PerspectiveFov = glm::radians(perspectiveVerticalFov);
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.m_PerspectiveFov, glm::radians(perspectiveVerticalFov)));
 							});
 						drawUIColumned("Near", 1, [&](auto& numOfElements)
 							{
 								float perspectiveNear = component.m_PerspectiveNear;
 								if (ImGui::DragFloat("##NearFloat", &perspectiveNear))
-									component.m_PerspectiveNear = perspectiveNear;
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.m_PerspectiveNear, perspectiveNear));
 							});
 						drawUIColumned("Far", 1, [&](auto& numOfElements)
 							{
 								float perspectiveFar = component.m_PerspectiveFar;
 								if (ImGui::DragFloat("##FarFloat", &perspectiveFar))
-									component.m_PerspectiveFar = perspectiveFar;
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.m_PerspectiveFar, perspectiveFar));
 							});
 					}
 					if (component.m_Type == scene::Camera::projectionType::ORTHOGRAPHIC)
@@ -338,23 +360,25 @@ namespace assec::editor
 							{
 								float orthoSize = component.m_OrthographicSize;
 								if (ImGui::DragFloat("##SizeFloat", &orthoSize))
-									component.m_OrthographicSize = orthoSize;
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.m_OrthographicSize, orthoSize));
 							});
 						drawUIColumned("Near", 1, [&](auto& numOfElements)
 							{
 								float orthoNear = component.m_OrthographicNear;
 								if (ImGui::DragFloat("##NearFloat", &orthoNear))
-									component.m_OrthographicNear = orthoNear;
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.m_OrthographicNear, orthoNear));
 							});
 						drawUIColumned("Far", 1, [&](auto& numOfElements)
 							{
 								float orthoFar = component.m_OrthographicFar;
 								if (ImGui::DragFloat("##FarFloat", &orthoFar))
-									component.m_OrthographicFar = orthoFar;
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.m_OrthographicFar, orthoFar));
 							});
 						drawUIColumned("Fixed Aspect Ratio", 1, [&](auto& numOfElements)
 							{
-								ImGui::Checkbox("##Fixed Aspect Ratio box", &component.m_FixedAspectRatio);
+								bool value = component.m_FixedAspectRatio;
+								if(ImGui::Checkbox("##Fixed Aspect Ratio box", &value))
+									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<bool>>(&component.m_FixedAspectRatio, value));
 							});
 					}
 				});
@@ -367,7 +391,7 @@ namespace assec::editor
 				{
 					if (!this->m_SelectedEntity.hasComponent<scene::MeshComponent>())
 					{
-						this->m_SelectedEntity.addComponent<scene::MeshComponent>();
+						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::MeshComponent>>(this->m_SelectedEntity));
 					}
 					else
 					{
@@ -379,7 +403,7 @@ namespace assec::editor
 				{
 					if (!this->m_SelectedEntity.hasComponent<scene::MaterialComponent>())
 					{
-						this->m_SelectedEntity.addComponent<scene::MaterialComponent>();
+						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::MaterialComponent>>(this->m_SelectedEntity));
 					}
 					else
 					{
@@ -391,7 +415,7 @@ namespace assec::editor
 				{
 					if (!this->m_SelectedEntity.hasComponent<scene::CameraComponent>())
 					{
-						this->m_SelectedEntity.addComponent<scene::CameraComponent>();
+						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::CameraComponent>>(this->m_SelectedEntity));
 					}
 					else
 					{
@@ -403,7 +427,7 @@ namespace assec::editor
 				{
 					if (!this->m_SelectedEntity.hasComponent<scene::NativeScriptComponent>())
 					{
-						this->m_SelectedEntity.addComponent<scene::NativeScriptComponent>();
+						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::NativeScriptComponent>>(this->m_SelectedEntity));
 					}
 					else
 					{

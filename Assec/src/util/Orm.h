@@ -15,10 +15,10 @@ namespace assec::util
 
 	struct AbstractOrmField
 	{
-		AbstractOrmField(const Access& access) : m_Access(access) {}
-		virtual ~AbstractOrmField() {}
-		const Access& getAccess() const { return this->m_Access; }
-		const std::string& getType() const { return this->m_Type; }
+		AbstractOrmField(const Access& access);
+		virtual ~AbstractOrmField();
+		const Access& getAccess() const;
+		const std::string& getType() const;
 
 	protected:
 		Access m_Access;
@@ -33,7 +33,7 @@ namespace assec::util
 		{
 			this->m_Type = typeid(T).name();
 		}
-		OrmField() : AbstractOrmField(util::Access::PRIVATE) 
+		OrmField() : AbstractOrmField(util::Access::PRIVATE) : AbstractOrmField(util::Access::PRIVATE)
 		{
 			this->m_Type = "none";
 		}
@@ -48,7 +48,7 @@ namespace assec::util
 	{
 		template<typename T> using FieldFn = std::function<void(T&)>;
 	public:
-		FieldDispatcher(const AbstractOrmField& field) : m_Field(*const_cast<AbstractOrmField*>(&field)) {}
+		FieldDispatcher(const AbstractOrmField& field);
 
 		template<typename T> void dispatch(FieldFn<T> function)
 		{
@@ -65,15 +65,8 @@ namespace assec::util
 	class BaseOrm
 	{
 	public:
-		BaseOrm() {}
-		~BaseOrm()
-		{
-			auto& values = util::Values(this->m_Fields);
-			for (auto& value : values)
-			{
-				delete value;
-			}
-		}
+		BaseOrm();
+		~BaseOrm();
 		template<typename T>
 		const OrmField<T>& addField(const std::string& name, OrmField<T>* field)
 		{
@@ -85,10 +78,7 @@ namespace assec::util
 		{
 			return *((OrmField<T>*)((void*)this->m_Fields.at(name)));
 		}
-		const std::map<std::string, AbstractOrmField*>& getFields()
-		{
-			return this->m_Fields;
-		}
+		const std::map<std::string, AbstractOrmField*>& getFields();
 	private:
 		std::map<std::string, AbstractOrmField*> m_Fields = std::map<std::string, AbstractOrmField*>();
 	};

@@ -33,7 +33,8 @@ namespace assec::graphics
 		virtual ref<Shader> createShader(const std::string& source, const Type& type) const = 0;
 		virtual ref<ShaderProgram> createShaderProgram(const std::string& vertexSource, const std::string& fragmentSource) const = 0;
 		virtual ref<ShaderProgram> createShaderProgram(const std::string& source) const = 0;
-		virtual ref<Texture2D> createTexture2D(const void* data, const Texture::TextureProps& props) const = 0;
+		virtual ref<Texture2D> createTexture2D(const uint32_t& width, const uint32_t& height, const graphics::Texture::TextureProps& props) const = 0;
+		virtual ref<Texture2D> createTexture2D(const std::string& path, const graphics::Texture::TextureProps& props) const = 0;
 		virtual ref<FrameBuffer> createFrameBuffer(const FrameBuffer::FrameBufferProps& frameBufferProps) const = 0;
 	protected:
 		mutable ContextData m_ContextData;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <any>
+
 #include "Entity.h"
 
 #include "event/Event.h"
@@ -8,10 +10,12 @@
 
 namespace assec::scene
 {
+	struct NativeScriptComponent;
 	class ScriptableEntity : public util::BaseOrm
 	{
 	public:
-		ScriptableEntity(const entt::entity& entity, Scene* scene) : m_Entity(entity, scene) {}
+		ScriptableEntity() = default;
+		ScriptableEntity(const entt::entity& entity, Scene* scene);
 		virtual ~ScriptableEntity() {}
 
 		template<typename T>
@@ -19,11 +23,13 @@ namespace assec::scene
 		{
 			return m_Entity.getComponent<T>();
 		}
-		virtual void onCreate() {}
-		virtual void onDestroy() {}
-		virtual void onEvent(const events::Event& event) {}
+
+		virtual void bind(NativeScriptComponent&) = 0;
+		virtual void onCreate();
+		virtual void onDestroy();
+		virtual void onEvent(const events::Event& event);
+		static std::map<std::string, ScriptableEntity*> s_Scripts;
 	private:
 		Entity m_Entity;
-		friend class Scene;
 	};
 }

@@ -11,11 +11,13 @@ namespace assec::editor
 		EditorGuiLayer(assec::Application& application, ref<graphics::FrameBuffer> frameBuffer);
 		~EditorGuiLayer();
 		virtual void onEvent0(const events::Event& event) override;
+		virtual void onTransaction(const transactions::Transaction& event) override;
 		virtual void onAttach0() override;
 		virtual void onDetach0() override;
 	private:
 		void newScene();
 		void loadScene();
+		void saveSceneAs();
 		void saveScene();
 
 		ref<graphics::FrameBuffer> m_FrameBuffer;

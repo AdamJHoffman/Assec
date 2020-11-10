@@ -83,7 +83,6 @@ workspace "Assec"
 
 			defines
 			{
-				"AC_PLATFORM_WINDOWS",
 				"GLFW_INCLUDE_NONE"
 			}
 
@@ -191,7 +190,7 @@ workspace "Assec"
 
 			defines
 			{
-				"AC_PLATFORM_WINDOWS"
+
 			}
 
 			filter "configurations:Debug"
