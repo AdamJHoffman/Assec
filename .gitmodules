@@ -22,3 +22,6 @@
 [submodule "Assec/vendor/yaml-cpp"]
 	path = Assec/vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp
+[submodule "Assec/vendor/imnodes"]
+	path = Assec/vendor/imnodes
+	url = https://github.com/Nelarius/imnodes
