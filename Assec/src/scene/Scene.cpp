@@ -22,6 +22,13 @@ namespace assec::scene
 		result.addComponent<TransformComponent>();
 		return result;
 	}
+	Entity Scene::createEntity(CONST_REF(uint32_t) hint, const std::string& name)
+	{
+		Entity result = { this->m_Registry.create(static_cast<entt::registry::entity_type>(hint)), this };
+		result.addComponent<TagComponent>(name);
+		result.addComponent<TransformComponent>();
+		return result;
+	}
 	void Scene::onEvent(const events::Event& event)
 	{
 		this->m_Registry.view<scene::CameraComponent>().each([&](auto entityID, auto& udc)
@@ -50,20 +57,20 @@ namespace assec::scene
 		transactions::Dispatcher dispatcher = transactions::Dispatcher(transaction);
 		dispatcher.dispatch<transactions::EntityCreationTransaction>([&](const transactions::EntityCreationTransaction& creationTransaction)
 			{
-				this->createEntity();
+				creationTransaction.setCreated(this->createEntity(creationTransaction.getHint().getNative()));
 			});
 		dispatcher.dispatch<transactions::EntityRemovalTransaction>([&](const transactions::EntityRemovalTransaction& removalTransaction)
 			{
-				this->m_Registry.destroy(static_cast<entt::entity>(removalTransaction.getNative()));
+				this->m_Registry.destroy(static_cast<entt::entity>(removalTransaction.getRemoved().getNative()));
 			});
 
 		dispatcher.dispatch<transactions::ComponentRemovalTransaction<scene::TagComponent>>([&](const transactions::ComponentRemovalTransaction<scene::TagComponent>& removalTransaction)
 			{
-				removalTransaction.getEntity().removeComponent< TagComponent>();
+				removalTransaction.getEntity().removeComponent<TagComponent>();
 			});
 		dispatcher.dispatch<transactions::ComponentRemovalTransaction<scene::TransformComponent>>([&](const transactions::ComponentRemovalTransaction<scene::TransformComponent>& removalTransaction)
 			{
-				removalTransaction.getEntity().removeComponent< TransformComponent>();
+				removalTransaction.getEntity().removeComponent<TransformComponent>();
 			});
 		dispatcher.dispatch<transactions::ComponentRemovalTransaction<scene::CameraComponent>>([&](const transactions::ComponentRemovalTransaction<scene::CameraComponent>& removalTransaction)
 			{
@@ -84,57 +91,51 @@ namespace assec::scene
 
 		dispatcher.dispatch<transactions::ComponentCreationTransaction<scene::TagComponent>>([&](const transactions::ComponentCreationTransaction<scene::TagComponent>& removalTransaction)
 			{
-				if (removalTransaction.m_OnComponetAdded)
+				auto& component = removalTransaction.getEntity().addComponent<TagComponent>(removalTransaction.getCreated());
+				if (removalTransaction.m_OnCreateFunction)
 				{
-					removalTransaction.m_OnComponetAdded(removalTransaction.getEntity().addComponent<TagComponent>());
-					return;
+					removalTransaction.m_OnCreateFunction(component);
 				}
-				removalTransaction.getEntity().addComponent<TagComponent>();
 			});
 		dispatcher.dispatch<transactions::ComponentCreationTransaction<scene::TransformComponent>>([&](const transactions::ComponentCreationTransaction<scene::TransformComponent>& removalTransaction)
 			{
-				if (removalTransaction.m_OnComponetAdded)
+				auto& component = removalTransaction.getEntity().addComponent<TransformComponent>(removalTransaction.getCreated());
+				if (removalTransaction.m_OnCreateFunction)
 				{
-					removalTransaction.m_OnComponetAdded(removalTransaction.getEntity().addComponent<TransformComponent>());
-					return;
+					removalTransaction.m_OnCreateFunction(component);
 				}
-				removalTransaction.getEntity().addComponent<TransformComponent>();
 			});
 		dispatcher.dispatch<transactions::ComponentCreationTransaction<scene::CameraComponent>>([&](const transactions::ComponentCreationTransaction<scene::CameraComponent>& removalTransaction)
 			{
-				if (removalTransaction.m_OnComponetAdded)
+				auto& component = removalTransaction.getEntity().addComponent<CameraComponent>(removalTransaction.getCreated());
+				if (removalTransaction.m_OnCreateFunction)
 				{
-					removalTransaction.m_OnComponetAdded(removalTransaction.getEntity().addComponent<CameraComponent>());
-					return;
+					removalTransaction.m_OnCreateFunction(component);
 				}
-				removalTransaction.getEntity().addComponent<CameraComponent>();
 			});
 		dispatcher.dispatch<transactions::ComponentCreationTransaction<scene::MeshComponent>>([&](const transactions::ComponentCreationTransaction<scene::MeshComponent>& removalTransaction)
 			{
-				if (removalTransaction.m_OnComponetAdded)
+				auto& component = removalTransaction.getEntity().addComponent<MeshComponent>(removalTransaction.getCreated());
+				if (removalTransaction.m_OnCreateFunction)
 				{
-					removalTransaction.m_OnComponetAdded(removalTransaction.getEntity().addComponent<MeshComponent>());
-					return;
+					removalTransaction.m_OnCreateFunction(component);
 				}
-				removalTransaction.getEntity().addComponent<MeshComponent>();
 			});
 		dispatcher.dispatch<transactions::ComponentCreationTransaction<scene::MaterialComponent>>([&](const transactions::ComponentCreationTransaction<scene::MaterialComponent>& removalTransaction)
 			{
-				if (removalTransaction.m_OnComponetAdded)
+				auto& component = removalTransaction.getEntity().addComponent<MaterialComponent>(removalTransaction.getCreated());
+				if (removalTransaction.m_OnCreateFunction)
 				{
-					removalTransaction.m_OnComponetAdded(removalTransaction.getEntity().addComponent<MaterialComponent>());
-					return;
+					removalTransaction.m_OnCreateFunction(component);
 				}
-				removalTransaction.getEntity().addComponent<MaterialComponent>();
 			});
 		dispatcher.dispatch<transactions::ComponentCreationTransaction<scene::NativeScriptComponent>>([&](const transactions::ComponentCreationTransaction<scene::NativeScriptComponent>& removalTransaction)
 			{
-				if (removalTransaction.m_OnComponetAdded)
+				auto& component = removalTransaction.getEntity().addComponent<NativeScriptComponent>(removalTransaction.getCreated());
+				if (removalTransaction.m_OnCreateFunction)
 				{
-					removalTransaction.m_OnComponetAdded(removalTransaction.getEntity().addComponent<NativeScriptComponent>());
-					return;
+					removalTransaction.m_OnCreateFunction(component);
 				}
-				removalTransaction.getEntity().addComponent<NativeScriptComponent>();
 			});
 	}
 	void Scene::setTransactionCallback(const std::function<void(ref<transactions::Transaction>)>& transactionCallback)

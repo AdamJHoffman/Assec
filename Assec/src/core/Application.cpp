@@ -46,12 +46,18 @@ namespace assec
 	{
 		TIME_FUNCTION;
 		this->AC_TRANSACTION_QUEUE->submit(transaction);
+		this->AC_TRANSACTION_ARCHIVE->submit(transaction);
+		this->AC_TRANSACTION_REDO_ARCHIVE->getTransactionqueue().clear();
 	}
 	void Application::handleTransactions()
 	{
 		TIME_FUNCTION;
 		auto tempQueue = this->AC_TRANSACTION_QUEUE->getTransactionqueue();
 		size_t size = tempQueue.size();
+		if (size > 0 && graphics::WindowManager::getMainWindow().getWindowData().m_Title.back() != '*')
+		{
+			graphics::WindowManager::getMainWindow().setTitle((graphics::WindowManager::getMainWindow().getWindowData().m_Title + std::string("*")).c_str());
+		}
 		for (size_t i = 0; i < size; i++)
 		{
 			auto& transaction = tempQueue[i];
@@ -63,7 +69,8 @@ namespace assec
 				});
 			this->AC_LAYER_STACK->onTransaction(*transaction);
 			this->m_ActiveScene->onTransaction(*transaction);
-			this->AC_TRANSACTION_ARCHIVE->submit(transaction);
+			//if (!transaction->m_Discard)
+			//	this->AC_TRANSACTION_ARCHIVE->submit(transaction);
 		}
 		this->AC_TRANSACTION_QUEUE->getTransactionqueue().erase(this->AC_TRANSACTION_QUEUE->getTransactionqueue().begin(), this->AC_TRANSACTION_QUEUE->getTransactionqueue().begin() + size);
 	}

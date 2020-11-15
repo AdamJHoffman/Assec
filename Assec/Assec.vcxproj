@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\acpch.h" />
-    <ClInclude Include="src\transactions\Transaction.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Assert.h" />
     <ClInclude Include="src\core\Base.h" />
@@ -187,10 +186,12 @@
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\scene\SceneSerializer.h" />
     <ClInclude Include="src\scene\ScriptableEntity.h" />
+    <ClInclude Include="src\transactions\Transaction.h" />
     <ClInclude Include="src\util\Loader.h" />
     <ClInclude Include="src\util\Orm.h" />
     <ClInclude Include="src\util\PlatformUtils.h" />
     <ClInclude Include="src\util\Profiler.h" />
+    <ClInclude Include="src\util\UUID.h" />
     <ClInclude Include="src\util\misc.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -605,7 +606,6 @@
     <ClCompile Include="src\acpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\transactions\Transaction.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\ImGuiImplmentation.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
@@ -635,6 +635,7 @@
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\scene\SceneSerializer.cpp" />
     <ClCompile Include="src\scene\ScriptableEntity.cpp" />
+    <ClCompile Include="src\transactions\Transaction.cpp" />
     <ClCompile Include="src\util\Loader.cpp" />
     <ClCompile Include="src\util\Orm.cpp" />
   </ItemGroup>

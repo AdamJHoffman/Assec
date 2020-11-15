@@ -11,6 +11,9 @@
     <ClInclude Include="src\panels\InspectorPanel.h">
       <Filter>panels</Filter>
     </ClInclude>
+    <ClInclude Include="src\panels\NodeEditor.h">
+      <Filter>panels</Filter>
+    </ClInclude>
     <ClInclude Include="src\panels\SceneHierarchyPanel.h">
       <Filter>panels</Filter>
     </ClInclude>
@@ -19,14 +22,15 @@
     <ClCompile Include="src\EditorApplication.cpp" />
     <ClCompile Include="src\EditorGuiLayer.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\ImNodeImplementation.cpp" />
     <ClCompile Include="src\panels\InspectorPanel.cpp">
+      <Filter>panels</Filter>
+    </ClCompile>
+    <ClCompile Include="src\panels\NodeEditor.cpp">
       <Filter>panels</Filter>
     </ClCompile>
     <ClCompile Include="src\panels\SceneHierarchyPanel.cpp">
       <Filter>panels</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

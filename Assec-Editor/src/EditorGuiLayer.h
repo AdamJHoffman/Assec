@@ -1,7 +1,10 @@
 ﻿#pragma once
+
 #include "include/Assec.h"
+
 #include "panels/SceneHierarchyPanel.h"
 #include "panels/InspectorPanel.h"
+#include "panels/NodeEditor.h"
 
 namespace assec::editor
 {
@@ -27,5 +30,6 @@ namespace assec::editor
 		// Panels
 		SceneHierarchyPanel m_SceneHierarchyPanel;
 		InspectorPanel m_InspectorPanel;
+		NodeEditor m_NodeEditor;
 	};
 }

@@ -4,9 +4,6 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\actions">
-      <UniqueIdentifier>{EDED2727-59A3-A01C-E297-9AF34E4C9720}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\core">
       <UniqueIdentifier>{C55F2ECF-B12C-89DA-DA45-7782C671BE68}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,9 @@
     </Filter>
     <Filter Include="src\scene">
       <UniqueIdentifier>{2A1615B6-9680-C92C-DFBE-7AD24B68A781}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\transactions">
+      <UniqueIdentifier>{55EF8CCE-41E8-AB20-6A1A-91A556728B2C}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\util">
       <UniqueIdentifier>{BA5238CF-A61F-93DA-CF38-8182BB64C868}</UniqueIdentifier>
@@ -207,6 +207,9 @@
     <ClInclude Include="src\scene\ScriptableEntity.h">
       <Filter>src\scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\transactions\Transaction.h">
+      <Filter>src\transactions</Filter>
+    </ClInclude>
     <ClInclude Include="src\util\Loader.h">
       <Filter>src\util</Filter>
     </ClInclude>
@@ -217,6 +220,9 @@
       <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\util\Profiler.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\UUID.h">
       <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\util\misc.h">
@@ -1446,9 +1452,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\transactions\Transaction.h">
-      <Filter>src\actions</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1541,14 +1544,14 @@
     <ClCompile Include="src\scene\ScriptableEntity.cpp">
       <Filter>src\scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\transactions\Transaction.cpp">
+      <Filter>src\transactions</Filter>
+    </ClCompile>
     <ClCompile Include="src\util\Loader.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
     <ClCompile Include="src\util\Orm.cpp">
       <Filter>src\util</Filter>
-    </ClCompile>
-    <ClCompile Include="src\transactions\Transaction.cpp">
-      <Filter>src\actions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

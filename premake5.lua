@@ -20,6 +20,7 @@ workspace "Assec"
 	IncludeDir["entt"] = "Assec/vendor/entt/single_include"
 	IncludeDir["tinygltf"] = "Assec/vendor/tinygltf"
 	IncludeDir["yaml_cpp"] = "Assec/vendor/yaml-cpp/include"
+	IncludeDir["imnodes"] = "Assec/vendor/imnodes"
 
 
 	group "Dependencies"
@@ -66,7 +67,7 @@ workspace "Assec"
 			"%{IncludeDir.glm}",
 			"%{IncludeDir.entt}",
 			"%{IncludeDir.tinygltf}",
-			"%{IncludeDir.yaml_cpp}"
+			"%{IncludeDir.yaml_cpp}",
 		}
 
 		links
@@ -167,7 +168,9 @@ workspace "Assec"
 			files
 			{
 				"%{prj.name}/src/**.h",
-				"%{prj.name}/src/**.cpp"
+				"%{prj.name}/src/**.cpp",
+				"%{prj.name}/vendor/imnodes/**.h",
+				"%{prj.name}/vendor/imnodes/**.cpp"
 			}
 
 			includedirs
@@ -178,6 +181,7 @@ workspace "Assec"
 				"%{IncludeDir.glm}",
 				"%{IncludeDir.imgui}",
 				"%{IncludeDir.entt}",
+				"%{IncludeDir.imnodes}"
 			}
 
 			links

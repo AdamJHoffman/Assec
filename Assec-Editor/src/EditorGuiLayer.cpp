@@ -1,6 +1,7 @@
 ﻿#include "EditorGuiLayer.h"
 
 #include <imgui.h>
+#include <imnodes.h>
 
 #include "core/Input.h"
 #include "core/Base.h"
@@ -16,6 +17,7 @@ namespace assec::editor
 	EditorGuiLayer::~EditorGuiLayer() {}
 	void EditorGuiLayer::onAttach0()
 	{
+		imnodes::Initialize();
 		this->setDarkThemecolors();
 		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
 		this->m_SceneHierarchyPanel.setSelectionCallback([&](const scene::Entity& entity)
@@ -33,7 +35,7 @@ namespace assec::editor
 	}
 	void EditorGuiLayer::onDetach0()
 	{
-
+		imnodes::Shutdown();
 	}
 	void EditorGuiLayer::onEvent0(const events::Event& event)
 	{
@@ -79,6 +81,7 @@ namespace assec::editor
 
 				this->m_SceneHierarchyPanel.renderImGUI();
 				this->m_InspectorPanel.renderImGUI();
+				this->m_NodeEditor.renderImGUI();
 
 				if (ImGui::BeginMenuBar())
 				{
@@ -146,8 +149,24 @@ namespace assec::editor
 				}
 				case KEY::KEY_Y:
 				{
-					if (control)
-						//actions::ActionQueue::inverseBack();
+					if (control && !this->m_Application->AC_TRANSACTION_ARCHIVE->getTransactionqueue().empty())
+					{
+						auto& lastTransaction = this->m_Application->AC_TRANSACTION_ARCHIVE->getTransactionqueue().back()->generateInverse();
+						this->m_Application->AC_TRANSACTION_QUEUE->submit(lastTransaction);
+						this->m_Application->AC_TRANSACTION_REDO_ARCHIVE->submit(lastTransaction);
+						this->m_Application->AC_TRANSACTION_ARCHIVE->getTransactionqueue().pop_back();
+					}
+					return true;
+					break;
+				}
+				case KEY::KEY_Z:
+				{
+					if (control && !this->m_Application->AC_TRANSACTION_REDO_ARCHIVE->getTransactionqueue().empty())
+					{
+						auto& lastTransaction = this->m_Application->AC_TRANSACTION_REDO_ARCHIVE->getTransactionqueue().back()->generateInverse();
+						this->m_Application->AC_TRANSACTION_QUEUE->submit(lastTransaction);
+						this->m_Application->AC_TRANSACTION_REDO_ARCHIVE->getTransactionqueue().pop_back();
+					}
 					return true;
 					break;
 				}
@@ -178,15 +197,6 @@ namespace assec::editor
 					this->newScene();
 					scene::SceneSerializer serializer = scene::SceneSerializer(this->m_Application->m_ActiveScene);
 					serializer.deserialize(filepath);
-					this->m_Application->m_ActiveScene->getSaveFilePath() = filepath;
-					std::vector<std::string> lines;
-					std::istringstream f(filepath);
-					std::string line;
-					while (getline(f, line, '\\')) {
-						lines.push_back(line);
-					}
-					std::string title = std::string("Assec ") + std::string(" - ") + std::string(lines.back()) + std::string("*");
-					graphics::WindowManager::getMainWindow().setTitle(title.c_str());
 				}
 			}
 			});
@@ -199,20 +209,28 @@ namespace assec::editor
 		{
 				scene::SceneSerializer serializer(this->m_Application->m_ActiveScene);
 				serializer.serialize(this->m_Application->m_ActiveScene->getSaveFilePath());
-				graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().m_Title.substr(0, graphics::WindowManager::getMainWindow().getWindowData().m_Title.size()-1).c_str());
+				if (graphics::WindowManager::getMainWindow().getWindowData().m_Title.back() == '*')
+				{
+					graphics::WindowManager::getMainWindow().getWindowData().m_Title.pop_back();
+					graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().m_Title.c_str());
+				}
 		}
 	}
 	void EditorGuiLayer::saveSceneAs()
 	{
 		util::FileDialogs::SaveFile({ "Assec Scene (*.assec)\0*.assec\0", [&](const char* filepath)
 			{
-			if (strlen(filepath) != 0)
+				if (strlen(filepath) != 0)
 				{
-					scene::SceneSerializer serializer(this->m_Application->m_ActiveScene);
-					serializer.serialize(filepath);
-					graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().m_Title.substr(0, graphics::WindowManager::getMainWindow().getWindowData().m_Title.size() - 1).c_str());
+						scene::SceneSerializer serializer(this->m_Application->m_ActiveScene);
+						serializer.serialize(filepath);
+						if (graphics::WindowManager::getMainWindow().getWindowData().m_Title.back() == '*')
+						{
+							graphics::WindowManager::getMainWindow().getWindowData().m_Title.pop_back();
+							graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().m_Title.c_str());
+						}
+				}
 			}
-			}
-			});
+		});
 	}
 }

@@ -72,7 +72,7 @@ namespace assec::editor
 					this->m_SelectedEntity = {};
 					this->m_SelectionCallback(this->m_SelectedEntity);
 				}
-				this->m_TransactionCallback(std::make_shared<transactions::EntityRemovalTransaction>(entity.getNative()));
+				this->m_TransactionCallback(std::make_shared<transactions::EntityRemovalTransaction>(entity));
 			}
 
 			ImGui::EndPopup();

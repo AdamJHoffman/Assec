@@ -16,18 +16,15 @@ namespace assec::transactions
 	{
 		this->m_TransactionQueue.clear();
 	}
-	EntityRemovalTransaction::EntityRemovalTransaction(const uint32_t& id) : m_ID(id) {}
-	CONST_REF(uint32_t) EntityRemovalTransaction::getNative() const
-	{
-		return this->m_ID;
-	}
 	ref<Transaction> EntityRemovalTransaction::generateInverse()
 	{
-		return makeRef<EntityCreationTransaction>();
-	}
-	void EntityCreationTransaction::setCreated(CONST_REF(scene::Entity) entity)
-	{
-		this->m_Created = entity;
+		auto& data = this->m_RemovedData;
+		auto& result = makeRef<EntityCreationTransaction>(this->m_Removed, [data](scene::Entity& created)
+			{
+				created.getComponent<scene::TagComponent>() = data.m_TagComponent;
+				created.getComponent<scene::TransformComponent>() = data.m_TransformComponent;
+			});
+		return result;
 	}
 	ref<Transaction> EntityCreationTransaction::generateInverse()
 	{
@@ -37,5 +34,28 @@ namespace assec::transactions
 		}
 		return nullptr;
 	}
+	template<typename T>
+	ref<Transaction> ComponentRemovalTransaction<T>::generateInverse()
+	{
+		return makeRef<ComponentCreationTransaction<T>>(this->m_Entity, this->m_Removed);
+	}
+	template<typename T>
+	ref<Transaction> ComponentCreationTransaction<T>::generateInverse()
+	{
+		return makeRef<ComponentRemovalTransaction<T>>(this->m_Entity);
+	}
 
+	template class ComponentRemovalTransaction<scene::TagComponent>;
+	template class ComponentRemovalTransaction<scene::TransformComponent>;
+	template class ComponentRemovalTransaction<scene::NativeScriptComponent>;
+	template class ComponentRemovalTransaction<scene::MeshComponent>;
+	template class ComponentRemovalTransaction<scene::MaterialComponent>;
+	template class ComponentRemovalTransaction<scene::CameraComponent>;
+
+	template class ComponentCreationTransaction<scene::TagComponent>;
+	template class ComponentCreationTransaction<scene::TransformComponent>;
+	template class ComponentCreationTransaction<scene::NativeScriptComponent>;
+	template class ComponentCreationTransaction<scene::MeshComponent>;
+	template class ComponentCreationTransaction<scene::MaterialComponent>;
+	template class ComponentCreationTransaction<scene::CameraComponent>;
 }

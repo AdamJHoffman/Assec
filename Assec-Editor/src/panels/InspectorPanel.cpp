@@ -94,7 +94,7 @@ namespace assec::editor
 							strcpy_s(buffer, sizeof(buffer), component.m_Tag.c_str());
 							if (ImGui::InputText("##tag", buffer, sizeof(buffer)))
 							{
-								component.m_Tag = std::string(buffer);
+								this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_Tag, std::string(buffer)));
 							}
 						});
 				});
