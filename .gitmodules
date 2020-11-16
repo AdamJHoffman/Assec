@@ -25,3 +25,6 @@
 [submodule "Assec/vendor/implot"]
 	path = Assec/vendor/implot
 	url = https://github.com/epezent/implot
+[submodule "Assec/vendor/imnodes"]
+	path = Assec/vendor/imnodes
+	url = https://github.com/Nelarius/imnodes
