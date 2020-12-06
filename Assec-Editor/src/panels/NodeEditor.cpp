@@ -3,146 +3,333 @@
 #include "NodeEditor.h"
 
 #include <imgui.h>
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>
-#include <imgui_node_editor.h>
+#include <imnodes.h>
 
 #include "util/UUID.h"
+#include "core/Input.h"
 
 namespace assec::editor
 {
-    void ImGuiEx_BeginColumn()
+
+    void AbstractInputPin::onLink(REF(AbstractOutputPin) other)
     {
-        ImGui::BeginGroup();
+        this->valuePointer = &other.value;
     }
 
-    void ImGuiEx_NextColumn()
+    Node* Graph::findNode(CONST_REF(uint32_t) uuid)
     {
-        ImGui::EndGroup();
-        ImGui::SameLine();
-        ImGui::BeginGroup();
-    }
-
-    void ImGuiEx_EndColumn()
-    {
-        ImGui::EndGroup();
-    }
-	void NodeEditor::renderImGUI()
-	{
-		ImGui::Begin("Node Editor");
-        ax::NodeEditor::Begin("Node Editor Internal", ImGui::GetContentRegionAvail());
-        int uniqueId = 1;
-
-        //
-        // 1) Commit known data to editor
-        //
-
-        // Submit Node A
-        ax::NodeEditor::NodeId nodeA_Id = uniqueId++;
-        ax::NodeEditor::PinId  nodeA_InputPinId = uniqueId++;
-        ax::NodeEditor::PinId  nodeA_OutputPinId = uniqueId++;
-
-        ax::NodeEditor::BeginNode(nodeA_Id);
-        ImGui::Text("Node A");
-        ax::NodeEditor::BeginPin(nodeA_InputPinId, ax::NodeEditor::PinKind::Input);
-        ImGui::Text("-> In");
-        ax::NodeEditor::EndPin();
-        ImGui::SameLine();
-        ax::NodeEditor::BeginPin(nodeA_OutputPinId, ax::NodeEditor::PinKind::Output);
-        ImGui::Text("Out ->");
-        ax::NodeEditor::EndPin();
-        ax::NodeEditor::EndNode();
-
-        // Submit Node B
-        ax::NodeEditor::NodeId nodeB_Id = uniqueId++;
-        ax::NodeEditor::PinId  nodeB_InputPinId1 = uniqueId++;
-        ax::NodeEditor::PinId  nodeB_InputPinId2 = uniqueId++;
-        ax::NodeEditor::PinId  nodeB_OutputPinId = uniqueId++;
-
-        ax::NodeEditor::BeginNode(nodeB_Id);
-        ImGui::Text("Node B");
-        ImGuiEx_BeginColumn();
-        ax::NodeEditor::BeginPin(nodeB_InputPinId1, ax::NodeEditor::PinKind::Input);
-        ImGui::Text("-> In1");
-        ax::NodeEditor::EndPin();
-        ax::NodeEditor::BeginPin(nodeB_InputPinId2, ax::NodeEditor::PinKind::Input);
-        ImGui::Text("-> In2");
-        ax::NodeEditor::EndPin();
-        ImGuiEx_NextColumn();
-        ax::NodeEditor::BeginPin(nodeB_OutputPinId, ax::NodeEditor::PinKind::Output);
-        ImGui::Text("Out ->");
-        ax::NodeEditor::EndPin();
-        ImGuiEx_EndColumn();
-        ax::NodeEditor::EndNode();
-
-        // Submit Links
-        for (auto& linkInfo : this->m_Links)
-            ax::NodeEditor::Link(linkInfo.Id, linkInfo.InputId, linkInfo.OutputId);
-
-        if (ax::NodeEditor::BeginCreate())
+        for (auto& node : this->nodes)
         {
-            ax::NodeEditor::PinId inputPinId, outputPinId;
-            if (ax::NodeEditor::QueryNewLink(&inputPinId, &outputPinId))
+            if (node->UUID == uuid)
+                return &*node;
+        }
+        return nullptr;
+    }
+    AbstractPin* Graph::findPin(CONST_REF(uint32_t) uuid)
+    {
+        for (auto& node : this->nodes)
+        {
+            for (auto& pin : node->getInputPins())
             {
-                // QueryNewLink returns true if editor want to create new link between pins.
-                //
-                // Link can be created only for two valid pins, it is up to you to
-                // validate if connection make sense. Editor is happy to make any.
-                //
-                // Link always goes from input to output. User may choose to drag
-                // link from output pin or input pin. This determine which pin ids
-                // are valid and which are not:
-                //   * input valid, output invalid - user started to drag new ling from input pin
-                //   * input invalid, output valid - user started to drag new ling from output pin
-                //   * input valid, output valid   - user dragged link over other pin, can be validated
-
-                if (inputPinId && outputPinId) // both are valid, let's accept link
-                {
-                    // ed::AcceptNewItem() return true when user release mouse button.
-                    if (ax::NodeEditor::AcceptNewItem())
-                    {
-                        // Since we accepted new link, lets add one to our list of links.
-                        this->m_Links.push_back({ ax::NodeEditor::LinkId(uuid::generate_uuid_v4i()), inputPinId, outputPinId });
-
-                        // Draw new link.
-                        ax::NodeEditor::Link(this->m_Links.back().Id, this->m_Links.back().InputId, this->m_Links.back().OutputId);
-                    }
-
-                    // You may choose to reject connection between these nodes
-                    // by calling ed::RejectNewItem(). This will allow editor to give
-                    // visual feedback by changing link thickness and color.
-                }
+                if (pin->UUID == uuid)
+                    return &*pin;
+            }
+            for (auto& pin : node->getOutputPins())
+            {
+                if (pin->UUID == uuid)
+                    return &*pin;
             }
         }
-        ax::NodeEditor::EndCreate(); // Wraps up object creation action handling.
-
-         // Handle deletion action
-        if (ax::NodeEditor::BeginDelete())
+        return nullptr;
+    }
+    Link* Graph::findLink(CONST_REF(uint32_t) uuid)
+    {
+        for (auto& link : this->links)
         {
-            // There may be many links marked for deletion, let's loop over them.
-            ax::NodeEditor::LinkId deletedLinkId;
-            while (ax::NodeEditor::QueryDeletedLink(&deletedLinkId))
+            if (link.UUID == uuid)
+                return &link;
+        }
+        return nullptr;
+    }
+    Node* Graph::findNode(CONST_REF(AbstractPin) pin)
+    {
+        for (auto& node : this->nodes)
+        {
+            for (auto& p : node->getInputPins())
             {
-                // If you agree that link can be deleted, accept deletion.
-                if (ax::NodeEditor::AcceptDeletedItem())
+                if (*p == pin)
+                    return &*node;
+            }
+            for (auto& p : node->getOutputPins())
+            {
+                if (*p == pin)
+                    return &*node;
+            }
+        }
+        return nullptr;
+    }
+    Link* Graph::findLink(CONST_REF(AbstractPin) pin)
+    {
+        for (auto& link : this->links)
+        {
+            if (link.input->UUID == pin.UUID || link.output->UUID == pin.UUID)
+                return &link;
+        }
+        return nullptr;
+    }
+    bool Graph::isPinLinked(CONST_REF(AbstractPin) pin) const
+    {
+        for (auto& link : this->links)
+        {
+            if (link.input->UUID == pin.UUID || link.output->UUID == pin.UUID)
+                return true;
+        }
+        return false;
+    }
+    bool Graph::isInputPin(CONST_REF(AbstractPin) pin)
+    {
+        auto& node = *this->findNode(pin);
+        for (auto& p : node.getInputPins())
+        {
+            if (*p == pin)
+                return true;
+        }
+        return false;
+    }
+    bool Graph::isOutputPin(CONST_REF(AbstractPin) pin)
+    {
+        return !this->isInputPin(pin);
+    }
+
+    void NodeEditor::renderImGUI()
+    {
+        for (auto& node : this->m_Graph.nodes)
+        {
+            node->update();
+        }
+        this->begin();
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.f, 10.f));
+        if (ImGui::BeginPopupContextWindow(0, 1, true))
+        {
+            ref<Node>node;
+            if (ImGui::MenuItem("Create Empty Node"))
+            {
+                node = makeRef<Node>();
+            }
+            if (ImGui::MenuItem("Create Time Node"))
+            {
+                node = makeRef<TimeNode>();
+            }
+            if (ImGui::MenuItem("Create Sine Node"))
+            {
+                node = makeRef<SineNode>();
+            }
+            if (ImGui::MenuItem("Create Add Node"))
+            {
+                node = makeRef<AddNode>();
+            }
+            if (ImGui::MenuItem("Create Multiply Node"))
+            {
+                node = makeRef<MultiplyNode>();
+            }
+            if (ImGui::MenuItem("Create Graph Node"))
+            {
+                Graph graph = Graph();
+                for (auto& node : this->m_SelectedNodes)
                 {
-                    // Then remove link from your data.
-                    for (auto& link : this->m_Links)
+                    for (auto& n : this->m_Graph.nodes)
                     {
-                        if (link.Id == deletedLinkId)
+                        if (n->UUID == node->UUID)
                         {
-                            this->m_Links.erase(std::remove(this->m_Links.begin(), this->m_Links.end(), link), this->m_Links.end());
-                            break;
+                            graph.nodes.push_back(n);
+                        }
+                    }
+                    this->m_Graph.nodes.erase(std::remove_if(this->m_Graph.nodes.begin(), this->m_Graph.nodes.end(),
+                        [&](CONST_REF(ref<Node>) n)
+                        {
+                            return n->UUID == node->UUID;
+                        }), this->m_Graph.nodes.end());
+                }
+                for (auto& link : this->m_SelectedLink)
+                {
+                    graph.links.push_back(*link);
+                }
+                for (auto& node : graph.nodes)
+                {
+                    for (auto& pin : node->getOutputPins())
+                    {
+                        if (!graph.isPinLinked(*pin))
+                        {
+                            graph.rootNode = &*node;
                         }
                     }
                 }
+                node = makeRef<GraphNode>(graph);
+            }
+            if (ImGui::BeginMenu("Split Nodes", true))
+            {
+                if (ImGui::MenuItem("Vector2"))
+                {
+                    node = makeRef<Vector2SplitNode>();
+                }
+                if (ImGui::MenuItem("Vector3"))
+                {
+                    node = makeRef<Vector3SplitNode>();
+                }
+                if (ImGui::MenuItem("Vector4"))
+                {
+                    node = makeRef<Vector4SplitNode>();
+                }
+                if (ImGui::MenuItem("Mat4"))
+                {
+                    node = makeRef<Mat4SplitNode>();
+                }
+                ImGui::EndMenu();
+            }
+            if (node)
+            {
+                imnodes::SetNodeScreenSpacePos(node->UUID, ImGui::GetMousePos());
+                this->m_Graph.nodes.push_back(node);
+            }
+            ImGui::EndPopup();
+        }
+        ImGui::PopStyleVar();
 
-                // You may reject link deletion by calling:
-                // ed::RejectDeletedItem();
+        for (auto& node : this->m_Graph.nodes)
+        {
+            node->renderImGUI(*node);
+        }
+        this->end();
+    }
+
+    void NodeEditor::submitLinks()
+    {
+        for (auto& link : this->m_Graph.links)
+        {
+            imnodes::Link(link.UUID, link.input->UUID, link.output->UUID);
+        }
+    }
+
+    void NodeEditor::handleLinks()
+    {
+        int first, second;
+        if (imnodes::IsLinkCreated(&first, &second))
+        {
+            AbstractInputPin* input = nullptr;
+            AbstractOutputPin* output = nullptr;
+            if (this->m_Graph.isInputPin(*this->m_Graph.findPin(static_cast<uint32_t>(first))))
+            {
+                input = dynamic_cast<AbstractInputPin*>(this->m_Graph.findPin(static_cast<uint32_t>(first)));
+                output = dynamic_cast<AbstractOutputPin*>(this->m_Graph.findPin(static_cast<uint32_t>(second)));
+            }
+            else
+            {
+                input = dynamic_cast<AbstractInputPin*>(this->m_Graph.findPin(static_cast<uint32_t>(second)));
+                output = dynamic_cast<AbstractOutputPin*>(this->m_Graph.findPin(static_cast<uint32_t>(first)));
+            }
+            if (this->m_Graph.isPinLinked(*input) || (input->pintype != output->pintype))
+                return;
+            this->m_Graph.links.push_back(Link{ uuid::generateUUID(), input, output });
+            input->onLink(*output);
+            output->onLink(*input);
+        }
+    }
+
+    void NodeEditor::removeNodes()
+    {
+       
+        if (Input::isKeyDown(KEY::KEY_BACKSPACE))
+        {
+            for (auto& node : this->m_SelectedNodes)
+            {
+
+                if (node)
+                {
+                    this->m_Graph.nodes.erase(std::remove_if(this->m_Graph.nodes.begin(), this->m_Graph.nodes.end(),
+                        [&](CONST_REF(ref<Node>) n)
+                        {
+                            return n->UUID == node->UUID;
+                        }), this->m_Graph.nodes.end());
+                }
+
             }
         }
-        ax::NodeEditor::EndDelete(); // Wrap up deletion action
+            
+       
+    }
 
-        ax::NodeEditor::End();
-		ImGui::End();
-	}
+    void NodeEditor::removeLinks()
+    {
+
+        if (Input::isKeyDown(KEY::KEY_BACKSPACE))
+        {
+            for (auto& link : this->m_SelectedLink)
+            {
+
+                if (link)
+                {
+                    link->input->onUnlink();
+                    link->output->onUnlink(),
+                        this->m_Graph.links.erase(std::remove_if(this->m_Graph.links.begin(), this->m_Graph.links.end(),
+                            [&](CONST_REF(Link) l)
+                            {
+                                return l.UUID == link->UUID;
+                            }), this->m_Graph.links.end());
+                }
+
+            }
+        }
+    }
+
+    void NodeEditor::getSelectedNodes()
+    {
+        this->m_SelectedNodes.clear();
+        const int numOfSelectedNodes = imnodes::NumSelectedNodes();
+        if (numOfSelectedNodes > 0)
+        {
+            std::vector<int> selectedNodes;
+            selectedNodes.resize(numOfSelectedNodes);
+            imnodes::GetSelectedNodes(selectedNodes.data());
+            for (auto& i : selectedNodes)
+            {
+                this->m_SelectedNodes.push_back(this->m_Graph.findNode(i));
+            }
+        }
+    }
+
+    void NodeEditor::getSelectedLinks()
+    {
+        this->m_SelectedLink.clear();
+        const int numOfSelectedLinks = imnodes::NumSelectedLinks();
+        if (numOfSelectedLinks > 0)
+        {
+            std::vector<int> selectedLinks;
+            selectedLinks.resize(numOfSelectedLinks);
+            imnodes::GetSelectedLinks(selectedLinks.data());
+            for (auto& i : selectedLinks)
+            {
+                this->m_SelectedLink.push_back(this->m_Graph.findLink(i));
+            }
+        }
+    }
+
+
+    void NodeEditor::begin()
+    {
+        ImGui::Begin("Node Editor");
+        this->getSelectedNodes();
+        this->getSelectedLinks();
+        imnodes::BeginNodeEditor();
+    }
+    void NodeEditor::end()
+    {
+        this->submitLinks();
+        imnodes::EndNodeEditor();
+        this->removeNodes();
+        this->removeLinks();
+        ImGui::End();
+        this->handleLinks();
+    }
 }

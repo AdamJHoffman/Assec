@@ -1,6 +1,7 @@
 ﻿
 #include "InspectorPanel.h"
 
+#define NOMINMAX
 #include <windows.h>
 #include <string.h>
 
@@ -11,6 +12,8 @@
 
 #include "util/Loader.h"
 #include "util/PlatformUtils.h"
+
+#include "../transactions/Transaction.h"
 
 namespace assec::editor
 {

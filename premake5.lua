@@ -21,6 +21,7 @@ workspace "Assec"
 	IncludeDir["tinygltf"] = "Assec/vendor/tinygltf"
 	IncludeDir["yaml_cpp"] = "Assec/vendor/yaml-cpp/include"
 	IncludeDir["imnodes"] = "Assec/vendor/imnodes"
+	IncludeDir["implot"] = "Assec/vendor/implot"
 
 
 	group "Dependencies"
@@ -28,6 +29,7 @@ workspace "Assec"
 		include "Assec/vendor/glad"
 		include "Assec/vendor/imgui"
 		include "Assec/vendor/yaml-cpp"
+		include "Assec/vendor/implot"
 	group ""
 
 	project "Assec"
@@ -76,7 +78,7 @@ workspace "Assec"
 			"glad",
 			"imgui",
 			"yaml-cpp",
-			"opengl32.lib"
+			"opengl32.lib",
 		}
 
 		filter "system:windows"
@@ -169,8 +171,6 @@ workspace "Assec"
 			{
 				"%{prj.name}/src/**.h",
 				"%{prj.name}/src/**.cpp",
-				"%{prj.name}/vendor/imnodes/**.h",
-				"%{prj.name}/vendor/imnodes/**.cpp"
 			}
 
 			includedirs
@@ -180,13 +180,15 @@ workspace "Assec"
 				"%{wks.location}/Assec/vendor/stb",
 				"%{IncludeDir.glm}",
 				"%{IncludeDir.imgui}",
+				"%{IncludeDir.imnodes}",
+				"%{IncludeDir.implot}",
 				"%{IncludeDir.entt}",
-				"%{IncludeDir.imnodes}"
 			}
 
 			links
 			{
-				"Assec"
+				"Assec",
+				"Implot"
 			}
 
 			filter "system:windows"

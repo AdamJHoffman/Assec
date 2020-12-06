@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 #include <imnodes.h>
+#include <implot.h>
 
 #include "core/Input.h"
 #include "core/Base.h"
@@ -13,11 +14,12 @@
 
 namespace assec::editor
 {
-	EditorGuiLayer::EditorGuiLayer(assec::Application& application, ref<graphics::FrameBuffer> frameBuffer) : ImGuiLayer(application), m_FrameBuffer(frameBuffer) {}
+	EditorGuiLayer::EditorGuiLayer(EditorApplication& application) : m_Application(&application) {}
 	EditorGuiLayer::~EditorGuiLayer() {}
 	void EditorGuiLayer::onAttach0()
 	{
 		imnodes::Initialize();
+		ImPlot::CreateContext();
 		this->setDarkThemecolors();
 		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
 		this->m_SceneHierarchyPanel.setSelectionCallback([&](const scene::Entity& entity)
@@ -35,6 +37,7 @@ namespace assec::editor
 	}
 	void EditorGuiLayer::onDetach0()
 	{
+		ImPlot::DestroyContext();
 		imnodes::Shutdown();
 	}
 	void EditorGuiLayer::onEvent0(const events::Event& event)
@@ -82,6 +85,9 @@ namespace assec::editor
 				this->m_SceneHierarchyPanel.renderImGUI();
 				this->m_InspectorPanel.renderImGUI();
 				this->m_NodeEditor.renderImGUI();
+				bool open = true;
+				ImGui::ShowMetricsWindow(&open);
+				ImPlot::ShowDemoWindow(&open);
 
 				if (ImGui::BeginMenuBar())
 				{
@@ -96,6 +102,10 @@ namespace assec::editor
 							this->saveScene();
 						ImGui::EndMenu();
 					}
+					if (ImGui::Button("Run"))
+					{
+						AC_CLIENT_TRACE(">");
+					}
 
 					ImGui::EndMenuBar();
 				}
@@ -108,10 +118,10 @@ namespace assec::editor
 				this->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
 
 				ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-				this->m_FrameBuffer->getFrameBufferProps().m_Width = static_cast<uint32_t>(viewportPanelSize.x);
-				this->m_FrameBuffer->getFrameBufferProps().m_Height = static_cast<uint32_t>(viewportPanelSize.y);
+				this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width = static_cast<uint32_t>(viewportPanelSize.x);
+				this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height = static_cast<uint32_t>(viewportPanelSize.y);
 
-				ImGui::Image((void*)static_cast<intptr_t>(this->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT0).getNativeTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				ImGui::Image((void*)static_cast<intptr_t>(this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT0).getNativeTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 				ImGui::End();
 				ImGui::PopStyleVar();
 
@@ -175,17 +185,9 @@ namespace assec::editor
 			});
 
 	}
-	void EditorGuiLayer::onTransaction(const transactions::Transaction& event)
-	{
-
-	}
 	void EditorGuiLayer::newScene()
 	{
 		this->m_Application->m_ActiveScene = std::make_shared<scene::Scene>();
-		this->m_Application->m_ActiveScene->setTransactionCallback([&](ref<transactions::Transaction> transaction)
-			{
-				this->m_Application->onTransaction(transaction);
-			});
 		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
 	}
 	void EditorGuiLayer::loadScene()

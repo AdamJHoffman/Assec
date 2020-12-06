@@ -3,6 +3,7 @@
 #include <entt/entt.hpp>
 
 #include "Scene.h"
+#include "SceneSerializer.h"
 
 #include "util/Orm.h"
 
@@ -16,6 +17,18 @@ namespace assec::scene
 		Entity(const Entity& other) = default;
 		~Entity();
 
+		template<typename T, typename... Args> T& addComponent(Args&&... args) const
+		{
+			AC_CORE_ASSERT(!this->hasComponent<T>(), "Entity already has component");
+			auto& component = this->m_Scene->m_Registry.emplace<T>(this->m_EntityHandle, std::forward<Args>(args)...);
+			this->m_Scene->onComponentAdded<T>(*this, component);
+			return component;
+		}
+		template<typename T> void removeComponent() const
+		{
+			AC_CORE_ASSERT(this->hasComponent<T>(), "Entity does not have component");
+			this->m_Scene->m_Registry.remove<T>(this->m_EntityHandle);
+		}
 		template<typename T> bool hasComponent() const
 		{
 			return this->m_Scene->m_Registry.valid(this->m_EntityHandle) ? this->m_Scene->m_Registry.has<T>(this->m_EntityHandle) : false;
@@ -56,21 +69,10 @@ namespace assec::scene
 			return !(*this == other);
 		}
 	private:
-		template<typename T, typename... Args> T& addComponent(Args&&... args) const
-		{
-			AC_CORE_ASSERT(!this->hasComponent<T>(), "Entity already has component");
-			auto& component = this->m_Scene->m_Registry.emplace<T>(this->m_EntityHandle, std::forward<Args>(args)...);
-			this->m_Scene->onComponentAdded<T>(*this, component);
-			return component;
-		}
-		template<typename T> void removeComponent() const
-		{
-			AC_CORE_ASSERT(this->hasComponent<T>(), "Entity does not have component");
-			this->m_Scene->m_Registry.remove<T>(this->m_EntityHandle);
-		}
 		entt::entity m_EntityHandle = entt::null;
 		Scene* m_Scene = nullptr;
 
 		friend class Scene;
+		friend class SceneSerializer;
 	};
 }

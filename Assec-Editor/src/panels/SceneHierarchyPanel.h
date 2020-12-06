@@ -2,7 +2,7 @@
 #include "include/Assec.h"
 #include "scene/Entity.h"
 
-#include "transactions/Transaction.h"
+#include "../transactions/Transaction.h"
 
 namespace assec::editor
 {

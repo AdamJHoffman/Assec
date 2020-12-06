@@ -207,9 +207,6 @@
     <ClInclude Include="src\scene\ScriptableEntity.h">
       <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\transactions\Transaction.h">
-      <Filter>src\transactions</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\Loader.h">
       <Filter>src\util</Filter>
     </ClInclude>
@@ -1543,9 +1540,6 @@
     </ClCompile>
     <ClCompile Include="src\scene\ScriptableEntity.cpp">
       <Filter>src\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\transactions\Transaction.cpp">
-      <Filter>src\transactions</Filter>
     </ClCompile>
     <ClCompile Include="src\util\Loader.cpp">
       <Filter>src\util</Filter>

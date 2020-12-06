@@ -1,0 +1,46 @@
+Scene: Untitled
+Entities:
+  - Entity: 1283719283
+    TagComponent:
+      Tag: Camera
+    TransformComponent:
+      Translation: [0.933610737, 0.449477404, 1.29999995]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 2.09439516
+        PerspectiveNear: 0.100000001
+        PerspectiveFar: 100
+        OrthographicSize: 2
+        OrthographicNear: 1
+        OrthographicFar: -1
+      Primary: true
+      FixedAspectRatio: false
+    NativeScriptComponent:
+      Type: class exilus::CameraController
+  - Entity: 1045372895
+    TagComponent:
+      Tag: Cube Two
+    TransformComponent:
+      Translation: [1.10000002, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.5, 0.5, 0.5]
+    MeshComponent:
+      Path: C:\OneDrive\OneDrive - Kantonsschule Wettingen\Personal\Workspace\Visual Studio\Assec\Assec-Editor\res\models\cube\cube.gltf
+    MaterialComponent:
+      TexturePath: C:/OneDrive/OneDrive - Kantonsschule Wettingen/Personal/Workspace/Visual Studio/Assec/Assec-Editor/res/textures/rock_cliff/normal.jpg
+      ShaderPath: C:/OneDrive/OneDrive - Kantonsschule Wettingen/Personal/Workspace/Visual Studio/Assec/Assec-Editor/res/renderer2D/shaders/texture/texture.shader
+  - Entity: 1075639267
+    TagComponent:
+      Tag: Cube One
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.5, 0.5, 0.5]
+    MeshComponent:
+      Path: C:\OneDrive\OneDrive - Kantonsschule Wettingen\Personal\Workspace\Visual Studio\Assec\Assec-Editor\res\models\cube\cube.gltf
+    MaterialComponent:
+      TexturePath: C:/OneDrive/OneDrive - Kantonsschule Wettingen/Personal/Workspace/Visual Studio/Assec/Assec-Editor/res/textures/rock_cliff/albedo.jpg
+      ShaderPath: C:/OneDrive/OneDrive - Kantonsschule Wettingen/Personal/Workspace/Visual Studio/Assec/Assec-Editor/res/renderer2D/shaders/texture/texture.shader

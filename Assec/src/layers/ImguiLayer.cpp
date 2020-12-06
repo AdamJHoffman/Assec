@@ -16,7 +16,7 @@
 
 namespace assec
 {
-	ImGuiLayer::ImGuiLayer(assec::Application& application) : m_Application(&application) {}
+	ImGuiLayer::ImGuiLayer() {}
 	ImGuiLayer::~ImGuiLayer() {}
 	void ImGuiLayer::onAttach()
 	{

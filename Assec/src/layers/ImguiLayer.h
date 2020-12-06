@@ -7,7 +7,7 @@ namespace assec
 	class ImGuiLayer : public assec::layersystem::Layer
 	{
 	public:
-		ImGuiLayer(assec::Application& application);
+		ImGuiLayer();
 		~ImGuiLayer();
 		virtual void onEvent(const events::Event& event) final override;
 		virtual void onAttach() final override;
@@ -20,7 +20,6 @@ namespace assec
 		virtual void onDetach0() = 0;
 		void begin();
 		void end(const float& deltaTime);
-		assec::Application* m_Application;
 	private:
 		bool m_BlockEvents = true;
 	};

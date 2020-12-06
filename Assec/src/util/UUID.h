@@ -2,6 +2,8 @@
 
 #include <random>
 #include <sstream>
+#include <string>
+#include <unordered_map>
 
 namespace assec::uuid
 {
@@ -10,7 +12,7 @@ namespace assec::uuid
     static std::uniform_int_distribution<> dis(0, 15);
     static std::uniform_int_distribution<> dis2(8, 11);
 
-    static std::string generate_uuid_v4() 
+    static uint32_t generateUUID() 
     {
         std::stringstream ss;
         int i;
@@ -35,31 +37,8 @@ namespace assec::uuid
         for (i = 0; i < 12; i++) {
             ss << dis(gen);
         };
-        return ss.str();
-    }
+        std::hash<std::string> hasher;
 
-    static uint64_t generate_uuid_v4i()
-    {
-        std::stringstream ss;
-        int i;
-        ss << std::hex;
-        for (i = 0; i < 8; i++) {
-            ss << dis(gen);
-        }
-        for (i = 0; i < 4; i++) {
-            ss << dis(gen);
-        }
-        ss << "4";
-        for (i = 0; i < 3; i++) {
-            ss << dis(gen);
-        }
-        ss << dis2(gen);
-        for (i = 0; i < 3; i++) {
-            ss << dis(gen);
-        }
-        for (i = 0; i < 12; i++) {
-            ss << dis(gen);
-        };
-        return *static_cast<uint64_t*>((void*)&ss.str());
+        return static_cast<uint32_t>(hasher(ss.str()));
     }
 }

@@ -70,15 +70,4 @@ namespace assec::layersystem
 			}
 		}
 	}
-	void LayerStack::onTransaction(const transactions::Transaction& transaction)
-	{
-		TIME_FUNCTION;
-		for (auto& layer : this->m_Layers)
-		{
-			if (layer->m_Enabled)
-			{
-				layer->onTransaction(transaction);
-			}
-		}
-	}
 }

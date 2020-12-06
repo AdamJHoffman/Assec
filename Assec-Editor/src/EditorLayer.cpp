@@ -44,7 +44,7 @@ namespace assec::editor
 		}
 	};
 
-	EditorLayer::EditorLayer(const assec::Application& application, ref<graphics::FrameBuffer> frameBuffer) : m_Application(&application), m_FrameBuffer(frameBuffer) {}
+	EditorLayer::EditorLayer(EditorApplication& application) : m_Application(&application) {}
 	EditorLayer::~EditorLayer() {}
 	void EditorLayer::onEvent(const events::Event& event)
 	{
@@ -52,12 +52,12 @@ namespace assec::editor
 		dispatcher.dispatch<events::AppRenderEvent>([&](const events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;
-				if (this->m_ViewportSize.x != this->m_FrameBuffer->getFrameBufferProps().m_Width || this->m_ViewportSize.y != this->m_FrameBuffer->getFrameBufferProps().m_Height)
+				if (this->m_ViewportSize.x != this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width || this->m_ViewportSize.y != this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height)
 				{
-					this->m_FrameBuffer->resize();
+					this->m_Application->m_FrameBuffer->resize();
 				}
 
-				this->m_FrameBuffer->bind();
+				this->m_Application->m_FrameBuffer->bind();
 				graphics::WindowManager::clear();
 				graphics::Renderer::beginScene(this->m_Application->m_ActiveScene->getActiveCamera());
 				this->m_Application->m_ActiveScene->reg().view<scene::MeshComponent, scene::MaterialComponent, scene::TransformComponent>().each([&](auto entityID, auto& mesh, auto& material, auto& transform)
@@ -66,15 +66,11 @@ namespace assec::editor
 						graphics::Renderer::submit(*graphics::WindowManager::getWindows()[0], graphics::Renderable2D(mesh, material));
 					});
 				graphics::Renderer::endScene();
-				this->m_FrameBuffer->unbind();
+				this->m_Application->m_FrameBuffer->unbind();
 
-				this->m_ViewportSize = { this->m_FrameBuffer->getFrameBufferProps().m_Width, this->m_FrameBuffer->getFrameBufferProps().m_Height };
+				this->m_ViewportSize = { this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width, this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height };
 				return false;
 			});
-	}
-	void EditorLayer::onTransaction(const transactions::Transaction& event)
-	{
-
 	}
 	void EditorLayer::onAttach()
 	{

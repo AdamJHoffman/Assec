@@ -23,6 +23,8 @@
 
 #define BIT(x) (1 << x)
 
+#define MAP(X, A, B, C, D) (X-A)/(B-A) * (D-C) + C
+
 #define INLINE inline
 #define CONST_REF(x) const x&
 #define REF(x) x&

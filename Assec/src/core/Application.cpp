@@ -42,47 +42,11 @@ namespace assec
 		this->AC_EVENT_QUEUE->clear();
 		util::FileDialogs::processDialogRequests();
 	}
-	void Application::onTransaction(ref<transactions::Transaction> transaction)
-	{
-		TIME_FUNCTION;
-		this->AC_TRANSACTION_QUEUE->submit(transaction);
-		this->AC_TRANSACTION_ARCHIVE->submit(transaction);
-		this->AC_TRANSACTION_REDO_ARCHIVE->getTransactionqueue().clear();
-	}
-	void Application::handleTransactions()
-	{
-		TIME_FUNCTION;
-		auto tempQueue = this->AC_TRANSACTION_QUEUE->getTransactionqueue();
-		size_t size = tempQueue.size();
-		if (size > 0 && graphics::WindowManager::getMainWindow().getWindowData().m_Title.back() != '*')
-		{
-			graphics::WindowManager::getMainWindow().setTitle((graphics::WindowManager::getMainWindow().getWindowData().m_Title + std::string("*")).c_str());
-		}
-		for (size_t i = 0; i < size; i++)
-		{
-			auto& transaction = tempQueue[i];
-			AC_CORE_TRACE(transaction->toString());
-			transactions::Dispatcher dispatcher = transactions::Dispatcher(*transaction);
-			dispatcher.dispatch<transactions::AbstractValueChangedTransaction>([](const transactions::AbstractValueChangedTransaction& valueChanged)
-				{
-					valueChanged.changeValue();
-				});
-			this->AC_LAYER_STACK->onTransaction(*transaction);
-			this->m_ActiveScene->onTransaction(*transaction);
-			//if (!transaction->m_Discard)
-			//	this->AC_TRANSACTION_ARCHIVE->submit(transaction);
-		}
-		this->AC_TRANSACTION_QUEUE->getTransactionqueue().erase(this->AC_TRANSACTION_QUEUE->getTransactionqueue().begin(), this->AC_TRANSACTION_QUEUE->getTransactionqueue().begin() + size);
-	}
 	void Application::run()
 	{
 		auto videomode = graphics::WindowManager::m_WindowContext->getPrimaryMonitor()->m_CurrentVideoMode;
 		auto& window = graphics::WindowManager::addWindow(videomode.m_Width, videomode.m_Height, "Assec", nullptr, nullptr);
 		graphics::Renderer::init(BATCH_MAX_SIZE, window.getWindowData().m_GraphicsContext->getContextData().m_MaxTextures);
-		this->m_ActiveScene->setTransactionCallback([&](ref<transactions::Transaction> transaction)
-			{
-				this->onTransaction(transaction);
-			});
 		this->init();
 		float lastFrameTime = 0;
 		while (!graphics::WindowManager::empty())
@@ -97,8 +61,8 @@ namespace assec
 				this->onEvent(std::make_shared<events::AppRenderEvent>(timeStep));
 			}
 			graphics::WindowManager::prepare();
-			this->handleTransactions();
 			this->handleEvents();
+			this->frame();
 			graphics::WindowManager::finish();
 			if (this->m_ShouldClose)
 			{

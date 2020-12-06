@@ -10,8 +10,6 @@
 #include "Entity.h"
 #include "Components.h"
 
-#include "transactions/Transaction.h"
-
 #include "util/Loader.h"
 
 namespace YAML {
@@ -93,7 +91,7 @@ namespace assec::scene
 	static void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		out << YAML::BeginMap; // Entity
-		out << YAML::Key << "Entity" << YAML::Value << "12837192831273"; // TODO: Entity ID goes here
+		out << YAML::Key << "Entity" << YAML::Value << entity.operator entt::id_type(); // TODO: Entity ID goes here
 
 		if (entity.hasComponent<TagComponent>())
 		{
@@ -220,7 +218,7 @@ namespace assec::scene
 		{
 			for (auto entity : entities)
 			{
-				uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO
+				uint32_t uuid = entity["Entity"].as<uint32_t>(); // TODO
 
 				std::string name;
 				auto tagComponent = entity["TagComponent"];
@@ -229,77 +227,66 @@ namespace assec::scene
 
 				AC_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
-				auto& creationTransaction = makeRef<transactions::EntityCreationTransaction>([entity, name](scene::Entity& deserializedEntity)
-					{
-						auto& tag = deserializedEntity.getComponent<TagComponent>();
-						tag.m_Tag = name;
+				auto& deserializedEntity = this->m_Scene->createEntity(uuid, name);
+				auto& tag = deserializedEntity.getComponent<TagComponent>();
+				tag.m_Tag = name;
 
-						auto transformComponent = entity["TransformComponent"];
-						if (transformComponent)
-						{
-							// Entities always have transforms
-							auto& tc = deserializedEntity.getComponent<TransformComponent>();
-							tc.translation = transformComponent["Translation"].as<glm::vec3>();
-							tc.rotation = transformComponent["Rotation"].as<glm::vec3>();
-							tc.scale = transformComponent["Scale"].as<glm::vec3>();
-						}
+				auto transformComponent = entity["TransformComponent"];
+				if (transformComponent)
+				{
+					// Entities always have transforms
+					auto& tc = deserializedEntity.getComponent<TransformComponent>();
+					tc.translation = transformComponent["Translation"].as<glm::vec3>();
+					tc.rotation = transformComponent["Rotation"].as<glm::vec3>();
+					tc.scale = transformComponent["Scale"].as<glm::vec3>();
+				}
 
-						auto cameraComponent = entity["CameraComponent"];
-						if (cameraComponent)
-						{
-							deserializedEntity.getScene().m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<CameraComponent>>(deserializedEntity, [=](CameraComponent& component)
-								{
-									auto& cameraProps = cameraComponent["Camera"];
-									component.m_Type = static_cast<Camera::projectionType>(cameraProps["ProjectionType"].as<int>());
+				auto cameraComponent = entity["CameraComponent"];
+				if (cameraComponent)
+				{
+					auto& component = deserializedEntity.addComponent<CameraComponent>();
+					auto& cameraProps = cameraComponent["Camera"];
+					component.m_Type = static_cast<Camera::projectionType>(cameraProps["ProjectionType"].as<int>());
 
-									component.m_PerspectiveFov = cameraProps["PerspectiveFOV"].as<float>();
-									component.m_PerspectiveNear = cameraProps["PerspectiveNear"].as<float>();
-									component.m_PerspectiveFar = cameraProps["PerspectiveFar"].as<float>();
+					component.m_PerspectiveFov = cameraProps["PerspectiveFOV"].as<float>();
+					component.m_PerspectiveNear = cameraProps["PerspectiveNear"].as<float>();
+					component.m_PerspectiveFar = cameraProps["PerspectiveFar"].as<float>();
 
-									component.m_OrthographicSize = cameraProps["OrthographicSize"].as<float>();
-									component.m_OrthographicNear = cameraProps["OrthographicNear"].as<float>();
-									component.m_OrthographicFar = cameraProps["OrthographicFar"].as<float>();
+					component.m_OrthographicSize = cameraProps["OrthographicSize"].as<float>();
+					component.m_OrthographicNear = cameraProps["OrthographicNear"].as<float>();
+					component.m_OrthographicFar = cameraProps["OrthographicFar"].as<float>();
 
-									component.m_Primary = cameraComponent["Primary"].as<bool>();
-									component.m_FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
-								}));
-						}
+					component.m_Primary = cameraComponent["Primary"].as<bool>();
+					component.m_FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+				}
 
-						auto nativeScriptComponent = entity["NativeScriptComponent"];
-						if (nativeScriptComponent)
-						{
-							deserializedEntity.getScene().m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<NativeScriptComponent>>(deserializedEntity, [=](NativeScriptComponent& component)
-								{
-									std::string type = nativeScriptComponent["Type"].as<std::string>();
-									auto scriptable = ScriptableEntity::s_Scripts[type];
-									scriptable->bind(component);
-								}));
-						}
+				auto nativeScriptComponent = entity["NativeScriptComponent"];
+				if (nativeScriptComponent)
+				{
+					auto& component = deserializedEntity.addComponent<NativeScriptComponent>();
+					std::string type = nativeScriptComponent["Type"].as<std::string>();
+					auto scriptable = ScriptableEntity::s_Scripts[type];
+					scriptable->bind(component);
+				}
 
-						auto meshComponent = entity["MeshComponent"];
-						if (meshComponent)
-						{
-							deserializedEntity.getScene().m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<MeshComponent>>(deserializedEntity, [=](MeshComponent& component)
-								{
-									component.m_Path = meshComponent["Path"].as<std::string>();
-									*component.m_Mesh = util::Loader::loadgltfMesh(component.m_Path.c_str())[0];
-								}));
-						}
+				auto meshComponent = entity["MeshComponent"];
+				if (meshComponent)
+				{
+					auto& component = deserializedEntity.addComponent<MeshComponent>();
+					component.m_Path = meshComponent["Path"].as<std::string>();
+					*component.m_Mesh = util::Loader::loadgltfMesh(component.m_Path.c_str())[0];
+				}
 
-						auto materialComponent = entity["MaterialComponent"];
-						if (materialComponent)
-						{
-							deserializedEntity.getScene().m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<MaterialComponent>>(deserializedEntity, [=](MaterialComponent& component)
-								{
-									component.m_TexturePath = materialComponent["TexturePath"].as<std::string>();
-									component.m_ShaderPath = materialComponent["ShaderPath"].as<std::string>();
-									auto& texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(component.m_TexturePath, graphics::Texture::TextureProps());
-									auto& shader = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(assec::util::Loader::loadFile(component.m_ShaderPath.c_str()));
-									component.m_Material = std::make_shared<graphics::Material>(shader, texture);
-								}));
-						}
-					});
-				this->m_Scene->m_TransactionCallback(creationTransaction);
+				auto materialComponent = entity["MaterialComponent"];
+				if (materialComponent)
+				{
+					auto& component = deserializedEntity.addComponent<MaterialComponent>();
+					component.m_TexturePath = materialComponent["TexturePath"].as<std::string>();
+					component.m_ShaderPath = materialComponent["ShaderPath"].as<std::string>();
+					auto& texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(component.m_TexturePath, graphics::Texture::TextureProps());
+					auto& shader = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(assec::util::Loader::loadFile(component.m_ShaderPath.c_str()));
+					component.m_Material = std::make_shared<graphics::Material>(shader, texture);
+				}
 			}
 		}
 		this->m_Scene->m_SaveFilePath = path;

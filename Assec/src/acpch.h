@@ -21,5 +21,6 @@
 #include "log/Logger.h"
 
 #ifdef AC_PLATFORM_WINDOWS
+#define NOMINMAX
 #include <Windows.h>
 #endif
