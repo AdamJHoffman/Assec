@@ -4,7 +4,7 @@
 
 namespace assec::graphics
 {
-	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices) : m_Vertices(vertices), m_Indices(indices) { TIME_FUNCTION; }
+	Mesh::Mesh(CONST_REF(std::vector<Vertex>) vertices, CONST_REF(std::vector<int>) indices) : m_Vertices(vertices), m_Indices(indices) { TIME_FUNCTION; }
 	const std::vector<float> Mesh::createVerticesData()
 	{
 		TIME_FUNCTION;
@@ -56,6 +56,7 @@ namespace assec::graphics
 	}
 	void Mesh::setTransformationMatrix(const glm::mat4& transform)
 	{
+		TIME_FUNCTION;
 		for (auto& v : this->m_Vertices)
 		{
 			v.transformationMatrix = transform;
@@ -63,9 +64,10 @@ namespace assec::graphics
 	}
 	void Mesh::setTextureIndex(const float& index)
 	{
+		TIME_FUNCTION;
 		for (auto& v : this->m_Vertices)
 		{
 			v.texID = index;
 		}
 	}
-}
+} // namespace assec::graphics

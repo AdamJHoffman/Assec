@@ -1,6 +1,8 @@
 ﻿#pragma once
 
+#pragma warning(push, 0)	// Disable warnings in external header
 #include <entt/entt.hpp>
+#pragma warning(pop)
 
 #include "Scene.h"
 #include "SceneSerializer.h"

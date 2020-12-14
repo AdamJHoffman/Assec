@@ -29,11 +29,14 @@ namespace assec::util {
 		{
 			OPENFILENAMEA ofn;
 			CHAR szFile[260] = { 0 };
+			CHAR currentDir[256] = { 0 };
 			ZeroMemory(&ofn, sizeof(OPENFILENAME));
 			ofn.lStructSize = sizeof(OPENFILENAME);
-			ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)graphics::WindowManager::getWindows()[0]->getWindowData().m_NativeWindow);
+			ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)graphics::WindowManager::getWindows()[0]->getWindowData().nativeWindow);
 			ofn.lpstrFile = szFile;
 			ofn.nMaxFile = sizeof(szFile);
+			if (GetCurrentDirectoryA(256, currentDir))
+				ofn.lpstrInitialDir = currentDir;
 			ofn.lpstrFilter = data.m_Filter;
 			ofn.nFilterIndex = 1;
 			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
@@ -47,14 +50,18 @@ namespace assec::util {
 		{
 			OPENFILENAMEA ofn;
 			CHAR szFile[260] = { 0 };
+			CHAR currentDir[256] = { 0 };
 			ZeroMemory(&ofn, sizeof(OPENFILENAME));
 			ofn.lStructSize = sizeof(OPENFILENAME);
-			ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)graphics::WindowManager::getWindows()[0]->getWindowData().m_NativeWindow);
+			ofn.hwndOwner = glfwGetWin32Window((GLFWwindow*)graphics::WindowManager::getWindows()[0]->getWindowData().nativeWindow);
 			ofn.lpstrFile = szFile;
 			ofn.nMaxFile = sizeof(szFile);
+			if (GetCurrentDirectoryA(256, currentDir))
+				ofn.lpstrInitialDir = currentDir;
 			ofn.lpstrFilter = data.m_Filter;
 			ofn.nFilterIndex = 1;
-			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+			ofn.lpstrDefExt = strchr(data.m_Filter, '\0') + 1;
 			if (GetSaveFileNameA(&ofn) == TRUE)
 			{
 				data.m_FileFoundCallback(ofn.lpstrFile);

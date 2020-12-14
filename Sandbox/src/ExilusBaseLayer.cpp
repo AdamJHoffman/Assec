@@ -25,7 +25,7 @@ namespace exilus
 		void onEvent(const assec::events::Event& event) override
 		{
 			float speed = this->getField<float>("speed").getValue();
-			assec::events::Dispatcher dispatcher = assec::events::Dispatcher(event);
+			assec::util::Dispatcher dispatcher = assec::events::Dispatcher(event);
 			dispatcher.dispatch<assec::events::AppUpdateEvent>([&](const assec::events::AppUpdateEvent& event)
 				{
 					TIME_FUNCTION;

@@ -4,35 +4,37 @@
 
 #include "event/WindowEvents.h"
 
+#include "util/Dispatcher.h"
+
 namespace assec::graphics
 {
 	std::vector<ref<Window>> WindowManager::m_Windows = std::vector<ref<Window>>();
-	ref<WindowContext> WindowManager::m_WindowContext = nullptr;
+	ref<WindowContext> WindowManager::s_WindowContext = nullptr;
 	std::function<void(ref<events::Event>)> WindowManager::m_EventCallBack = nullptr;
-	void WindowManager::init(const ref<WindowContext>& windowContext, const std::function<void(ref<events::Event>)>& eventCallBackFn)
+	void WindowManager::init(CONST_REF(ref<WindowContext>) windowContext, CONST_REF(std::function<void(ref<events::Event>)>) eventCallBackFn)
 	{
-		m_WindowContext = windowContext;
-		m_EventCallBack = eventCallBackFn;
 		TIME_FUNCTION;
-		if (!m_WindowContext->m_Initialized)
+		s_WindowContext = windowContext;
+		m_EventCallBack = eventCallBackFn;
+		if (!s_WindowContext->initialized())
 		{
-			m_WindowContext->init();
+			s_WindowContext->init();
 		}
 	}
 	WindowManager::~WindowManager()
 	{
 		TIME_FUNCTION;
-		m_WindowContext->cleanup();
+		s_WindowContext->terminate();
 	}
 	void WindowManager::prepare()
 	{
 		TIME_FUNCTION;
 		for (auto window : m_Windows)
 		{
-			window->makeCurrent();
+			window->makeContextCurrent();
 			window->clear();
-			window->pollEvents();
 		}
+		s_WindowContext->pollEvents();
 	}
 	void WindowManager::finish()
 	{
@@ -55,12 +57,11 @@ namespace assec::graphics
 			window->clear();
 		}
 	}
-	const Window& WindowManager::addWindow(const uint32_t& width, const uint32_t& height, const char* title, const Monitor* monitor, const Window* share)
+	const Window& WindowManager::addWindow(CONST_REF(uint32_t) width, CONST_REF(uint32_t) height, CONST_REF(std::string) title, const Monitor* monitor, const Window* share)
 	{
 		TIME_FUNCTION;
-		auto window = m_WindowContext->createWindow(width, height, title, monitor, share, [&](ref<events::Event> event)
+		auto window = s_WindowContext->createWindow(width, height, title, monitor, share, [&](ref<events::Event> event)
 			{
-				TIME_FUNCTION;
 				onEvent(event);
 			});
 		m_Windows.push_back(window);
@@ -69,17 +70,15 @@ namespace assec::graphics
 	const void WindowManager::onEvent(ref<events::Event> event)
 	{
 		TIME_FUNCTION;
-		events::Dispatcher dispatcher = events::Dispatcher(*event);
+		util::Dispatcher dispatcher = util::Dispatcher(*event);
 		dispatcher.dispatch<events::WindowCloseEvent>([&](const events::WindowCloseEvent& event)
 			{
-				TIME_FUNCTION;
 				m_Windows.erase(std::remove_if(m_Windows.begin(), m_Windows.end(), [](ref<Window> window)
 					{
-						TIME_FUNCTION;
-						return !window->getWindowData().m_Open;
+						return window->ShouldClose();
 					}), m_Windows.end());
 				return false;
 			});
 		m_EventCallBack(event);
 	}
-}
+} // namespace assec::graphics

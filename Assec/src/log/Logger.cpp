@@ -4,8 +4,7 @@
 
 namespace assec
 {
-
-	Logger::Logger(const std::string& name) : m_Logger(spdlog::stdout_color_mt(name.c_str()))
+	Logger::Logger(CONST_REF(std::string) name) : m_Logger(spdlog::stdout_color_mt(name.c_str()))
 	{
 		TIME_FUNCTION;
 		this->m_Logger->set_pattern("[%H:%M:%S] [%n] : %v");
@@ -14,4 +13,4 @@ namespace assec
 	Logger::~Logger() { TIME_FUNCTION; }
 	ref<Logger> Logger::CORE_LOGGER = std::make_shared<Logger>("CORE");
 	ref<Logger> Logger::CLIENT_LOGGER = std::make_shared<Logger>("CLIENT");
-}
+} // namespace assec

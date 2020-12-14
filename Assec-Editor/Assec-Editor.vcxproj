@@ -131,15 +131,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera\EditorCamera.h" />
     <ClInclude Include="src\EditorApplication.h" />
     <ClInclude Include="src\EditorGuiLayer.h" />
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\panels\EditorContext.h" />
     <ClInclude Include="src\panels\InspectorPanel.h" />
     <ClInclude Include="src\panels\NodeEditor.h" />
     <ClInclude Include="src\panels\SceneHierarchyPanel.h" />
+    <ClInclude Include="src\panels\ViewportPanel.h" />
     <ClInclude Include="src\transactions\Transaction.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera\EditorCamera.cpp" />
     <ClCompile Include="src\EditorApplication.cpp" />
     <ClCompile Include="src\EditorGuiLayer.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
@@ -147,6 +151,7 @@
     <ClCompile Include="src\panels\InspectorPanel.cpp" />
     <ClCompile Include="src\panels\NodeEditor.cpp" />
     <ClCompile Include="src\panels\SceneHierarchyPanel.cpp" />
+    <ClCompile Include="src\panels\ViewportPanel.cpp" />
     <ClCompile Include="src\transactions\Transaction.cpp" />
   </ItemGroup>
   <ItemGroup>

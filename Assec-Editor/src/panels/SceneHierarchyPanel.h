@@ -2,25 +2,18 @@
 #include "include/Assec.h"
 #include "scene/Entity.h"
 
-#include "../transactions/Transaction.h"
+#include "EditorContext.h"
 
 namespace assec::editor
 {
-	class SceneHierarchyPanel
+	class SceneHierarchyPanel : public EditorContext
 	{
 	public:
-		SceneHierarchyPanel() = default;
-		SceneHierarchyPanel(scene::Scene&);
+		SceneHierarchyPanel(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
+			REF(EditorApplication) application);
 		~SceneHierarchyPanel();
-		void setContext(scene::Scene&);
-		void setSelectionCallback(const std::function<void(const scene::Entity&)>&);
-		void setTransactionCallback(const std::function<void(ref<transactions::Transaction>)>&);
-		void renderImGUI();
 	private:
+		virtual void render() override;
 		void renderEntityNode(scene::Entity& entity);
-		scene::Scene* m_Context = nullptr;
-		scene::Entity m_SelectedEntity;
-		std::function<void(const scene::Entity&)> m_SelectionCallback;
-		std::function<void(ref<transactions::Transaction>)> m_TransactionCallback;
 	};
 }

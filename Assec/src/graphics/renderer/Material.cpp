@@ -4,7 +4,7 @@
 
 namespace assec::graphics
 {
-	void Material::prepare(const glm::mat4& viewProjectionMatrix) const
+	void Material::prepare(CONST_REF(glm::mat4) viewProjectionMatrix) const
 	{
 		TIME_FUNCTION;
 		this->m_ShaderProgram->bind();
@@ -12,4 +12,4 @@ namespace assec::graphics
 		this->m_ShaderProgram->loadMat4(AC_SHADER_VIEWPROJECTIONMATRIX_NAME, viewProjectionMatrix);
 		this->m_Texture->bind();
 	}
-}
+} // namespace assec::graphics

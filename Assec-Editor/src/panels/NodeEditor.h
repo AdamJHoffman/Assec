@@ -10,6 +10,8 @@
 #include <stack>
 #include <any>
 
+#include "EditorContext.h"
+
 #include "util/UUID.h"
 
 namespace assec::editor
@@ -299,7 +301,7 @@ namespace assec::editor
 		~TimeNode() = default;
 		virtual void update() override
 		{
-			this->outputPins[0]->value = static_cast<std::any>(graphics::WindowManager::m_WindowContext->getCurrentTime());
+			this->outputPins[0]->value = static_cast<std::any>(graphics::WindowManager::s_WindowContext->getCurrentTime());
 		}
 	};
 
@@ -501,10 +503,11 @@ namespace assec::editor
 		Graph m_Graph;
 	};
 
-	class NodeEditor
+	class NodeEditor : public EditorContext
 	{
 	public:
-		NodeEditor()
+		NodeEditor(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
+			REF(EditorApplication) application) : EditorContext(callback, application, "Node Editor")
 		{
 			// TEMP
 
@@ -564,8 +567,11 @@ namespace assec::editor
 			// TEMP
 		}
 		~NodeEditor() = default;
-		void renderImGUI();
 	private:
+		virtual void begin0() override;
+		virtual void end0() override;
+		virtual void render() override;
+
 		void submitLinks();
 		void handleLinks();
 		void removeNodes();
@@ -573,9 +579,6 @@ namespace assec::editor
 
 		void getSelectedNodes();
 		void getSelectedLinks();
-
-		void begin();
-		void end();
 
 		Graph m_Graph;
 		std::vector<Node*> m_SelectedNodes;

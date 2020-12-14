@@ -11,13 +11,20 @@ namespace exilus
 	public:
 		ExilusApplication() {}
 		~ExilusApplication() {}
-		virtual void init() override
+		virtual void init0() override
 		{
 			this->AC_LAYER_STACK->addLayer(std::make_shared<ExilusBaseLayer>(*this));
 			assec::graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->setClearColor(glm::vec4(0.09803921568, 0.09803921568, 0.11764705882, 1.0f));
 			assec::graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->enable(assec::Type::DEPTH_TEST);
 			assec::graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->setDepthFunction(assec::Type::LESS);
 			assec::scene::SceneSerializer(this->m_ActiveScene).deserialize("C:/OneDrive/OneDrive - Kantonsschule Wettingen/Personal/Workspace/Visual Studio/Assec/Sandbox/res/test.assec");
+			this->m_ActiveScene->reg().view<assec::scene::NativeScriptComponent>().each([&](auto entity, auto& nsc)
+				{
+					if (!nsc.m_Instance)
+					{
+						nsc.m_Instance = nsc.InstantiateScript(entity, &*this->m_ActiveScene);
+					}
+				});
 		}
 	};
 } // namespace assec::editor

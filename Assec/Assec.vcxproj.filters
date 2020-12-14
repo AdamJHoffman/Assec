@@ -81,9 +81,6 @@
     <ClInclude Include="src\core\Base.h">
       <Filter>src\core</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\Input.h">
-      <Filter>src\core</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\KeyCode.h">
       <Filter>src\core</Filter>
     </ClInclude>
@@ -1449,6 +1446,12 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\Dispatcher.h" />
+    <ClInclude Include="src\input\Joystick.h" />
+    <ClInclude Include="src\input\Input.h">
+      <Filter>src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\glfw\GLFWInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1458,9 +1461,6 @@
       <Filter>src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\core\ImGuiImplmentation.cpp">
-      <Filter>src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\Input.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
     <ClCompile Include="src\core\StbImageImplementation.cpp">
@@ -1547,5 +1547,9 @@
     <ClCompile Include="src\util\Orm.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\input\Input.cpp">
+      <Filter>src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\glfw\GLFWInput.cpp" />
   </ItemGroup>
 </Project>

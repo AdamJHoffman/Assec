@@ -1,15 +1,49 @@
 ﻿#pragma once
 
+#include <glad/glad.h>
+
 #include "graphics/GraphicsContext.h"
 
 #ifdef AC_DEBUG
+
+void glCheckError_(CONST_REF(std::string) file, int line, CONST_REF(std::string) function);
 #define GLClearError() while(glGetError() != GL_NO_ERROR)
 #define GLCall(x)   GLClearError();\
                     x;\
-                    {\
-                    uint32_t error = glGetError();\
-					AC_CORE_ASSERT(!error, ("Assertion failed: [OPENGL ERROR {0}] in function \"{1}\" on line {2} in file \"{3}\"", error, #x, __LINE__, __FILE__))\
+					{\
+						uint32_t errorCode = glGetError();\
+						std::string error;\
+						switch (errorCode)\
+						{\
+							case GL_INVALID_ENUM:                  error = "GL_INVALID_ENUM"; break;\
+							case GL_INVALID_VALUE:                 error = "GL_INVALID_VALUE"; break;\
+							case GL_INVALID_OPERATION:             error = "GL_INVALID_OPERATION"; break;\
+							case GL_STACK_OVERFLOW:                error = "GL_STACK_OVERFLOW"; break;\
+							case GL_STACK_UNDERFLOW:               error = "GL_STACK_UNDERFLOW"; break;\
+							case GL_OUT_OF_MEMORY:                 error = "GL_OUT_OF_MEMORY"; break;\
+							case GL_INVALID_FRAMEBUFFER_OPERATION: error = "GL_INVALID_FRAMEBUFFER_OPERATION"; break;\
+						}\
+						std::string message = std::string("[ ") + error + std::string(" ] in function \"") + std::string(#x) + std::string("\" on line ") + std::to_string(__LINE__) + std::string(" in file \"") + std::string(__FILE__) + std::string("\"");\
+						AC_CORE_ASSERT(!errorCode, (message))\
 					}
+					//{\
+					//	uint32_t  errorCode = glGetError();\
+					//	if (errorCode)\
+					//	{\
+					//		std::string error;\
+					//		switch (errorCode)\
+					//		{\
+					//		case GL_INVALID_ENUM:                  error = "GL_INVALID_ENUM"; break;\
+					//		case GL_INVALID_VALUE:                 error = "GL_INVALID_VALUE"; break;\
+					//		case GL_INVALID_OPERATION:             error = "GL_INVALID_OPERATION"; break;\
+					//		case GL_STACK_OVERFLOW:                error = "GL_STACK_OVERFLOW"; break;\
+					//		case GL_STACK_UNDERFLOW:               error = "GL_STACK_UNDERFLOW"; break;\
+					//		case GL_OUT_OF_MEMORY:                 error = "GL_OUT_OF_MEMORY"; break;\
+					//		case GL_INVALID_FRAMEBUFFER_OPERATION: error = "GL_INVALID_FRAMEBUFFER_OPERATION"; break;\
+					//		}\
+					//		AC_CORE_ASSERT(!errorCode, ("Assertion failed: [OPENGL ERROR {0}] in function \"{1}\" on line {2} in file \"{3}\"", error, #x, __FILE__, __LINE__));\
+					//	}\
+					//}
 #else
 #define GLCall(x) x
 #endif // AC_DEBUG

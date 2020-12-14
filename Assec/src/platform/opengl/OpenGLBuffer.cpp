@@ -114,9 +114,9 @@ namespace assec::graphics
 		for (auto key : util::Keys(this->m_TextureAttachments))
 		{
 			const Type& attachment = key;
-			const Type& internalForamat = this->m_TextureAttachments.at(key)->getProps().m_InternalFormat;
-			const Type& dataFormat = this->m_TextureAttachments.at(key)->getProps().m_DataFormat;
-			const Type& dataType = this->m_TextureAttachments.at(key)->getProps().m_DataType;
+			const Type& internalForamat = this->m_TextureAttachments.at(key)->getProps().internalFormat;
+			const Type& dataFormat = this->m_TextureAttachments.at(key)->getProps().dataFormat;
+			const Type& dataType = this->m_TextureAttachments.at(key)->getProps().dataType;
 			this->addTextureAttachment(attachment, internalForamat, dataFormat, dataType);
 		}
 		this->validate();

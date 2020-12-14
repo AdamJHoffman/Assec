@@ -15,6 +15,8 @@
 
 #include "ScriptableEntity.h"
 
+#include "util/Dispatcher.h"
+
 
 namespace assec::scene
 {
@@ -66,12 +68,12 @@ namespace assec::scene
 
 		void onEvent(const events::Event& event)
 		{
-			events::Dispatcher dispatcher = events::Dispatcher(event);
+			util::Dispatcher dispatcher = util::Dispatcher(event);
 			dispatcher.dispatch<events::WindowResizeEvent>([this](const events::WindowResizeEvent& event)
 				{
 					if (!this->m_FixedAspectRatio)
 					{
-						this->setViewportSize(event.m_Width, event.m_Height);
+						this->setViewportSize(event.getSize().x, event.getSize().y);
 					}
 					return false;
 				});
@@ -93,11 +95,11 @@ namespace assec::scene
 			recalculateProjection();
 		}
 
-		void setViewportSize(uint32_t width, uint32_t height)
+		void setViewportSize(float width, float height)
 		{
 			if ((width * height) > 0)
 			{
-				m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+				m_AspectRatio = width / height;
 				recalculateProjection();
 			}
 		}
@@ -161,7 +163,7 @@ namespace assec::scene
 		MaterialComponent(ref<graphics::ShaderProgram> shaderProgram, ref<graphics::Texture> texture)
 			: m_Material(std::make_shared<graphics::Material>(shaderProgram, texture)) {}
 		MaterialComponent(const MaterialComponent& other)
-			: m_Material(std::make_shared<graphics::Material>(other.m_Material->m_ShaderProgram, other.m_Material->m_Texture)), m_TexturePath(other.m_TexturePath), m_ShaderPath(other.m_ShaderPath) {}
+			: m_Material(std::make_shared<graphics::Material>(other.m_Material->getRawShaderProgram(), other.m_Material->getRawTexture())), m_TexturePath(other.m_TexturePath), m_ShaderPath(other.m_ShaderPath) {}
 
 		operator graphics::Material& () { return *this->m_Material; }
 		operator const graphics::Material& () const { return *this->m_Material; }

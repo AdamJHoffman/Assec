@@ -1,29 +1,117 @@
 ﻿#include "acpch.h"
 
-#include "GLFWWindowContext.h"
-
 #include <GLFW/glfw3.h>
 
+#include "GLFWWindowContext.h"
 #include "GLFWWindow.h"
+#include "GLFWInput.h"
+
+#include "input/Input.h"
 
 namespace assec::graphics
 {
 	GLFWWindowContext::GLFWWindowContext() : WindowContext::WindowContext() {}
 	GLFWWindowContext::~GLFWWindowContext() {}
-	void GLFWWindowContext::cleanup() const
+	void GLFWWindowContext::init(CONST_REF(InitHints) hints)
+	{
+		TIME_FUNCTION;
+		glfwInitHint(GLFW_JOYSTICK_HAT_BUTTONS, hints.joystickHatsAsButtons);
+		glfwInitHint(GLFW_ANGLE_PLATFORM_TYPE, toGLFWType(hints.anglePlatformType));
+		glfwInitHint(GLFW_COCOA_CHDIR_RESOURCES, hints.setCurrentDirectoyToResources);
+		glfwInitHint(GLFW_COCOA_MENUBAR, hints.createBasicMenuBar);
+		this->m_Initialized = glfwInit();
+		if (this->m_Initialized)
+		{
+			glfwSetErrorCallback([](int error, const char* description)
+				{
+					std::string name = "";
+					switch (error)
+					{
+					case GLFW_NO_ERROR:
+						name = "NO ERROR";
+						break;
+					case GLFW_NOT_INITIALIZED:
+						name = "GLFW_NOT_INITIALIZED";
+						break;
+					case GLFW_NO_CURRENT_CONTEXT:
+						name = "NO_CURRENT_CONTEXT";
+						break;
+					case GLFW_INVALID_ENUM:
+						name = "INVALID_ENUM";
+						break;
+					case GLFW_INVALID_VALUE:
+						name = "INVALID_VALUE";
+						break;
+					case GLFW_OUT_OF_MEMORY:
+						name = "OUT_OF_MEMORY";
+						break;
+					case GLFW_API_UNAVAILABLE:
+						name = "API_UNAVAILABLE";
+						break;
+					case GLFW_VERSION_UNAVAILABLE:
+						name = "VERSION_UNAVAILABLE";
+						break;
+					case GLFW_PLATFORM_ERROR:
+						name = "PLATFORM_ERROR";
+						break;
+					case GLFW_FORMAT_UNAVAILABLE:
+						name = "FORMAT_UNAVAILABLE";
+						break;
+					case GLFW_NO_WINDOW_CONTEXT:
+						name = "NO_WINDOW_CONTEXT";
+						break;
+					case GLFW_CURSOR_UNAVAILABLE:
+						name = "CURSOR_UNAVAILABLE";
+						break;
+					case GLFW_FEATURE_UNAVAILABLE:
+						name = "FEATURE_UNAVAILABLE";
+						break;
+					case GLFW_FEATURE_UNIMPLEMENTED:
+						name = "FEATURE_UNIMPLEMENTED";
+						break;
+					}
+					std::string message = std::string("[ ") + name + std::string(" ] with message: ") + std::string(description);
+					AC_CORE_ASSERT(!error, (message));
+				});
+			glfwSetJoystickCallback([](int id, int action) 
+				{
+					switch (action)
+					{
+					case GLFW_CONNECTED:
+						input::Input::onJoyStickConnected(makeRef<input::GLFWJoystick>(id));
+						break;
+					case GLFW_DISCONNECTED:
+						input::Input::onJoyStickDisconnected(joystickIDFromGLFWType(id));
+						break;
+					}
+				});
+		}
+	}
+	void GLFWWindowContext::terminate()
 	{
 		TIME_FUNCTION;
 		glfwTerminate();
 	}
-	const float GLFWWindowContext::getCurrentTime() const
-	{
-		return static_cast<float>(glfwGetTime());
-	}
-	const scope<Monitor> GLFWWindowContext::getPrimaryMonitor() const
+	glm::vec3 GLFWWindowContext::getVersion() const
 	{
 		TIME_FUNCTION;
-		return std::make_unique<GLFWMonitor>(glfwGetPrimaryMonitor());
+		int major = 0, minor = 0, revision = 0;
+		glfwGetVersion(&major, &minor, &revision);
+		return glm::vec3{major, minor, revision};
 	}
+	std::string GLFWWindowContext::getVersionAsString() const
+	{
+		TIME_FUNCTION;
+		return std::string(glfwGetVersionString());
+	}
+	std::pair<uint32_t, std::string> GLFWWindowContext::getError() const
+	{
+		TIME_FUNCTION;
+		const char* description;
+		int code = glfwGetError(&description);
+		return std::make_pair(static_cast<uint32_t>(code), std::string(description));
+	}
+
 	const std::vector<scope<Monitor>> GLFWWindowContext::getMonitors() const
 	{
 		TIME_FUNCTION;
@@ -36,18 +124,114 @@ namespace assec::graphics
 		}
 		return result;
 	}
-	void GLFWWindowContext::init0() const
+	const scope<Monitor> GLFWWindowContext::getPrimaryMonitor() const
 	{
 		TIME_FUNCTION;
-		glfwInit();
+		return std::make_unique<GLFWMonitor>(glfwGetPrimaryMonitor());
 	}
-	ref<Window> GLFWWindowContext::createWindow(const uint32_t& width, const uint32_t& height, const std::string& title, const Monitor* monitor, const Window* share, const EventCallBackFn& eventCallBack)
+
+	ref<Window> GLFWWindowContext::createWindow(CONST_REF(uint32_t) width, CONST_REF(uint32_t) height,
+		CONST_REF(std::string) title, const Monitor* monitor, const Window* share,
+		CONST_REF(EventCallBackFn) eventCallBack) const
 	{
 		TIME_FUNCTION;
 		return std::make_shared<GLFWWindow>(width, height, title, monitor, share, eventCallBack);
 	}
-	const uint32_t toGLFWType(const KEY& key)
+
+	void GLFWWindowContext::pollEvents() const 
 	{
+		TIME_FUNCTION;
+		glfwPollEvents();
+	}
+	void GLFWWindowContext::waitEvents() const
+	{
+		TIME_FUNCTION;
+		glfwWaitEvents();
+	}
+	void GLFWWindowContext::waitEventsTimeout(double timeout) const
+	{
+		TIME_FUNCTION;
+		glfwWaitEventsTimeout(timeout);
+	}
+	void GLFWWindowContext::postEmptyEvent() const
+	{
+		TIME_FUNCTION;
+		glfwPostEmptyEvent();
+	}
+
+	bool GLFWWindowContext::isRawMouseMotionSupported() const
+	{
+		TIME_FUNCTION;
+		return glfwRawMouseMotionSupported();
+	}
+
+	std::string GLFWWindowContext::getKeyName(CONST_REF(KEY) key) const
+	{
+		TIME_FUNCTION;
+		return std::string(glfwGetKeyName(toGLFWType(key), this->getKeyScancode(key)));
+	}
+	uint32_t GLFWWindowContext::getKeyScancode(CONST_REF(KEY) key) const
+	{
+		TIME_FUNCTION;
+		return static_cast<uint32_t>(glfwGetKeyScancode(toGLFWType(key)));
+	}
+
+	//virtual cursor createCursor(cursorhints)
+	//virtual cursor createStandardCursor(cursorhints)
+	void GLFWWindowContext::destroyCursor(CONST_REF(Cursor) cursor) const
+	{
+		TIME_FUNCTION;
+		glfwDestroyCursor((GLFWcursor*)cursor.nativeCursor);
+	}
+
+	bool GLFWWindowContext::isJoystickPresent(CONST_REF(JoystickID) id) const
+	{
+		TIME_FUNCTION;
+		return glfwJoystickPresent(toGLFWType(id));
+	}
+	void GLFWWindowContext::updateGamepadMappings(CONST_REF(std::string) mapping) const
+	{
+		TIME_FUNCTION;
+		glfwUpdateGamepadMappings(mapping.c_str());
+	}
+
+	double GLFWWindowContext::getCurrentTime() const
+	{
+		TIME_FUNCTION;
+		return glfwGetTime();
+	}
+	void GLFWWindowContext::setCurrentTime(double time) const
+	{
+		TIME_FUNCTION;
+		glfwSetTime(time);
+	}
+	uint64_t GLFWWindowContext::getTimerValue() const
+	{
+		TIME_FUNCTION;
+		return glfwGetTimerValue();
+	}
+	uint64_t GLFWWindowContext::getTimerFrequency() const
+	{
+		TIME_FUNCTION;
+		return glfwGetTimerFrequency();
+	}
+
+	CONST_REF(Window) GLFWWindowContext::getCurrentContext() const
+	{
+		TIME_FUNCTION;
+		return *((GLFWWindow*)glfwGetWindowUserPointer(glfwGetCurrentContext()));
+	}
+
+	CONST_REF(bool) GLFWWindowContext::isExtensionSupported(CONST_REF(std::string) extension) const
+	{
+		TIME_FUNCTION;
+		return glfwExtensionSupported(extension.c_str());
+	}
+
+
+	const uint32_t toGLFWType(CONST_REF(KEY) key)
+	{
+		TIME_FUNCTION;
 		switch (key)
 		{
 		case KEY::KEY_UNKNOWN:
@@ -413,26 +597,24 @@ namespace assec::graphics
 		case KEY::KEY_MENU:
 			return GLFW_KEY_MENU;
 			break;
-		case KEY::KEY_LAST:
-			return GLFW_KEY_LAST;
-			break;
 		default:
 			return GLFW_KEY_UNKNOWN;
 			break;
 		}
 	}
 
-	const uint32_t toGLFWType(const MOUSE& key)
+	const uint32_t toGLFWType(CONST_REF(MOUSE) key)
 	{
+		TIME_FUNCTION;
 		switch (key) {
-		case MOUSE::MOUSE_BUTTON_1:
-			return GLFW_MOUSE_BUTTON_1;
+		case MOUSE::MOUSE_BUTTON_LEFT:
+			return GLFW_MOUSE_BUTTON_LEFT;
 			break;
-		case MOUSE::MOUSE_BUTTON_2:
-			return GLFW_MOUSE_BUTTON_2;
+		case MOUSE::MOUSE_BUTTON_RIGHT:
+			return GLFW_MOUSE_BUTTON_RIGHT;
 			break;
-		case MOUSE::MOUSE_BUTTON_3:
-			return GLFW_MOUSE_BUTTON_3;
+		case MOUSE::MOUSE_BUTTON_MIDDLE:
+			return GLFW_MOUSE_BUTTON_MIDDLE;
 			break;
 		case MOUSE::MOUSE_BUTTON_4:
 			return GLFW_MOUSE_BUTTON_4;
@@ -449,26 +631,268 @@ namespace assec::graphics
 		case MOUSE::MOUSE_BUTTON_8:
 			return GLFW_MOUSE_BUTTON_8;
 			break;
-		case MOUSE::MOUSE_BUTTON_LAST:
-			return GLFW_MOUSE_BUTTON_LAST;
-			break;
-		case MOUSE::MOUSE_BUTTON_LEFT:
-			return GLFW_MOUSE_BUTTON_LEFT;
-			break;
-		case MOUSE::MOUSE_BUTTON_RIGHT:
-			return GLFW_MOUSE_BUTTON_RIGHT;
-			break;
-		case MOUSE::MOUSE_BUTTON_MIDDLE:
-			return GLFW_MOUSE_BUTTON_MIDDLE;
-			break;
 		default:
-			return GLFW_MOUSE_BUTTON_1;
+			return GLFW_MOUSE_BUTTON_LEFT;
 			break;
 		}
 	}
 
-	const KEY keyFromGLFWType(const int& key)
+	const uint32_t toGLFWType(CONST_REF(AnglePlatformType) anglePlatformType)
 	{
+		TIME_FUNCTION;
+		switch (anglePlatformType) {
+		case AnglePlatformType::OPENGL:
+			return GLFW_ANGLE_PLATFORM_TYPE_OPENGL;
+			break;
+		case AnglePlatformType::OPENGLES:
+			return GLFW_ANGLE_PLATFORM_TYPE_OPENGLES;
+			break;
+		case AnglePlatformType::D3D9:
+			return GLFW_ANGLE_PLATFORM_TYPE_D3D9;
+			break;
+		case AnglePlatformType::D3D11:
+			return GLFW_ANGLE_PLATFORM_TYPE_D3D11;
+			break;
+		case AnglePlatformType::VULKAN:
+			return GLFW_ANGLE_PLATFORM_TYPE_VULKAN;
+			break;
+		case AnglePlatformType::METAL:
+			return GLFW_ANGLE_PLATFORM_TYPE_METAL;
+			break;
+		default:
+			return GLFW_ANGLE_PLATFORM_TYPE_NONE;
+			break;
+		}
+	}
+
+	const uint32_t toGLFWType(CONST_REF(WindowAttribute) windowAttribute)
+	{
+		TIME_FUNCTION;
+		switch (windowAttribute)
+		{
+		case WindowAttribute::FOCUSED:
+			return GLFW_FOCUSED;
+			break;
+		case WindowAttribute::ICONIFIED:
+			return GLFW_ICONIFIED;
+			break;
+		case WindowAttribute::RESIZABLE:
+			return GLFW_RESIZABLE;
+			break;
+		case WindowAttribute::VISIBLE:
+			return GLFW_VISIBLE;
+			break;
+		case WindowAttribute::DECORATED:
+			return GLFW_DECORATED;
+			break;
+		case WindowAttribute::AUTO_ICONIFY:
+			return GLFW_AUTO_ICONIFY;
+			break;
+		case WindowAttribute::FLOATING:
+			return GLFW_FLOATING;
+			break;
+		case WindowAttribute::MAXIMIZED:
+			return GLFW_MAXIMIZED;
+			break;
+		case WindowAttribute::CENTER_CURSOR:
+			return GLFW_CENTER_CURSOR;
+			break;
+		case WindowAttribute::TRANSPARENT_FRAMEBUFFER:
+			return GLFW_TRANSPARENT_FRAMEBUFFER;
+			break;
+		case WindowAttribute::HOVERED:
+			return GLFW_HOVERED;
+			break;
+		case WindowAttribute::FOCUS_ON_SHOW:
+			return GLFW_FOCUS_ON_SHOW;
+			break;
+		case WindowAttribute::MOUSE_PASSTHROUGH:
+			return GLFW_MOUSE_PASSTHROUGH;
+			break;
+		case WindowAttribute::RED_BITS:
+			return GLFW_RED_BITS;
+			break;
+		case WindowAttribute::GREEN_BITS:
+			return GLFW_GREEN_BITS;
+			break;
+		case WindowAttribute::BLUE_BITS:
+			return GLFW_BLUE_BITS;
+			break;
+		case WindowAttribute::ALPHA_BITS:
+			return GLFW_ALPHA_BITS;
+			break;
+		case WindowAttribute::DEPTH_BITS:
+			return GLFW_DEPTH_BITS;
+			break;
+		case WindowAttribute::STENCIL_BITS:
+			return GLFW_STENCIL_BITS;
+			break;
+		case WindowAttribute::ACCUM_RED_BITS:
+			return GLFW_ACCUM_RED_BITS;
+			break;
+		case WindowAttribute::ACCUM_GREEN_BITS:
+			return GLFW_ACCUM_GREEN_BITS;
+			break;
+		case WindowAttribute::ACCUM_BLUE_BITS:
+			return GLFW_ACCUM_BLUE_BITS;
+			break;
+		case WindowAttribute::ACCUM_ALPHA_BITS:
+			return GLFW_ACCUM_ALPHA_BITS;
+			break;
+		case WindowAttribute::AUX_BUFFERS:
+			return GLFW_AUX_BUFFERS;
+			break;
+		case WindowAttribute::STEREO:
+			return GLFW_STEREO;
+			break;
+		case WindowAttribute::SAMPLES:
+			return GLFW_SAMPLES;
+			break;
+		case WindowAttribute::SRGB_CAPABLE:
+			return GLFW_SRGB_CAPABLE;
+			break;
+		case WindowAttribute::REFRESH_RATE:
+			return GLFW_REFRESH_RATE;
+			break;
+		case WindowAttribute::DOUBLEBUFFER:
+			return GLFW_DOUBLEBUFFER;
+			break;
+		case WindowAttribute::CLIENT_API:
+			return GLFW_CLIENT_API;
+			break;
+		case WindowAttribute::CONTEXT_VERSION_MAJOR:
+			return GLFW_CONTEXT_VERSION_MAJOR;
+			break;
+		case WindowAttribute::CONTEXT_VERSION_MINOR:
+			return GLFW_CONTEXT_VERSION_MINOR;
+			break;
+		case WindowAttribute::CONTEXT_REVISION:
+			return GLFW_CONTEXT_REVISION;
+			break;
+		case WindowAttribute::CONTEXT_ROBUSTNESS:
+			return GLFW_CONTEXT_ROBUSTNESS;
+			break;
+		case WindowAttribute::OPENGL_FORWARD_COMPAT:
+			return GLFW_OPENGL_FORWARD_COMPAT;
+			break;
+		case WindowAttribute::CONTEXT_DEBUG:
+			return GLFW_CONTEXT_DEBUG;
+			break;
+		case WindowAttribute::OPENGL_PROFILE:
+			return GLFW_OPENGL_PROFILE;
+			break;
+		case WindowAttribute::CONTEXT_RELEASE_BEHAVIOR:
+			return GLFW_CONTEXT_RELEASE_BEHAVIOR;
+			break;
+		case WindowAttribute::CONTEXT_NO_ERROR:
+			return GLFW_CONTEXT_NO_ERROR;
+			break;
+		case WindowAttribute::CONTEXT_CREATION_API:
+			return GLFW_CONTEXT_CREATION_API;
+			break;
+		case WindowAttribute::SCALE_TO_MONITOR:
+			return GLFW_SCALE_TO_MONITOR;
+			break;
+		case WindowAttribute::COCOA_RETINA_FRAMEBUFFER:
+			return GLFW_COCOA_RETINA_FRAMEBUFFER;
+			break;
+		case WindowAttribute::COCOA_FRAME_NAME:
+			return GLFW_COCOA_FRAME_NAME;
+			break;
+		case WindowAttribute::COCOA_GRAPHICS_SWITCHING:
+			return GLFW_COCOA_GRAPHICS_SWITCHING;
+			break;
+		case WindowAttribute::X11_CLASS_NAME:
+			return GLFW_X11_CLASS_NAME;
+			break;
+		case WindowAttribute::X11_INSTANCE_NAME:
+			return GLFW_X11_INSTANCE_NAME;
+			break;
+		case WindowAttribute::WIN32_KEYBOARD_MENU:
+			return GLFW_WIN32_KEYBOARD_MENU;
+			break;
+		default:
+			return 0;
+			break;
+		}
+	}
+
+	const uint32_t toGLFWType(CONST_REF(CursorMode) mode)
+	{
+		TIME_FUNCTION;
+		switch (mode)
+		{
+		case CursorMode::HIDDEN:
+			return GLFW_CURSOR_HIDDEN;
+			break;
+		case CursorMode::DISABLED:
+			return GLFW_CURSOR_DISABLED;
+			break;
+		default:
+			return GLFW_CURSOR_NORMAL;
+			break;
+		}
+	}
+
+	const uint32_t toGLFWType(CONST_REF(JoystickID) id)
+	{
+		TIME_FUNCTION;
+		switch (id)
+		{
+			case JoystickID::JOYSTICK_2:
+				return GLFW_JOYSTICK_2;
+				break;
+			case JoystickID::JOYSTICK_3:
+				return GLFW_JOYSTICK_3;
+				break;
+			case JoystickID::JOYSTICK_4:
+				return GLFW_JOYSTICK_4;
+				break;
+			case JoystickID::JOYSTICK_5:
+				return GLFW_JOYSTICK_5;
+				break;
+			case JoystickID::JOYSTICK_6:
+				return GLFW_JOYSTICK_6;
+				break;
+			case JoystickID::JOYSTICK_7:
+				return GLFW_JOYSTICK_7;
+				break;
+			case JoystickID::JOYSTICK_8:
+				return GLFW_JOYSTICK_8;
+				break;
+			case JoystickID::JOYSTICK_9:
+				return GLFW_JOYSTICK_9;
+				break;
+			case JoystickID::JOYSTICK_10:
+				return GLFW_JOYSTICK_10;
+				break;
+			case JoystickID::JOYSTICK_11:
+				return GLFW_JOYSTICK_11;
+				break;
+			case JoystickID::JOYSTICK_12:
+				return GLFW_JOYSTICK_12;
+				break;
+			case JoystickID::JOYSTICK_13:
+				return GLFW_JOYSTICK_13;
+				break;
+			case JoystickID::JOYSTICK_14:
+				return GLFW_JOYSTICK_14;
+				break;
+			case JoystickID::JOYSTICK_15:
+				return GLFW_JOYSTICK_15;
+				break;
+			case JoystickID::JOYSTICK_16:
+				return GLFW_JOYSTICK_16;
+				break;
+			default:
+				return GLFW_JOYSTICK_1;
+				break;
+		}
+	}
+
+	const KEY keyFromGLFWType(CONST_REF(int) key)
+	{
+		TIME_FUNCTION;
 		switch (key)
 		{
 		case GLFW_KEY_UNKNOWN:
@@ -840,18 +1264,19 @@ namespace assec::graphics
 		}
 	}
 
-	const MOUSE buttonFromGLFWType(const int& key)
+	const MOUSE buttonFromGLFWType(CONST_REF(int) key)
 	{
+		TIME_FUNCTION;
 		switch (key)
 		{
-		case GLFW_MOUSE_BUTTON_1:
-			return MOUSE::MOUSE_BUTTON_1;
+		case GLFW_MOUSE_BUTTON_LEFT:
+			return MOUSE::MOUSE_BUTTON_LEFT;
 			break;
-		case GLFW_MOUSE_BUTTON_2:
-			return MOUSE::MOUSE_BUTTON_2;
+		case GLFW_MOUSE_BUTTON_RIGHT:
+			return MOUSE::MOUSE_BUTTON_RIGHT;
 			break;
-		case GLFW_MOUSE_BUTTON_3:
-			return MOUSE::MOUSE_BUTTON_3;
+		case GLFW_MOUSE_BUTTON_MIDDLE:
+			return MOUSE::MOUSE_BUTTON_MIDDLE;
 			break;
 		case GLFW_MOUSE_BUTTON_4:
 			return MOUSE::MOUSE_BUTTON_4;
@@ -869,8 +1294,81 @@ namespace assec::graphics
 			return MOUSE::MOUSE_BUTTON_8;
 			break;
 		default:
-			return MOUSE::MOUSE_BUTTON_1;
+			return MOUSE::MOUSE_BUTTON_UNKNOWN;
 			break;
 		}
 	}
-} // assec::graphics
+
+	const CursorMode cursorModeFromGLFWType(CONST_REF(int) mode)
+	{
+		TIME_FUNCTION;
+		switch (mode)
+		{
+		case GLFW_CURSOR_HIDDEN:
+			return CursorMode::HIDDEN;
+			break;
+		case GLFW_CURSOR_DISABLED:
+			return CursorMode::DISABLED;
+			break;
+		default:
+			return CursorMode::NORMAL;
+			break;
+		}
+	}
+
+	const JoystickID joystickIDFromGLFWType(CONST_REF(int) id)
+	{
+		switch (id)
+		{
+		case GLFW_JOYSTICK_2:
+			return JoystickID::JOYSTICK_2;
+			break;
+		case GLFW_JOYSTICK_3:
+			return JoystickID::JOYSTICK_3;
+			break;
+		case GLFW_JOYSTICK_4:
+			return JoystickID::JOYSTICK_4;
+			break;
+		case GLFW_JOYSTICK_5:
+			return JoystickID::JOYSTICK_5;
+			break;
+		case GLFW_JOYSTICK_6:
+			return JoystickID::JOYSTICK_6;
+			break;
+		case GLFW_JOYSTICK_7:
+			return JoystickID::JOYSTICK_7;
+			break;
+		case GLFW_JOYSTICK_8:
+			return JoystickID::JOYSTICK_8;
+			break;
+		case GLFW_JOYSTICK_9:
+			return JoystickID::JOYSTICK_9;
+			break;
+		case GLFW_JOYSTICK_10:
+			return JoystickID::JOYSTICK_10;
+			break;
+		case GLFW_JOYSTICK_11:
+			return JoystickID::JOYSTICK_11;
+			break;
+		case GLFW_JOYSTICK_12:
+			return JoystickID::JOYSTICK_12;
+			break;
+		case GLFW_JOYSTICK_13:
+			return JoystickID::JOYSTICK_13;
+			break;
+		case GLFW_JOYSTICK_14:
+			return JoystickID::JOYSTICK_14;
+			break;
+		case GLFW_JOYSTICK_15:
+			return JoystickID::JOYSTICK_15;
+			break;
+		case GLFW_JOYSTICK_16:
+			return JoystickID::JOYSTICK_16;
+			break;
+		default:
+			return JoystickID::JOYSTICK_1;
+			break;
+		}
+	}
+
+} // namespace assec::graphics

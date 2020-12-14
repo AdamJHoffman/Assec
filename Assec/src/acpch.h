@@ -23,4 +23,4 @@
 #ifdef AC_PLATFORM_WINDOWS
 #define NOMINMAX
 #include <Windows.h>
-#endif
+#endif // AC_PLATFORM_WINDOWS

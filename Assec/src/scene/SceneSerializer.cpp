@@ -283,8 +283,8 @@ namespace assec::scene
 					auto& component = deserializedEntity.addComponent<MaterialComponent>();
 					component.m_TexturePath = materialComponent["TexturePath"].as<std::string>();
 					component.m_ShaderPath = materialComponent["ShaderPath"].as<std::string>();
-					auto& texture = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(component.m_TexturePath, graphics::Texture::TextureProps());
-					auto& shader = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(assec::util::Loader::loadFile(component.m_ShaderPath.c_str()));
+					auto& texture = graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->createTexture2D(component.m_TexturePath, graphics::Texture::TextureProps());
+					auto& shader = graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->createShaderProgram(assec::util::Loader::loadFile(component.m_ShaderPath.c_str()));
 					component.m_Material = std::make_shared<graphics::Material>(shader, texture);
 				}
 			}

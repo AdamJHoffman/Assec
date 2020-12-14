@@ -1,14 +1,11 @@
 ﻿#pragma once
 
+#pragma warning(push, 0)	// Disable warnings in external header
 #include <entt/entt.hpp>
+#pragma warning(pop)
 #include <glm/glm.hpp>
 
 #include "event/Event.h"
-
-namespace assec::transactions
-{
-	class Transaction;
-}
 
 namespace assec::scene
 {
@@ -17,10 +14,11 @@ namespace assec::scene
 	class Scene
 	{
 	public:
-		Scene();
-		~Scene();
+		Scene() = default;
+		~Scene() = default;
 		void onEvent(const events::Event& event);
 		INLINE const glm::mat4& getActiveCamera() const { return this->m_ActiveCamera; }
+		INLINE void setActiveCamera(CONST_REF(glm::mat4) camera) { this->m_ActiveCamera = camera; }
 		INLINE std::string& getSaveFilePath() { return this->m_SaveFilePath; }
 		Entity createEntity(const std::string & = "Unnamed Entity");
 		Entity createEntity(CONST_REF(uint32_t) hint, const std::string & = "Unnamed Entity");

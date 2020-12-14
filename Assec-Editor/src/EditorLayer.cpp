@@ -1,8 +1,9 @@
 ﻿#include "EditorLayer.h"
 
-#include "core/Input.h"
+#include "input/Input.h"
 
 #include "util/Loader.h"
+#include "util/Dispatcher.h"
 
 namespace assec::editor
 {
@@ -27,18 +28,18 @@ namespace assec::editor
 		void onEvent(const events::Event& event) override
 		{
 			float speed = this->getField<float>("speed").getValue();
-			events::Dispatcher dispatcher = events::Dispatcher(event);
+			util::Dispatcher dispatcher = util::Dispatcher(event);
 			dispatcher.dispatch<events::AppUpdateEvent>([&](const events::AppUpdateEvent& event)
 				{
 					TIME_FUNCTION;
-					if (Input::isKeyDown(KEY::KEY_A))
-						this->getComponent<scene::TransformComponent>().translation.x -= speed * event.m_Delta;
-					if (Input::isKeyDown(KEY::KEY_D))
-						this->getComponent<scene::TransformComponent>().translation.x += speed * event.m_Delta;
-					if (Input::isKeyDown(KEY::KEY_W))
-						this->getComponent<scene::TransformComponent>().translation.y += speed * event.m_Delta;
-					if (Input::isKeyDown(KEY::KEY_S))
-						this->getComponent<scene::TransformComponent>().translation.y -= speed * event.m_Delta;
+					if (input::Input::isKeyDown(KEY::KEY_A) || input::Input::getConnectedJoysticks()[0]->getGamepadState().getXButton())
+						this->getComponent<scene::TransformComponent>().translation.x -= speed * event.getDeltaTime();
+					if (input::Input::isKeyDown(KEY::KEY_D) || input::Input::getConnectedJoysticks()[0]->getGamepadState().getBButton())
+						this->getComponent<scene::TransformComponent>().translation.x += speed * event.getDeltaTime();
+					if (input::Input::isKeyDown(KEY::KEY_W) || input::Input::getConnectedJoysticks()[0]->getGamepadState().getYButton())
+						this->getComponent<scene::TransformComponent>().translation.y += speed * event.getDeltaTime();
+					if (input::Input::isKeyDown(KEY::KEY_S) || input::Input::getConnectedJoysticks()[0]->getGamepadState().getAButton())
+						this->getComponent<scene::TransformComponent>().translation.y -= speed * event.getDeltaTime();
 					return false;
 				});
 		}
@@ -48,7 +49,7 @@ namespace assec::editor
 	EditorLayer::~EditorLayer() {}
 	void EditorLayer::onEvent(const events::Event& event)
 	{
-		events::Dispatcher dispatcher = events::Dispatcher(event);
+		util::Dispatcher dispatcher = util::Dispatcher(event);
 		dispatcher.dispatch<events::AppRenderEvent>([&](const events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;
@@ -59,8 +60,8 @@ namespace assec::editor
 
 				this->m_Application->m_FrameBuffer->bind();
 				graphics::WindowManager::clear();
-				graphics::Renderer::beginScene(this->m_Application->m_ActiveScene->getActiveCamera());
-				this->m_Application->m_ActiveScene->reg().view<scene::MeshComponent, scene::MaterialComponent, scene::TransformComponent>().each([&](auto entityID, auto& mesh, auto& material, auto& transform)
+				graphics::Renderer::beginScene(this->m_Application->m_CurrentState == ApplicationState::EDITOR ? this->m_Application->m_Camera.getViewProjection() : this->m_Application->getActiveScene().getActiveCamera());
+				this->m_Application->getActiveScene().reg().view<scene::MeshComponent, scene::MaterialComponent, scene::TransformComponent>().each([&](auto entityID, auto& mesh, auto& material, auto& transform)
 					{
 						mesh.m_Mesh->setTransformationMatrix(transform.toMatrix());
 						graphics::Renderer::submit(*graphics::WindowManager::getWindows()[0], graphics::Renderable2D(mesh, material));
@@ -76,7 +77,7 @@ namespace assec::editor
 	{
 		scene::ScriptableEntity::s_Scripts.emplace(typeid(CameraController).name(), new CameraController());
 		
-		graphics::WindowManager::getMainWindow().setIcon({ "res/textures/icon.png" });
+		//graphics::WindowManager::getMainWindow().setIcon({ "res/textures/icon.png" });
 	}
 	void EditorLayer::onDetach()
 	{

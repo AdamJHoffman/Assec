@@ -6,6 +6,7 @@
 #include "panels/SceneHierarchyPanel.h"
 #include "panels/InspectorPanel.h"
 #include "panels/NodeEditor.h"
+#include "panels/ViewportPanel.h"
 
 namespace assec::editor
 {
@@ -24,12 +25,8 @@ namespace assec::editor
 		void saveScene();
 
 		EditorApplication* m_Application;
-		bool m_ViewportFocused = false, m_ViewportHovered = false;
-		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+		//bool m_ViewportFocused = false, m_ViewportHovered = false;
 
-		// Panels
-		SceneHierarchyPanel m_SceneHierarchyPanel;
-		InspectorPanel m_InspectorPanel;
-		NodeEditor m_NodeEditor;
+		std::vector<ref<EditorContext>> m_OpenContexts;
 	};
 }

@@ -19,6 +19,9 @@
     </ClInclude>
     <ClInclude Include="src\EditorApplication.h" />
     <ClInclude Include="src\transactions\Transaction.h" />
+    <ClInclude Include="src\camera\EditorCamera.h" />
+    <ClInclude Include="src\panels\EditorContext.h" />
+    <ClInclude Include="src\panels\ViewportPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorApplication.cpp" />
@@ -35,5 +38,7 @@
       <Filter>panels</Filter>
     </ClCompile>
     <ClCompile Include="src\transactions\Transaction.cpp" />
+    <ClCompile Include="src\camera\EditorCamera.cpp" />
+    <ClCompile Include="src\panels\ViewportPanel.cpp" />
   </ItemGroup>
 </Project>

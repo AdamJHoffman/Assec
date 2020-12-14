@@ -4,11 +4,12 @@
 #include <imnodes.h>
 #include <implot.h>
 
-#include "core/Input.h"
+#include "input/Input.h"
 #include "core/Base.h"
 
 #include "util/Loader.h"
 #include "util/PlatformUtils.h"
+#include "util/Dispatcher.h"
 
 #include "scene/SceneSerializer.h"
 
@@ -21,19 +22,14 @@ namespace assec::editor
 		imnodes::Initialize();
 		ImPlot::CreateContext();
 		this->setDarkThemecolors();
-		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
-		this->m_SceneHierarchyPanel.setSelectionCallback([&](const scene::Entity& entity)
-			{
-				this->m_InspectorPanel.setSelectedEntity(entity);
-			});
-		this->m_SceneHierarchyPanel.setTransactionCallback([&](ref<transactions::Transaction> transaction) 
-			{
-				this->m_Application->onTransaction(transaction);
-			});
-		this->m_InspectorPanel.setTransactionCallback([&](ref<transactions::Transaction> transaction)
-			{
-				this->m_Application->onTransaction(transaction);
-			});
+		this->m_OpenContexts.push_back(makeRef<InspectorPanel>([&](ref<transactions::Transaction> transaction)
+			{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+		this->m_OpenContexts.push_back(makeRef<SceneHierarchyPanel>([&](ref<transactions::Transaction> transaction)
+			{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+		this->m_OpenContexts.push_back(makeRef<NodeEditor>([&](ref<transactions::Transaction> transaction)
+			{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+		this->m_OpenContexts.push_back(makeRef<ViewportPanel>([&](ref<transactions::Transaction> transaction)
+			{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
 	}
 	void EditorGuiLayer::onDetach0()
 	{
@@ -42,15 +38,22 @@ namespace assec::editor
 	}
 	void EditorGuiLayer::onEvent0(const events::Event& event)
 	{
-		events::Dispatcher dispatcher = events::Dispatcher(event);
+		util::Dispatcher dispatcher = util::Dispatcher(event);
 		dispatcher.dispatch<events::AppRenderEvent>([this](const events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;
+				this->m_OpenContexts.erase(std::remove_if(this->m_OpenContexts.begin(), this->m_OpenContexts.end(),
+					[](CONST_REF(ref<EditorContext>) context) 
+					{
+						return !context->isVisible();
+					}), this->m_OpenContexts.end());
 
-				static bool dockspaceOpen = true;
-				static bool opt_fullscreen_persistant = true;
+				// ----------Dockspace setup----------
+
+				bool dockspaceOpen = true;
+				bool opt_fullscreen_persistant = true;
 				bool opt_fullscreen = opt_fullscreen_persistant;
-				static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+				ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
 				ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 				if (opt_fullscreen)
@@ -82,12 +85,16 @@ namespace assec::editor
 					ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 				}
 
-				this->m_SceneHierarchyPanel.renderImGUI();
-				this->m_InspectorPanel.renderImGUI();
-				this->m_NodeEditor.renderImGUI();
-				bool open = true;
-				ImGui::ShowMetricsWindow(&open);
-				ImPlot::ShowDemoWindow(&open);
+				// ----------Dockspace setup----------
+
+				for (auto& context : this->m_OpenContexts)
+				{
+					context->renderImGUI();
+				}
+				//bool open = true;
+				//ImGui::ShowDemoWindow(&open);
+				//ImGui::ShowMetricsWindow(&open);
+				//ImPlot::ShowDemoWindow(&open);
 
 				if (ImGui::BeginMenuBar())
 				{
@@ -102,37 +109,88 @@ namespace assec::editor
 							this->saveScene();
 						ImGui::EndMenu();
 					}
-					if (ImGui::Button("Run"))
+					if (ImGui::BeginMenu("View"))
 					{
-						AC_CLIENT_TRACE(">");
+						if (ImGui::BeginMenu("Show window"))
+						{
+							if (ImGui::MenuItem("Inspector", 0, false, std::find_if(this->m_OpenContexts.begin(),
+								this->m_OpenContexts.end(), [](CONST_REF(ref<EditorContext>) context)
+								{ return context->getName() == "Inspector"; }) == this->m_OpenContexts.end()))
+							{
+								this->m_OpenContexts.push_back(makeRef<InspectorPanel>([&](ref<transactions::Transaction> transaction)
+									{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+							}
+							if (ImGui::MenuItem("Scene Hierarchy", 0, false, std::find_if(this->m_OpenContexts.begin(),
+								this->m_OpenContexts.end(), [](CONST_REF(ref<EditorContext>) context)
+								{ return context->getName() == "Scene Hierarchy"; }) == this->m_OpenContexts.end()))
+							{
+								this->m_OpenContexts.push_back(makeRef<SceneHierarchyPanel>(
+									[&](ref<transactions::Transaction> transaction)
+									{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+							}
+							if (ImGui::MenuItem("Node Editor", 0, false, std::find_if(this->m_OpenContexts.begin(),
+								this->m_OpenContexts.end(), [](CONST_REF(ref<EditorContext>) context)
+								{ return context->getName() == "Node Editor"; }) == this->m_OpenContexts.end()))
+							{
+								this->m_OpenContexts.push_back(makeRef<NodeEditor>(
+									[&](ref<transactions::Transaction> transaction)
+									{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+							}
+							if (ImGui::MenuItem("Viewport", 0, false, std::find_if(this->m_OpenContexts.begin(),
+								this->m_OpenContexts.end(), [](CONST_REF(ref<EditorContext>) context)
+								{ return context->getName() == "Viewport"; }) == this->m_OpenContexts.end()))
+							{
+								this->m_OpenContexts.push_back(makeRef<ViewportPanel>(
+									[&](ref<transactions::Transaction> transaction)
+									{ this->m_Application->onTransaction(transaction);}, *this->m_Application));
+							}
+							ImGui::EndMenu();
+						}
+						ImGui::EndMenu();
+					}
+					if (ImGui::Button(this->m_Application->m_CurrentState == ApplicationState::EDITOR ? "RUN" : "STOP"))
+					{
+						if (this->m_Application->m_CurrentState == ApplicationState::EDITOR)
+						{
+							this->m_Application->getActiveScene().reg().view<scene::NativeScriptComponent>().each([&](auto entity, auto& nsc)
+								{
+									if (!nsc.m_Instance)
+									{
+										nsc.m_Instance = nsc.InstantiateScript(entity, &this->m_Application->getActiveScene());
+									}
+								});
+							this->m_Application->getActiveScene().reg().view<scene::CameraComponent>().each([&](auto entityID, auto& udc)
+								{
+									if (udc.m_Primary)
+									{
+										this->m_Application->getActiveScene().setActiveCamera(udc.m_Camera.m_Projection);
+									}
+								});
+							this->m_Application->m_CurrentState = ApplicationState::GAME;
+						}
+						else if (this->m_Application->m_CurrentState == ApplicationState::GAME)
+						{
+							this->m_Application->getActiveScene().reg().view<scene::NativeScriptComponent>().each([&](auto entity, auto& nsc)
+								{
+									
+									nsc.m_Instance = nullptr;
+									
+								});
+							this->m_Application->m_CurrentState = ApplicationState::EDITOR;
+						}
 					}
 
 					ImGui::EndMenuBar();
 				}
-
-				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-				ImGui::Begin("Viewport");
-
-				m_ViewportFocused = ImGui::IsWindowFocused();
-				m_ViewportHovered = ImGui::IsWindowHovered();
-				this->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-
-				ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-				this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width = static_cast<uint32_t>(viewportPanelSize.x);
-				this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height = static_cast<uint32_t>(viewportPanelSize.y);
-
-				ImGui::Image((void*)static_cast<intptr_t>(this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT0).getNativeTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-				ImGui::End();
-				ImGui::PopStyleVar();
 
 				ImGui::End();
 				return false;
 			});
 		dispatcher.dispatch<events::KeyPressedEvent>([&](const events::KeyPressedEvent& event)
 			{
-				bool control = Input::isKeyDown(KEY::KEY_LEFT_CONTROL) || Input::isKeyDown(KEY::KEY_RIGHT_CONTROL);
-				bool shift = Input::isKeyDown(KEY::KEY_LEFT_SHIFT) || Input::isKeyDown(KEY::KEY_RIGHT_SHIFT);
-				switch (event.m_Keycode)
+				bool control = input::Input::isKeyDown(KEY::KEY_LEFT_CONTROL) || input::Input::isKeyDown(KEY::KEY_RIGHT_CONTROL);
+				bool shift = input::Input::isKeyDown(KEY::KEY_LEFT_SHIFT) || input::Input::isKeyDown(KEY::KEY_RIGHT_SHIFT);
+				switch (event.getKeycode())
 				{
 				case KEY::KEY_N:
 				{
@@ -187,8 +245,7 @@ namespace assec::editor
 	}
 	void EditorGuiLayer::newScene()
 	{
-		this->m_Application->m_ActiveScene = std::make_shared<scene::Scene>();
-		this->m_SceneHierarchyPanel.setContext(*this->m_Application->m_ActiveScene);
+		this->m_Application->setActiveScene(std::make_shared<scene::Scene>());
 	}
 	void EditorGuiLayer::loadScene()
 	{
@@ -197,7 +254,7 @@ namespace assec::editor
 			if (strlen(filepath) != 0)
 				{
 					this->newScene();
-					scene::SceneSerializer serializer = scene::SceneSerializer(this->m_Application->m_ActiveScene);
+					scene::SceneSerializer serializer = scene::SceneSerializer(this->m_Application->getRawActiveScene());
 					serializer.deserialize(filepath);
 				}
 			}
@@ -207,14 +264,14 @@ namespace assec::editor
 	void EditorGuiLayer::saveScene()
 	{
 		
-		if (!this->m_Application->m_ActiveScene->getSaveFilePath().empty())
+		if (!this->m_Application->getActiveScene().getSaveFilePath().empty())
 		{
-				scene::SceneSerializer serializer(this->m_Application->m_ActiveScene);
-				serializer.serialize(this->m_Application->m_ActiveScene->getSaveFilePath());
-				if (graphics::WindowManager::getMainWindow().getWindowData().m_Title.back() == '*')
+				scene::SceneSerializer serializer(this->m_Application->getRawActiveScene());
+				serializer.serialize(this->m_Application->getActiveScene().getSaveFilePath());
+				if (graphics::WindowManager::getMainWindow().getWindowData().title.back() == '*')
 				{
-					graphics::WindowManager::getMainWindow().getWindowData().m_Title.pop_back();
-					graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().m_Title.c_str());
+					graphics::WindowManager::getMainWindow().getWindowData().title.pop_back();
+					graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().title.c_str());
 				}
 		}
 	}
@@ -224,12 +281,12 @@ namespace assec::editor
 			{
 				if (strlen(filepath) != 0)
 				{
-						scene::SceneSerializer serializer(this->m_Application->m_ActiveScene);
+						scene::SceneSerializer serializer(this->m_Application->getRawActiveScene());
 						serializer.serialize(filepath);
-						if (graphics::WindowManager::getMainWindow().getWindowData().m_Title.back() == '*')
+						if (graphics::WindowManager::getMainWindow().getWindowData().title.back() == '*')
 						{
-							graphics::WindowManager::getMainWindow().getWindowData().m_Title.pop_back();
-							graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().m_Title.c_str());
+							graphics::WindowManager::getMainWindow().getWindowData().title.pop_back();
+							graphics::WindowManager::getMainWindow().setTitle(graphics::WindowManager::getMainWindow().getWindowData().title.c_str());
 						}
 				}
 			}

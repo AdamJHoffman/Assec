@@ -11,8 +11,8 @@ namespace assec::events
 		~EventQueue() { TIME_FUNCTION; }
 		void submit(ref<events::Event> event);
 		void clear();
-		inline std::vector<ref<events::Event>>& getEventQueue() { return this->m_Events; }
+		INLINE REF(std::vector<ref<events::Event>>) getEventQueue() { TIME_FUNCTION; return this->m_Events; }
 	private:
 		std::vector<ref<events::Event>> m_Events = std::vector<ref<events::Event>>();
 	};
-} // assec::events
+} // namespace assec::events

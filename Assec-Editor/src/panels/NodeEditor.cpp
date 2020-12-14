@@ -8,7 +8,7 @@
 #include <imnodes.h>
 
 #include "util/UUID.h"
-#include "core/Input.h"
+#include "input/Input.h"
 
 namespace assec::editor
 {
@@ -102,14 +102,26 @@ namespace assec::editor
     {
         return !this->isInputPin(pin);
     }
-
-    void NodeEditor::renderImGUI()
+    void NodeEditor::begin0()
+    {
+        this->handleLinks();
+        this->getSelectedNodes();
+        this->getSelectedLinks();
+        imnodes::BeginNodeEditor();
+    }
+    void NodeEditor::end0()
+    {
+        this->submitLinks();
+        imnodes::EndNodeEditor();
+        this->removeNodes();
+        this->removeLinks();
+    }
+    void NodeEditor::render()
     {
         for (auto& node : this->m_Graph.nodes)
         {
             node->update();
         }
-        this->begin();
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.f, 10.f));
         if (ImGui::BeginPopupContextWindow(0, 1, true))
         {
@@ -201,7 +213,6 @@ namespace assec::editor
         {
             node->renderImGUI(*node);
         }
-        this->end();
     }
 
     void NodeEditor::submitLinks()
@@ -240,7 +251,7 @@ namespace assec::editor
     void NodeEditor::removeNodes()
     {
        
-        if (Input::isKeyDown(KEY::KEY_BACKSPACE))
+        if (input::Input::isKeyDown(KEY::KEY_BACKSPACE))
         {
             for (auto& node : this->m_SelectedNodes)
             {
@@ -263,7 +274,7 @@ namespace assec::editor
     void NodeEditor::removeLinks()
     {
 
-        if (Input::isKeyDown(KEY::KEY_BACKSPACE))
+        if (input::Input::isKeyDown(KEY::KEY_BACKSPACE))
         {
             for (auto& link : this->m_SelectedLink)
             {
@@ -313,23 +324,5 @@ namespace assec::editor
                 this->m_SelectedLink.push_back(this->m_Graph.findLink(i));
             }
         }
-    }
-
-
-    void NodeEditor::begin()
-    {
-        ImGui::Begin("Node Editor");
-        this->getSelectedNodes();
-        this->getSelectedLinks();
-        imnodes::BeginNodeEditor();
-    }
-    void NodeEditor::end()
-    {
-        this->submitLinks();
-        imnodes::EndNodeEditor();
-        this->removeNodes();
-        this->removeLinks();
-        ImGui::End();
-        this->handleLinks();
     }
 }

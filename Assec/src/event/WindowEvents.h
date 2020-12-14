@@ -1,5 +1,8 @@
 ﻿#pragma once
-#include"Event.h"
+
+#include <glm/glm.hpp>
+
+#include "Event.h"
 
 namespace assec::events
 {
@@ -8,7 +11,6 @@ namespace assec::events
 	public:
 		WindowCloseEvent(const void* window) : Event::Event(window) { TIME_FUNCTION; }
 		~WindowCloseEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowClose);
 	};
 
 	class WindowFocusEvent : public Event
@@ -16,7 +18,6 @@ namespace assec::events
 	public:
 		WindowFocusEvent(const void* window) : Event::Event(window) { TIME_FUNCTION; }
 		~WindowFocusEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowFocus);
 	};
 
 	class WindowFocusLostEvent : public Event
@@ -24,34 +25,36 @@ namespace assec::events
 	public:
 		WindowFocusLostEvent(const void* window) : Event::Event(window) { TIME_FUNCTION; }
 		~WindowFocusLostEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowLostFocus);
 	};
 
 	class WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(const void* window, const uint32_t& width, const uint32_t& height) : Event::Event(window), m_Width(width), m_Height(height) { TIME_FUNCTION; }
+		WindowResizeEvent(const void* window, CONST_REF(glm::vec2) size) : Event::Event(window), m_Size(size) { TIME_FUNCTION; }
 		~WindowResizeEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowResize);
-		uint32_t m_Width, m_Height;
+		INLINE CONST_REF(glm::vec2) getSize() const { TIME_FUNCTION; return this->m_Size; }
+	private:
+		glm::vec2 m_Size = glm::vec2(0.0f);
 	};
 
 	class WindowContentScaleEvent : public Event
 	{
 	public:
-		WindowContentScaleEvent(const void* window, const float& xscale, const float& yscale) : Event::Event(window), m_Xscale(xscale), m_Yscale(yscale) { TIME_FUNCTION; }
+		WindowContentScaleEvent(const void* window, CONST_REF(glm::vec2) scale) : Event::Event(window), m_Scale(scale) { TIME_FUNCTION; }
 		~WindowContentScaleEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowContentScale);
-		float m_Xscale, m_Yscale;
+		INLINE CONST_REF(glm::vec2) getScale() const { TIME_FUNCTION; return this->m_Scale; }
+	private:
+		glm::vec2 m_Scale = glm::vec2(0.0f);
 	};
 
 	class WindowMoveEvent : public Event
 	{
 	public:
-		WindowMoveEvent(const void* window, const int& x, const int& y) : Event::Event(window), m_X(x), m_Y(y) { TIME_FUNCTION; }
+		WindowMoveEvent(const void* window, CONST_REF(glm::vec2) position) : Event::Event(window), m_Position(position) { TIME_FUNCTION; }
 		~WindowMoveEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowMove);
-		uint32_t m_X, m_Y;
+		INLINE CONST_REF(glm::vec2) getPosition() const { TIME_FUNCTION; return this->m_Position; }
+	private:
+		glm::vec2 m_Position = glm::vec2(0.0f);
 	};
 
 	class WindowMinimizeEvent : public Event
@@ -59,7 +62,6 @@ namespace assec::events
 	public:
 		WindowMinimizeEvent(const void* window) : Event::Event(window) { TIME_FUNCTION; }
 		~WindowMinimizeEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowMinimize);
 	};
 
 	class WindowMaximizeEvent : public Event
@@ -67,7 +69,6 @@ namespace assec::events
 	public:
 		WindowMaximizeEvent(const void* window) : Event::Event(window) { TIME_FUNCTION; }
 		~WindowMaximizeEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowMaximize);
 	};
 
 	class WindowRestoreEvent : public Event
@@ -75,7 +76,6 @@ namespace assec::events
 	public:
 		WindowRestoreEvent(const void* window) : Event::Event(window) { TIME_FUNCTION; }
 		~WindowRestoreEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowRestore);
 	};
 
 	class WindowRefreshEvent : public Event
@@ -83,7 +83,6 @@ namespace assec::events
 	public:
 		WindowRefreshEvent(const void* window) : Event::Event(window) { TIME_FUNCTION; }
 		~WindowRefreshEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::WindowRefresh);
 	};
 
 } // assec::events

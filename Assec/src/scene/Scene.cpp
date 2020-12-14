@@ -11,8 +11,6 @@
 
 namespace assec::scene
 {
-	Scene::Scene() {}
-	Scene::~Scene() {}
 	Entity Scene::createEntity(const std::string& name)
 	{
 		Entity result = { this->m_Registry.create(), this };
@@ -35,15 +33,11 @@ namespace assec::scene
 				udc.setViewMatrix(Entity(entityID, this).getComponent<scene::TransformComponent>().toMatrix());
 				if (udc.m_Primary)
 				{
-					this->m_ActiveCamera = udc.m_Camera.m_Projection;
+					this->setActiveCamera(udc.m_Camera.m_Projection);
 				}
 			});
 		this->m_Registry.view<scene::NativeScriptComponent>().each([&](auto entity, auto& nsc)
 			{
-				if (!nsc.m_Instance)
-				{
-					nsc.m_Instance = nsc.InstantiateScript(entity, this);
-				}
 				if (nsc.m_Instance)
 				{
 					nsc.m_Instance->onEvent(event);
@@ -62,8 +56,8 @@ namespace assec::scene
 	template<>
 	void Scene::onComponentAdded<CameraComponent>(const Entity&, CameraComponent& component)
 	{
-		auto& size = graphics::WindowManager::getWindows()[0]->getSize();
-		component.setViewportSize(static_cast<uint32_t>(size.x), static_cast<uint32_t>(size.y));
+		auto& size = graphics::WindowManager::getMainWindow().getSize();
+		component.setViewportSize(size.x, size.y);
 	}
 	template<>
 	void Scene::onComponentAdded<MeshComponent>(const Entity&, MeshComponent& component) {}

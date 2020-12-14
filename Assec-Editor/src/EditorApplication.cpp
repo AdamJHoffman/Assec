@@ -7,23 +7,35 @@
 
 namespace assec::editor
 {
-	EditorApplication::EditorApplication() {}
+	EditorApplication::EditorApplication() : Application("Assec Editor") {}
 	EditorApplication::~EditorApplication() {}
-	void EditorApplication::init()
+	void EditorApplication::init0()
 	{
-		this->m_FrameBuffer = graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createFrameBuffer({ {}, 1920, 1080, 1, false, });
+		this->m_FrameBuffer = graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->createFrameBuffer({ {}, 1920, 1080, 1, false, });
 		this->m_FrameBuffer->addTextureAttachment(Type::COLOR_ATTACHMENT0, Type::RGBA8, Type::RGBA, Type::UNSIGNED_BYTE);
 		this->m_FrameBuffer->addTextureAttachment(Type::DEPTH_STENCIL_ATTACHMENT, Type::DEPTH24_STENCIL8, Type::DEPTH_STENCIL, Type::UNSIGNED_INT_24_8);
 		this->m_FrameBuffer->validate();
-		this->AC_LAYER_STACK->addLayer(std::make_shared<EditorLayer>(*this));
-		this->AC_LAYER_STACK->addOverlay(std::make_shared<EditorGuiLayer>(*this));
-		graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->setClearColor(glm::vec4(0.09803921568, 0.09803921568, 0.11764705882, 1.0f));
-		graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->enable(Type::DEPTH_TEST);
-		graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->setDepthFunction(Type::LESS);
+		this->m_LayerStack->addLayer(std::make_shared<EditorLayer>(*this));
+		this->m_LayerStack->addOverlay(std::make_shared<EditorGuiLayer>(*this));
+		graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->setClearColor(glm::vec4(0.09803921568, 0.09803921568, 0.11764705882, 1.0f));
+		graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->enable(Type::DEPTH_TEST);
+		graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->setDepthFunction(Type::LESS);
+		this->m_Camera.setViewportSize(graphics::WindowManager::getMainWindow().getSize().x, graphics::WindowManager::getMainWindow().getSize().y);
 	}
-	void EditorApplication::frame()
+	void EditorApplication::run0()
 	{
 		this->handleTransactions();
+	}
+	void EditorApplication::handleSceneEvents(CONST_REF(events::Event) event)
+	{
+		if (this->m_CurrentState == ApplicationState::GAME)
+		{
+			this->m_ActiveScene->onEvent(event);
+		}
+	}
+	void EditorApplication::onEvent0(ref<events::Event> event)
+	{
+		this->m_Camera.onEvent(*event);
 	}
 	void EditorApplication::onTransaction(ref<transactions::Transaction> transaction)
 	{
@@ -37,9 +49,9 @@ namespace assec::editor
 		TIME_FUNCTION;
 		auto tempQueue = this->AC_TRANSACTION_QUEUE->getTransactionqueue();
 		size_t size = tempQueue.size();
-		if (size > 0 && graphics::WindowManager::getMainWindow().getWindowData().m_Title.back() != '*')
+		if (size > 0 && graphics::WindowManager::getMainWindow().getWindowData().title.back() != '*')
 		{
-			graphics::WindowManager::getMainWindow().setTitle((graphics::WindowManager::getMainWindow().getWindowData().m_Title + std::string("*")).c_str());
+			graphics::WindowManager::getMainWindow().setTitle((graphics::WindowManager::getMainWindow().getWindowData().title + std::string("*")).c_str());
 		}
 		for (size_t i = 0; i < size; i++)
 		{

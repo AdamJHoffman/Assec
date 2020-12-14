@@ -1,13 +1,17 @@
 ﻿#include "acpch.h"
 
-#include "Application.h"
-#include "Input.h"
+#include <chrono>
+#include <thread>
 
-#include "platform/glfw/GLFWWindowContext.h"
+#include "core/Application.h"
+#include "input/Input.h"
+
+#include "event/EngineEvents.h"
+
 #include "graphics/WindowManager.h"
 #include "graphics/renderer/Renderer.h"
 
-#include "event/EngineEvents.h"
+#include "platform/glfw/GLFWWindowContext.h"
 
 #include "util/Profiler.h"
 #include "util/Loader.h"
@@ -15,55 +19,62 @@
 
 namespace assec
 {
-	Application::Application(const std::string name)
-	{
-		graphics::WindowManager::init(std::make_shared<graphics::GLFWWindowContext>(), [this](ref<events::Event> event) {return this->onEvent(event); });
-		util::Profiler::getProfiler().beginSession(name);
-	}
-	Application::~Application() {}
+	Application::Application(CONST_REF(std::string) name) : m_Name(name) { TIME_FUNCTION; }
+	Application::~Application() { TIME_FUNCTION; }
 	void Application::onEvent(ref<events::Event> event)
 	{
 		TIME_FUNCTION;
-		Input::onEvent(*event);
-		this->AC_EVENT_QUEUE->submit(event);
+		input::Input::onEvent(*event);
+		this->m_EventQueue->submit(event);
+		this->onEvent0(event);
 	}
 	void Application::handleEvents()
 	{
 		TIME_FUNCTION;
 		if (!graphics::WindowManager::empty())
 		{
-			for (auto& event : this->AC_EVENT_QUEUE->getEventQueue())
+			for (auto& event : this->m_EventQueue->getEventQueue())
 			{
-				//AC_CORE_TRACE(event->toString());
-				this->AC_LAYER_STACK->onEvent(*event);
+				this->m_LayerStack->onEvent(*event);
 				this->m_ActiveScene->onEvent(*event);
 			}
 		}
-		this->AC_EVENT_QUEUE->clear();
+		this->m_EventQueue->clear();
 		util::FileDialogs::processDialogRequests();
+	}
+	void Application::init()
+	{
+		graphics::WindowManager::init(std::make_shared<graphics::GLFWWindowContext>(), [this](ref<events::Event> event) {return this->onEvent(event); });
+		util::Profiler::getProfiler().beginSession(this->m_Name);
+		TIME_FUNCTION;
+		auto videomode = graphics::WindowManager::s_WindowContext->getPrimaryMonitor()->getCurrentVideoMode();
+		graphics::WindowManager::addWindow(videomode.width, videomode.height, this->m_Name, nullptr, nullptr);
+		graphics::Renderer::init(BATCH_MAX_SIZE, graphics::WindowManager::getMainWindow().getWindowData().graphicsContext->getContextData().m_MaxTextures);
+		this->init0();
 	}
 	void Application::run()
 	{
-		auto videomode = graphics::WindowManager::m_WindowContext->getPrimaryMonitor()->m_CurrentVideoMode;
-		auto& window = graphics::WindowManager::addWindow(videomode.m_Width, videomode.m_Height, "Assec", nullptr, nullptr);
-		graphics::Renderer::init(BATCH_MAX_SIZE, window.getWindowData().m_GraphicsContext->getContextData().m_MaxTextures);
 		this->init();
 		float lastFrameTime = 0;
 		while (!graphics::WindowManager::empty())
 		{
 			TIME_FUNCTION;
-			if (!window.isMinimized())
+			if (!graphics::WindowManager::getMainWindow().getAttrib(WindowAttribute::ICONIFIED))
 			{
-				float time = graphics::WindowManager::m_WindowContext->getCurrentTime();
+				float time = static_cast<float>(graphics::WindowManager::s_WindowContext->getCurrentTime());
 				float timeStep = time - lastFrameTime;
 				lastFrameTime = time;
 				this->onEvent(std::make_shared<events::AppUpdateEvent>(timeStep));
 				this->onEvent(std::make_shared<events::AppRenderEvent>(timeStep));
+				graphics::WindowManager::prepare();
+				this->handleEvents();
+				this->run0();
+				graphics::WindowManager::finish();
 			}
-			graphics::WindowManager::prepare();
-			this->handleEvents();
-			this->frame();
-			graphics::WindowManager::finish();
+			else
+			{
+				graphics::WindowManager::s_WindowContext->waitEvents();
+			}
 			if (this->m_ShouldClose)
 			{
 				break;
@@ -73,6 +84,7 @@ namespace assec
 	}
 	void Application::close()
 	{
+		TIME_FUNCTION;
 		this->m_ShouldClose = true;
 	}
 	void Application::cleanup() const

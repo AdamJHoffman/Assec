@@ -18,7 +18,7 @@ namespace assec::layersystem
 		TIME_FUNCTION;
 		this->m_Layers.emplace(this->m_Layers.begin() + this->m_LayerInsertIndex, layer);
 		this->m_LayerInsertIndex++;
-		if (layer->m_Enabled)
+		if (layer->enabled())
 		{
 			layer->onAttach();
 		}
@@ -27,7 +27,7 @@ namespace assec::layersystem
 	{
 		TIME_FUNCTION;
 		this->m_Layers.emplace_back(layer);
-		if (layer->m_Enabled)
+		if (layer->enabled())
 		{
 			layer->onAttach();
 		}
@@ -40,7 +40,7 @@ namespace assec::layersystem
 		{
 			this->m_Layers.erase(found);
 			this->m_LayerInsertIndex--;
-			if (layer->m_Enabled)
+			if (layer->enabled())
 			{
 				layer->onDetach();
 			}
@@ -53,21 +53,21 @@ namespace assec::layersystem
 		if (found != this->m_Layers.end())
 		{
 			this->m_Layers.erase(found);
-			if (layer->m_Enabled)
+			if (layer->enabled())
 			{
 				layer->onDetach();
 			}
 		}
 	}
-	void LayerStack::onEvent(const events::Event& event)
+	void LayerStack::onEvent(CONST_REF(events::Event) event)
 	{
 		TIME_FUNCTION;
 		for (auto& layer : this->m_Layers)
 		{
-			if (layer->m_Enabled)
+			if (layer->enabled())
 			{
 				layer->onEvent(event);
 			}
 		}
 	}
-}
+} // namespace assec::layersystem

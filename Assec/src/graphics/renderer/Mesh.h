@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "acpch.h"
 
 #include <glm/glm.hpp>
 
@@ -9,18 +8,18 @@ namespace assec::graphics
 {
 	struct Vertex
 	{
-		static const VertexBuffer::VertexBufferLayout& getLayout()
+		static const VertexBufferLayout& getLayout()
 		{
-			static const VertexBuffer::VertexBufferLayout s_Layout = VertexBuffer::VertexBufferLayout({
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 2, false),
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 3, false),
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBuffer::VertexBufferAttribute(assec::Type::FLOAT, 1, false) });
+			static const VertexBufferLayout s_Layout = VertexBufferLayout({
+			VertexBufferAttribute(assec::Type::FLOAT, 3, false),
+			VertexBufferAttribute(assec::Type::FLOAT, 3, false),
+			VertexBufferAttribute(assec::Type::FLOAT, 2, false),
+			VertexBufferAttribute(assec::Type::FLOAT, 3, false),
+			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
+			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
+			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
+			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
+			VertexBufferAttribute(assec::Type::FLOAT, 1, false) });
 			return s_Layout;
 		}
 		glm::vec3 position = glm::vec3(1.0f);
@@ -33,19 +32,19 @@ namespace assec::graphics
 	class Mesh
 	{
 	public:
-		Mesh(const std::vector<Vertex>& vertices, const std::vector<int>& indices);
-		Mesh() {}
+		Mesh(CONST_REF(std::vector<Vertex>) vertices, CONST_REF(std::vector<int>) indices);
+		Mesh() { TIME_FUNCTION; }
 		~Mesh() { TIME_FUNCTION; }
 		const std::vector<float> createVerticesData();
 		const size_t calculateSize();
-		const inline std::vector<Vertex>& getVertices() const { return this->m_Vertices; }
-		const inline std::vector<int>& getIndices() const { return this->m_Indices; }
-		inline std::vector<Vertex>& getVertices() { return this->m_Vertices; }
-		inline std::vector<int>& getIndices() { return this->m_Indices; }
+		const inline std::vector<Vertex>& getVertices() const { TIME_FUNCTION;  return this->m_Vertices; }
+		const inline std::vector<int>& getIndices() const { TIME_FUNCTION; return this->m_Indices; }
+		inline std::vector<Vertex>& getVertices() { TIME_FUNCTION; return this->m_Vertices; }
+		inline std::vector<int>& getIndices() { TIME_FUNCTION; return this->m_Indices; }
 		void setTransformationMatrix(const glm::mat4&);
 		void setTextureIndex(const float&);
 	private:
 		std::vector<int> m_Indices = std::vector<int>();
 		std::vector<Vertex> m_Vertices = std::vector<Vertex>();
 	};
-}
+} // namespace assec::graphics

@@ -12,22 +12,22 @@ namespace assec::graphics
 		TIME_FUNCTION;
 
 		this->bind();
-		GLCall(glTextureStorage2D(this->m_RendererID, 1, toOpenGLType(this->m_Props.m_InternalFormat), this->m_Width, this->m_Height));
+		GLCall(glTextureStorage2D(this->m_RendererID, 1, toOpenGLType(this->m_Props.internalFormat), this->m_Width, this->m_Height));
 
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toOpenGLType(this->m_Props.m_WrapType)));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toOpenGLType(this->m_Props.m_WrapType)));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toOpenGLType(this->m_Props.wrapType)));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toOpenGLType(this->m_Props.wrapType)));
 
-		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(this->m_Props.m_BorderColor)));
+		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(this->m_Props.borderColor)));
 
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, toOpenGLType(this->m_Props.m_MinFilterType)));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, toOpenGLType(this->m_Props.m_MagFilterType)));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, toOpenGLType(this->m_Props.minFilterType)));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, toOpenGLType(this->m_Props.magFilterType)));
 
-		if (this->m_Props.m_GenMipMaps)
+		if (this->m_Props.genMipMaps)
 		{
 			GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 		}
 
-		if (this->m_Props.m_GenAnisotropicMaps)
+		if (this->m_Props.genAnisotropicMaps)
 		{
 			float aniso = 0.0f;
 			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aniso);
@@ -42,7 +42,7 @@ namespace assec::graphics
 		stbi_set_flip_vertically_on_load(1);
 
 		int desired_channels = 0;
-		switch (this->m_Props.m_DataFormat)
+		switch (this->m_Props.dataFormat)
 		{
 		case Type::RED:
 			desired_channels = STBI_grey;
@@ -70,24 +70,24 @@ namespace assec::graphics
 		m_Width = width;
 		m_Height = height;
 
-		AC_CORE_ASSERT((this->m_Props.m_InternalFormat != Type::NONE && this->m_Props.m_DataFormat != Type::NONE), "Format not supported!");
+		AC_CORE_ASSERT((this->m_Props.internalFormat != Type::NONE && this->m_Props.dataFormat != Type::NONE), "Format not supported!");
 
-		GLCall(glTextureStorage2D(this->m_RendererID, 1, toOpenGLType(this->m_Props.m_InternalFormat), this->m_Width, this->m_Height));
+		GLCall(glTextureStorage2D(this->m_RendererID, 1, toOpenGLType(this->m_Props.internalFormat), this->m_Width, this->m_Height));
 
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toOpenGLType(this->m_Props.m_WrapType)));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toOpenGLType(this->m_Props.m_WrapType)));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toOpenGLType(this->m_Props.wrapType)));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toOpenGLType(this->m_Props.wrapType)));
 
-		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(this->m_Props.m_BorderColor)));
+		GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(this->m_Props.borderColor)));
 
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, toOpenGLType(this->m_Props.m_MinFilterType)));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, toOpenGLType(this->m_Props.m_MagFilterType)));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, toOpenGLType(this->m_Props.minFilterType)));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, toOpenGLType(this->m_Props.magFilterType)));
 
-		if (this->m_Props.m_GenMipMaps)
+		if (this->m_Props.genMipMaps)
 		{
 			GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 		}
 
-		if (this->m_Props.m_GenAnisotropicMaps)
+		if (this->m_Props.genAnisotropicMaps)
 		{
 			float aniso = 0.0f;
 			GLCall(glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &aniso));
@@ -112,32 +112,32 @@ namespace assec::graphics
 	{
 		this->bind();
 		uint32_t channels = 0;
-		if (this->m_Props.m_DataFormat == fromOpenGLType(GL_RED))
+		if (this->m_Props.dataFormat == fromOpenGLType(GL_RED))
 		{
 			channels = 1;
 		}
-		else if (this->m_Props.m_DataFormat == fromOpenGLType(GL_RGB))
+		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGB))
 		{
 			channels = 3;
 		}
-		else if (this->m_Props.m_DataFormat == fromOpenGLType(GL_RGB))
+		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGB))
 		{
 			channels = 3;
 		}
-		else if (this->m_Props.m_DataFormat == fromOpenGLType(GL_RED))
+		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RED))
 		{
 			channels = 4;
 		}
 		AC_CORE_ASSERT(size == m_Width * m_Height * channels, "Data must be entire texture!");
-		GLCall(glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, toOpenGLType(this->m_Props.m_DataFormat), GL_UNSIGNED_BYTE, data));
+		GLCall(glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, toOpenGLType(this->m_Props.dataFormat), GL_UNSIGNED_BYTE, data));
 	}
 	void* OpenGLTexture2D::getData() const
 	{
 		this->bind();
-		uint32_t bpp = this->m_Props.m_DataFormat == fromOpenGLType(GL_RGBA) ? 4 : 3;
+		uint32_t bpp = this->m_Props.dataFormat == fromOpenGLType(GL_RGBA) ? 4 : 3;
 		uint32_t size = this->m_Width * this->m_Height * bpp;
 		unsigned char* result = new unsigned char[size];
-		glGetTextureImage(this->m_RendererID, 0, toOpenGLType(this->m_Props.m_DataFormat), toOpenGLType(this->m_Props.m_DataType), static_cast<uint32_t>(size), result);
+		glGetTextureImage(this->m_RendererID, 0, toOpenGLType(this->m_Props.dataFormat), toOpenGLType(this->m_Props.dataType), static_cast<uint32_t>(size), result);
 		return result;
 	}
 	const uint32_t OpenGLTexture2D::genTexture() const

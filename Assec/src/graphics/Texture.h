@@ -13,10 +13,10 @@ namespace assec::graphics
 	public:
 		struct TextureProps
 		{
-			Type m_WrapType = Type::CLAMP_TO_EDGE, m_InternalFormat = Type::RGB8, m_DataFormat = Type::RGB, m_DataType = Type::UNSIGNED_BYTE;
-			glm::vec4 m_BorderColor = glm::vec4(1.0f);
-			Type m_MinFilterType = Type::LINEAR_MIPMAP_LINEAR, m_MagFilterType = Type::LINEAR;
-			bool m_GenMipMaps = true, m_GenAnisotropicMaps = true;
+			Type wrapType = Type::CLAMP_TO_EDGE, internalFormat = Type::RGB8, dataFormat = Type::RGB, dataType = Type::UNSIGNED_BYTE;
+			glm::vec4 borderColor = glm::vec4(1.0f);
+			Type minFilterType = Type::LINEAR_MIPMAP_LINEAR, magFilterType = Type::LINEAR;
+			bool genMipMaps = true, genAnisotropicMaps = true;
 
 		};
 		virtual ~Texture() { TIME_FUNCTION; }
@@ -25,17 +25,18 @@ namespace assec::graphics
 		virtual void setData(const void*, const uint32_t&) const = 0;
 		virtual void* getData() const = 0;
 
-		inline const TextureProps& getProps() const { return this->m_Props; }
-		inline const uint32_t& getWidth() const { return this->m_Width; }
-		inline const uint32_t& getHeigth() const { return this->m_Height; }
-		inline const uint32_t& getNativeTexture() const { return this->m_RendererID; }
+		inline const TextureProps& getProps() const { TIME_FUNCTION; return this->m_Props; }
+		inline const uint32_t& getWidth() const { TIME_FUNCTION; return this->m_Width; }
+		inline const uint32_t& getHeigth() const { TIME_FUNCTION; return this->m_Height; }
+		inline const uint32_t& getNativeTexture() const { TIME_FUNCTION; return this->m_RendererID; }
 
-		bool const operator ==(const Texture& other) const
+		bool const operator ==(CONST_REF(Texture) other) const
 		{
+			TIME_FUNCTION;
 			return this->m_RendererID == other.m_RendererID;
 		}
 	protected:
-		Texture(const uint32_t& ID, const uint32_t& width, const uint32_t& height, const std::string& path, const TextureProps& props)
+		Texture(CONST_REF(uint32_t) ID, CONST_REF(uint32_t) width, CONST_REF(uint32_t) height, CONST_REF(std::string) path, CONST_REF(TextureProps) props)
 			: m_RendererID(ID), m_Width(width), m_Height(height), m_Path(path), m_Props(props) { TIME_FUNCTION; }
 		virtual const uint32_t genTexture() const = 0;
 
@@ -49,7 +50,7 @@ namespace assec::graphics
 	public:
 		virtual ~Texture2D() { TIME_FUNCTION; }
 	protected:
-		Texture2D(const uint32_t& ID, const uint32_t& width, const uint32_t& height, const std::string& path, const TextureProps& props)
+		Texture2D(CONST_REF(uint32_t) ID, CONST_REF(uint32_t) width, CONST_REF(uint32_t) height, CONST_REF(std::string) path, CONST_REF(TextureProps) props)
 			: Texture::Texture(ID, width, height, path, props) { TIME_FUNCTION; }
 	};
-}
+} // namespace assec::graphics

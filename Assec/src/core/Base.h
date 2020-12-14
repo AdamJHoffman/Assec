@@ -4,27 +4,28 @@
 
 #include "core/PlatformDetection.h"
 
+// Debug breaks
 #ifdef AC_DEBUG
 	#if defined(AC_PLATFORM_WINDOWS)
 		#define AC_DEBUGBREAK() __debugbreak()
 	#elif defined(AC_PLATFORM_LINUX)
 		#include <signal.h>
 		#define AC_DEBUGBREAK() raise(SIGTRAP)
+	#elif defined(AC_PLATFORM_MACOS)
+		#define AC_DEBUGBREAK() asm{ trap }
 	#else
 		#error "Platform doesn't support debugbreak yet!"
 	#endif
 	#define AC_ENABLE_ASSERTS
 #else
 	#define AC_DEBUGBREAK()
-#endif
+#endif // AC_DEBUG
 
+// Useful macros
 #define AC_EXPAND_MACRO(x) x
 #define AC_STRINGIFY_MACRO(x) #x
-
 #define BIT(x) (1 << x)
-
 #define MAP(X, A, B, C, D) (X-A)/(B-A) * (D-C) + C
-
 #define INLINE inline
 #define CONST_REF(x) const x&
 #define REF(x) x&
@@ -36,6 +37,8 @@
 #define AC_SHADER_TRANSFORM_NAME "u_transform"
 //--------------------------------------------------------
 
+
+// Engine defines
 #define BATCH_MAX_SIZE 1000000
 #define BATCH_MAX_TEXTURES 32
 
@@ -58,7 +61,7 @@ namespace assec
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 
-} // assec
+} // namespace assec
 
 #include "log/Logger.h"
 #include "core/Assert.h"

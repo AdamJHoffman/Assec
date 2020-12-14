@@ -17,15 +17,10 @@
 
 namespace assec::editor
 {
+	InspectorPanel::InspectorPanel(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
+		REF(EditorApplication) application)
+	: EditorContext(callback, application, "Inspector") {}
 	InspectorPanel::~InspectorPanel() {}
-	void InspectorPanel::setSelectedEntity(const scene::Entity& entity)
-	{
-		this->m_SelectedEntity = entity;
-	}
-	void InspectorPanel::setTransactionCallback(const std::function<void(ref<transactions::Transaction>)>& transactionCallback)
-	{
-		this->m_TransactionCallback = transactionCallback;
-	}
 	template<typename UIFunction>
 	void drawUIColumned(const char* label, int numOfElements, UIFunction uiFunction, float columnWidth = 150.0f)
 	{
@@ -83,12 +78,11 @@ namespace assec::editor
 			}
 		}
 	}
-	void InspectorPanel::renderImGUI()
+	void InspectorPanel::render() 
 	{
-		ImGui::Begin("Inspector");
-		if (this->m_SelectedEntity)
+		if (this->m_Application->m_SelectedEntity)
 		{
-			drawComponent<scene::TagComponent>("Tag Component", this->m_SelectedEntity, [&](auto& component)
+			drawComponent<scene::TagComponent>("Tag Component", this->m_Application->m_SelectedEntity, [&](auto& component)
 				{
 					drawUIColumned("tag", 1, [&](auto& numOfElements)
 						{
@@ -101,7 +95,7 @@ namespace assec::editor
 							}
 						});
 				});
-			drawComponent<scene::TransformComponent>("Transform Component", this->m_SelectedEntity, [&](auto& component)
+			drawComponent<scene::TransformComponent>("Transform Component", this->m_Application->m_SelectedEntity, [&](auto& component)
 				{
 					const char names[3][2] = { {"X"}, {"Y"}, {"Z"} };
 					const char ids[3][4] = { {"##X"}, {"##Y"}, {"##Z"} };
@@ -130,7 +124,7 @@ namespace assec::editor
 
 								ImGui::SameLine();
 								float value = component.translation[i];
-								if(ImGui::DragFloat(&ids[i][0], &value, 0.1f, 0.0f, 0.0f, "%.2f"))
+								if (ImGui::DragFloat(&ids[i][0], &value, 0.1f, 0.0f, 0.0f, "%.2f"))
 									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&component.translation[i], value));
 								ImGui::PopItemWidth();
 								if (i < numOfElements - 1)
@@ -205,88 +199,90 @@ namespace assec::editor
 
 						});
 				});
-			drawComponent<scene::NativeScriptComponent>("Native Script Component", this->m_SelectedEntity, [&](auto& component)
+			drawComponent<scene::NativeScriptComponent>("Native Script Component", this->m_Application->m_SelectedEntity, [&](auto& component)
 				{
-					auto& keys = util::Keys(component.m_Instance->getFields());
-					for (auto& key : keys)
+					if (component.m_Instance)
 					{
-						auto& value = component.m_Instance->getFields().at(key);
-						if (value->getAccess() == util::Access::PUBLIC)
+						auto& keys = util::Keys(component.m_Instance->getFields());
+						for (auto& key : keys)
 						{
-							util::FieldDispatcher dispatcher = util::FieldDispatcher(*value);
-							dispatcher.dispatch<float>([&](float& value)
-								{
-									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
-										{
-											float temp = value;
-											if(ImGui::DragFloat((std::string("##") + key).c_str(), &temp))
-												this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&value, temp));
-										});
-								});
-							dispatcher.dispatch<bool>([&](bool& value)
-								{
-									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
-										{
-											bool temp = value;
-											if (ImGui::Checkbox((std::string("##") + key).c_str(), &temp))
-												this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<bool>>(&value, temp));
-										});
-								});
-							dispatcher.dispatch<int>([&](int& value)
-								{
-									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
-										{
-											int temp = value;
-											if (ImGui::DragInt((std::string("##") + key).c_str(), &temp))
-												this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<int>>(&value, temp));
-										});
-								});
-							dispatcher.dispatch<std::string>([&](std::string &value)
-								{
-									drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
-										{
-											char* temp = const_cast<char*>(value.c_str());
-											if (ImGui::InputText((std::string("##") + key).c_str() , temp, sizeof(temp)))
-												this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&value, std::string(temp)));
-										});
-								});
+							auto& value = component.m_Instance->getFields().at(key);
+							if (value->getAccess() == util::Access::PUBLIC)
+							{
+								util::FieldDispatcher dispatcher = util::FieldDispatcher(*value);
+								dispatcher.dispatch<float>([&](float& value)
+									{
+										drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
+											{
+												float temp = value;
+												if (ImGui::DragFloat((std::string("##") + key).c_str(), &temp))
+													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<float>>(&value, temp));
+											});
+									});
+								dispatcher.dispatch<bool>([&](bool& value)
+									{
+										drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
+											{
+												bool temp = value;
+												if (ImGui::Checkbox((std::string("##") + key).c_str(), &temp))
+													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<bool>>(&value, temp));
+											});
+									});
+								dispatcher.dispatch<int>([&](int& value)
+									{
+										drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
+											{
+												int temp = value;
+												if (ImGui::DragInt((std::string("##") + key).c_str(), &temp))
+													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<int>>(&value, temp));
+											});
+									});
+								dispatcher.dispatch<std::string>([&](std::string& value)
+									{
+										drawUIColumned(key.c_str(), 1, [&](auto& numOfElements)
+											{
+												char* temp = const_cast<char*>(value.c_str());
+												if (ImGui::InputText((std::string("##") + key).c_str(), temp, sizeof(temp)))
+													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&value, std::string(temp)));
+											});
+									});
+							}
 						}
 					}
-
 				});
-			drawComponent<scene::MeshComponent>("Mesh Component", this->m_SelectedEntity, [&](auto& component)
+			drawComponent<scene::MeshComponent>("Mesh Component", this->m_Application->m_SelectedEntity, [&](auto& component)
 				{
 					drawUIColumned("path", 1, [&](auto& numOfElements)
 						{
 							if (ImGui::Button(component.m_Path.c_str(), ImVec2{ ImGui::GetContentRegionAvail().x, GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f }))
 							{
 								util::FileDialogs::OpenFile({ "gltf\0*.gltf\0glb\0*.glb\0", [&](const char* filepath)
-									   {
-										   this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_Path, filepath, [&](std::string& path) 
-											   {
+										{
+											this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_Path, filepath, [&](std::string& path)
+												{
 													auto& mesh = util::Loader::loadgltfMesh(path.c_str());
 													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<graphics::Mesh>>(&*component.m_Mesh, mesh[0]));
-											   }));
-									   }
+												}));
+										}
 									});
 							}
 						});
 				});
-			drawComponent<scene::MaterialComponent>("Material Component", this->m_SelectedEntity, [&](auto& component)
+			drawComponent<scene::MaterialComponent>("Material Component", this->m_Application->m_SelectedEntity, [&](auto& component)
 				{
 					drawUIColumned("texture", 1, [&](auto& numOfElements)
 						{
 							if (ImGui::Button(component.m_TexturePath.c_str(), ImVec2{ ImGui::GetContentRegionAvail().x, GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f }))
 							{
 								util::FileDialogs::OpenFile({ "jpg\0*.jpg\0png\0*.png*\0", [&](const char* filepath)
-									   {
-										   this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_TexturePath, std::string(filepath), [&](std::string& path) 
-											   {
+										{
+											this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_TexturePath, std::string(filepath), [&](std::string& path)
+												{
 													std::replace(path.begin(), path.end(), '\\', '/');
 													assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, Type::RGB8, Type::RGB, Type::UNSIGNED_BYTE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
-													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<ref<graphics::Texture>>>(&component.m_Material->m_Texture, graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createTexture2D(path, props)));
-											   }));
-									   }
+													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<ref<graphics::Texture>>>(&component.m_Material->getRawTexture(), graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->createTexture2D(path, props)));
+												}));
+										}
 									});
 							}
 						});
@@ -295,23 +291,23 @@ namespace assec::editor
 							if (ImGui::Button(component.m_ShaderPath.c_str(), ImVec2{ ImGui::GetContentRegionAvail().x, GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f }))
 							{
 								util::FileDialogs::OpenFile({ "shader\0*.shader\0", [&](const char* filepath)
-									   {
-										   this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_ShaderPath, std::string(filepath),[&](std::string& path)
-											   {
-												   std::replace(path.begin(), path.end(), '\\', '/');
-												   this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<ref<graphics::ShaderProgram>>>(&component.m_Material->m_ShaderProgram, graphics::WindowManager::getWindows()[0]->getWindowData().m_GraphicsContext->createShaderProgram(util::Loader::loadFile(component.m_ShaderPath.c_str()))));
+										{
+											this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_ShaderPath, std::string(filepath),[&](std::string& path)
+												{
+													std::replace(path.begin(), path.end(), '\\', '/');
+													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<ref<graphics::ShaderProgram>>>(&component.m_Material->getRawShaderProgram(), graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->createShaderProgram(util::Loader::loadFile(component.m_ShaderPath.c_str()))));
 												}));
 										}
 									});
 							}
 						});
 				});
-			drawComponent<scene::CameraComponent>("Camera Component", this->m_SelectedEntity, [&](auto& component)
+			drawComponent<scene::CameraComponent>("Camera Component", this->m_Application->m_SelectedEntity, [&](auto& component)
 				{
 					drawUIColumned("Primary", 1, [&](auto& numOfElements)
 						{
 							bool value = component.m_Primary;
-							if(ImGui::Checkbox("##PrimaryBox", &value))
+							if (ImGui::Checkbox("##PrimaryBox", &value))
 								this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<bool>>(&component.m_Primary, value));
 						});
 					drawUIColumned("Projection", 1, [&](auto& numOfElements)
@@ -380,7 +376,7 @@ namespace assec::editor
 						drawUIColumned("Fixed Aspect Ratio", 1, [&](auto& numOfElements)
 							{
 								bool value = component.m_FixedAspectRatio;
-								if(ImGui::Checkbox("##Fixed Aspect Ratio box", &value))
+								if (ImGui::Checkbox("##Fixed Aspect Ratio box", &value))
 									this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<bool>>(&component.m_FixedAspectRatio, value));
 							});
 					}
@@ -392,55 +388,54 @@ namespace assec::editor
 			{
 				if (ImGui::MenuItem("Mesh"))
 				{
-					if (!this->m_SelectedEntity.hasComponent<scene::MeshComponent>())
+					if (!this->m_Application->m_SelectedEntity.hasComponent<scene::MeshComponent>())
 					{
-						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::MeshComponent>>(this->m_SelectedEntity));
+						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::MeshComponent>>(this->m_Application->m_SelectedEntity));
 					}
 					else
 					{
-						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_SelectedEntity), typeid(scene::MeshComponent).name());
+						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_Application->m_SelectedEntity), typeid(scene::MeshComponent).name());
 					}
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::MenuItem("Material"))
 				{
-					if (!this->m_SelectedEntity.hasComponent<scene::MaterialComponent>())
+					if (!this->m_Application->m_SelectedEntity.hasComponent<scene::MaterialComponent>())
 					{
-						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::MaterialComponent>>(this->m_SelectedEntity));
+						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::MaterialComponent>>(this->m_Application->m_SelectedEntity));
 					}
 					else
 					{
-						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_SelectedEntity), typeid(scene::MaterialComponent).name());
+						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_Application->m_SelectedEntity), typeid(scene::MaterialComponent).name());
 					}
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::MenuItem("Camera"))
 				{
-					if (!this->m_SelectedEntity.hasComponent<scene::CameraComponent>())
+					if (!this->m_Application->m_SelectedEntity.hasComponent<scene::CameraComponent>())
 					{
-						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::CameraComponent>>(this->m_SelectedEntity));
+						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::CameraComponent>>(this->m_Application->m_SelectedEntity));
 					}
 					else
 					{
-						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_SelectedEntity), typeid(scene::CameraComponent).name());
+						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_Application->m_SelectedEntity), typeid(scene::CameraComponent).name());
 					}
 					ImGui::CloseCurrentPopup();
 				}
 				if (ImGui::MenuItem("Native Script Component"))
 				{
-					if (!this->m_SelectedEntity.hasComponent<scene::NativeScriptComponent>())
+					if (!this->m_Application->m_SelectedEntity.hasComponent<scene::NativeScriptComponent>())
 					{
-						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::NativeScriptComponent>>(this->m_SelectedEntity));
+						this->m_TransactionCallback(std::make_shared<transactions::ComponentCreationTransaction<scene::NativeScriptComponent>>(this->m_Application->m_SelectedEntity));
 					}
 					else
 					{
-						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_SelectedEntity), typeid(scene::NativeScriptComponent).name());
+						AC_CORE_WARNING("Entity {0} already has component of type {0}!", static_cast<uint32_t>(this->m_Application->m_SelectedEntity), typeid(scene::NativeScriptComponent).name());
 					}
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::EndPopup();
 			}
 		}
-		ImGui::End();
 	}
 }

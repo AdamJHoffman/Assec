@@ -40,9 +40,9 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		this->bind();
-		GLCall(glDrawElements(GL_TRIANGLES, (int)this->m_IndexBuffer->m_Count, GL_UNSIGNED_INT, nullptr));
+		GLCall(glDrawElements(GL_TRIANGLES, (int)this->m_IndexBuffer->getCount(), GL_UNSIGNED_INT, nullptr));
 	}
-	void OpenGLVertexArray::mapVertexAttributes(const size_t& verticesSize, const VertexBuffer::VertexBufferLayout& layout) const
+	void OpenGLVertexArray::mapVertexAttributes(const size_t& verticesSize, const VertexBufferLayout& layout) const
 	{
 		TIME_FUNCTION;
 		this->bind();

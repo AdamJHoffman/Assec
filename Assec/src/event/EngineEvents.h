@@ -4,40 +4,33 @@
 
 namespace assec::events
 {
-	class AppTickEvent : public Event
-	{
-	public:
-		AppTickEvent(const void* window, const float& delta) : Event::Event(window), m_Delta(delta) { TIME_FUNCTION; }
-		~AppTickEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::AppTick);
-		float m_Delta;
-	};
-
 	class AppUpdateEvent : public Event
 	{
 	public:
-		AppUpdateEvent(const float& delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
+		AppUpdateEvent(CONST_REF(float) delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
 		~AppUpdateEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::AppUpdate);
+		INLINE CONST_REF(float) getDeltaTime() const { TIME_FUNCTION; return this->m_Delta; }
+	private:
 		float m_Delta;
 	};
 
 	class AppRenderEvent : public Event
 	{
 	public:
-		AppRenderEvent(const float& delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
+		AppRenderEvent(CONST_REF(float) delta) : Event::Event(nullptr), m_Delta(delta) { TIME_FUNCTION; }
 		~AppRenderEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::AppRender);
+		INLINE CONST_REF(float) getDeltaTime() const { TIME_FUNCTION; return this->m_Delta; }
+	private:
 		float m_Delta;
 	};
 
 	class PathDroppedEvent : public Event
 	{
 	public:
-		PathDroppedEvent(const void* window, const int& count, const char** paths) : Event::Event(window), m_Count(count), m_Paths(paths) { TIME_FUNCTION; }
+		PathDroppedEvent(const void* window, CONST_REF(std::vector<std::string>) paths) : Event::Event(window), m_Paths(paths) { TIME_FUNCTION; }
 		~PathDroppedEvent() { TIME_FUNCTION; }
-		EVENT_CLASS_TYPE(EventType::PathDropped);
-		int m_Count;
-		const char** m_Paths;
+		INLINE CONST_REF(std::vector<std::string>) getPaths() const { TIME_FUNCTION; return this->m_Paths; }
+	private:
+		std::vector<std::string> m_Paths;
 	};
-} // assec::events
+} // namespace assec::events

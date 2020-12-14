@@ -14,12 +14,15 @@
 #include "event/MouseEvents.h"
 #include "event/WindowEvents.h"
 
+#include "util/Dispatcher.h"
+
 namespace assec
 {
-	ImGuiLayer::ImGuiLayer() {}
-	ImGuiLayer::~ImGuiLayer() {}
+	ImGuiLayer::ImGuiLayer() { TIME_FUNCTION; }
+	ImGuiLayer::~ImGuiLayer() { TIME_FUNCTION; }
 	void ImGuiLayer::onAttach()
 	{
+		TIME_FUNCTION;
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
@@ -42,12 +45,13 @@ namespace assec
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)graphics::WindowManager::getWindows()[0]->getWindowData().m_NativeWindow, true);
+		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)graphics::WindowManager::getWindows()[0]->getWindowData().nativeWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
 		this->onAttach0();
 	}
 	void ImGuiLayer::onDetach()
 	{
+		TIME_FUNCTION;
 		this->onDetach0();
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -55,6 +59,7 @@ namespace assec
 	}
 	void ImGuiLayer::setDarkThemecolors()
 	{
+		TIME_FUNCTION;
 		auto& colors = ImGui::GetStyle().Colors;
 		colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 
@@ -85,14 +90,15 @@ namespace assec
 		colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 	}
-	void ImGuiLayer::onEvent(const events::Event& event)
+	void ImGuiLayer::onEvent(CONST_REF(events::Event) event)
 	{
-		events::Dispatcher dispatcher = events::Dispatcher(event);
+		TIME_FUNCTION;
+		util::Dispatcher dispatcher = util::Dispatcher(event);
 		dispatcher.dispatch<events::AppRenderEvent>([this](const events::AppRenderEvent& event)
 			{
 				this->begin();
 				this->onEvent0(event);
-				this->end(event.m_Delta);
+				this->end(event.getDeltaTime());
 				return false;
 			});
 		dispatcher.dispatch<events::AppUpdateEvent>([this](const events::AppUpdateEvent& event)
@@ -210,15 +216,17 @@ namespace assec
 	}
 	void ImGuiLayer::begin()
 	{
+		TIME_FUNCTION;
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 	}
-	void ImGuiLayer::end(const float& deltaTime)
+	void ImGuiLayer::end(CONST_REF(float) deltaTime)
 	{
+		TIME_FUNCTION;
 		ImGuiIO& io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(static_cast<float>(graphics::WindowManager::getWindows()[0]->getWindowData().m_Width),
-			static_cast<float>(graphics::WindowManager::getWindows()[0]->getWindowData().m_Height));
+		io.DisplaySize = ImVec2(static_cast<float>(graphics::WindowManager::getMainWindow().getSize().x),
+			static_cast<float>(graphics::WindowManager::getMainWindow().getSize().y));
 		io.DeltaTime = deltaTime;
 
 		ImGui::Render();
@@ -229,7 +237,7 @@ namespace assec
 			auto backupCurrentContext = graphics::WindowManager::getWindows()[0];
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-			backupCurrentContext->makeCurrent();
+			backupCurrentContext->makeContextCurrent();
 		}
 	}
-} // namespace assec::editor
+} // namespace assec
