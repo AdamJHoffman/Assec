@@ -2,6 +2,8 @@
 
 #include "core/Base.h"
 
+#include "event/Event.h"
+
 namespace assec::util
 {
 	template<typename T>
@@ -19,7 +21,23 @@ namespace assec::util
 				function(*(T*)&m_Object);
 			}
 		}
-	private:
+	protected:
 		T& m_Object;
+	};
+
+	class EventDispatcher : public Dispatcher<events::Event>
+	{
+		template<typename T> using function = std::function<bool(const T&)>;
+	public:
+		EventDispatcher(const events::Event& object) : Dispatcher(object) {}
+
+		template<typename T> void dispatch(function<T> function)
+		{
+			TIME_FUNCTION;
+			if (!this->m_Object.handled && (typeid(m_Object) == typeid(T) || dynamic_cast<T*>(&m_Object) != nullptr))
+			{
+				this->m_Object.handled = function(*(T*)&m_Object);
+			}
+		}
 	};
 }

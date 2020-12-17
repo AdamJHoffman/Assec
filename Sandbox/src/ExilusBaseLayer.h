@@ -6,12 +6,12 @@ namespace exilus
 	class ExilusBaseLayer : public assec::layersystem::Layer
 	{
 	public:
-		ExilusBaseLayer(const assec::Application& application);
+		ExilusBaseLayer(assec::Application& application);
 		~ExilusBaseLayer();
 		virtual void onEvent(const assec::events::Event& event) override;
 		virtual void onAttach() override;
 		virtual void onDetach() override;
 	private:
-		const assec::Application* m_Application;
+		assec::Application* m_Application;
 	};
 } // assec::editor

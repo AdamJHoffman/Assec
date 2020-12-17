@@ -19,11 +19,17 @@
     <Filter Include="src\include">
       <UniqueIdentifier>{A0AF70A7-0C65-E99C-9559-E373010EE0A0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\input">
+      <UniqueIdentifier>{0C5966B5-78C3-1A2C-C101-CCD12DABF880}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\layers">
       <UniqueIdentifier>{6C614A68-5819-8CB5-C120-6511ADF726A6}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\log">
       <UniqueIdentifier>{9E1930A9-0AF9-AE44-1311-3A1B7F6F15A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\math">
+      <UniqueIdentifier>{46A033CF-326D-8EDA-5B86-7C8247B2C368}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\platform">
       <UniqueIdentifier>{41663D6D-2DC9-CC11-D64E-05C8C2909894}</UniqueIdentifier>
@@ -39,9 +45,6 @@
     </Filter>
     <Filter Include="src\scene">
       <UniqueIdentifier>{2A1615B6-9680-C92C-DFBE-7AD24B68A781}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\transactions">
-      <UniqueIdentifier>{55EF8CCE-41E8-AB20-6A1A-91A556728B2C}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\util">
       <UniqueIdentifier>{BA5238CF-A61F-93DA-CF38-8182BB64C868}</UniqueIdentifier>
@@ -150,6 +153,12 @@
     <ClInclude Include="src\include\Assec.h">
       <Filter>src\include</Filter>
     </ClInclude>
+    <ClInclude Include="src\input\Input.h">
+      <Filter>src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\Joystick.h">
+      <Filter>src\input</Filter>
+    </ClInclude>
     <ClInclude Include="src\layers\ImguiLayer.h">
       <Filter>src\layers</Filter>
     </ClInclude>
@@ -161,6 +170,12 @@
     </ClInclude>
     <ClInclude Include="src\log\Logger.h">
       <Filter>src\log</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\Math.h">
+      <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\platform\glfw\GLFWInput.h">
+      <Filter>src\platform\glfw</Filter>
     </ClInclude>
     <ClInclude Include="src\platform\glfw\GLFWMonitor.h">
       <Filter>src\platform\glfw</Filter>
@@ -203,6 +218,9 @@
     </ClInclude>
     <ClInclude Include="src\scene\ScriptableEntity.h">
       <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Dispatcher.h">
+      <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\util\Loader.h">
       <Filter>src\util</Filter>
@@ -1446,12 +1464,6 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\Dispatcher.h" />
-    <ClInclude Include="src\input\Joystick.h" />
-    <ClInclude Include="src\input\Input.h">
-      <Filter>src\core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\platform\glfw\GLFWInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\acpch.cpp">
@@ -1490,6 +1502,9 @@
     <ClCompile Include="src\graphics\renderer\Renderer.cpp">
       <Filter>src\graphics\renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\input\Input.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
     <ClCompile Include="src\layers\ImguiLayer.cpp">
       <Filter>src\layers</Filter>
     </ClCompile>
@@ -1498,6 +1513,12 @@
     </ClCompile>
     <ClCompile Include="src\log\Logger.cpp">
       <Filter>src\log</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\Math.cpp">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\platform\glfw\GLFWInput.cpp">
+      <Filter>src\platform\glfw</Filter>
     </ClCompile>
     <ClCompile Include="src\platform\glfw\GLFWMonitor.cpp">
       <Filter>src\platform\glfw</Filter>
@@ -1547,9 +1568,5 @@
     <ClCompile Include="src\util\Orm.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
-    <ClCompile Include="src\input\Input.cpp">
-      <Filter>src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\platform\glfw\GLFWInput.cpp" />
   </ItemGroup>
 </Project>

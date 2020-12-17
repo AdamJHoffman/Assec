@@ -372,7 +372,6 @@ namespace assec::graphics
 				TIME_FUNCTION;
 				GLFWWindow& window = *((GLFWWindow*)glfwGetWindowUserPointer(nativeWindow));
 				window.getWindowData().eventCallBack(std::make_shared<events::WindowRefreshEvent>((void*)&window));
-				window.swapBuffers();
 			});
 		glfwSetWindowPosCallback((GLFWwindow*)this->m_WindowData.nativeWindow, [](GLFWwindow* nativeWindow, int x, int y)
 			{

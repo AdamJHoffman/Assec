@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AC_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;..\Assec\vendor\imnodes;..\Assec\vendor\implot;..\Assec\vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;..\Assec\vendor\imnodes;..\Assec\vendor\implot;..\Assec\vendor\entt\single_include;..\Assec\vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -95,7 +95,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AC_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;..\Assec\vendor\imnodes;..\Assec\vendor\implot;..\Assec\vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;..\Assec\vendor\imnodes;..\Assec\vendor\implot;..\Assec\vendor\entt\single_include;..\Assec\vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -115,7 +115,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AC_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;..\Assec\vendor\imnodes;..\Assec\vendor\implot;..\Assec\vendor\entt\single_include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Assec\src;..\Assec\vendor\spdlog\include;..\Assec\vendor\stb;..\Assec\vendor\glm;..\Assec\vendor\imgui;..\Assec\vendor\imnodes;..\Assec\vendor\implot;..\Assec\vendor\entt\single_include;..\Assec\vendor\imguizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -131,10 +131,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\camera\EditorCamera.h" />
     <ClInclude Include="src\EditorApplication.h" />
     <ClInclude Include="src\EditorGuiLayer.h" />
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\camera\EditorCamera.h" />
+    <ClInclude Include="src\gizmos\EditorGizmo.h" />
+    <ClInclude Include="src\gizmos\TransformationGizmo.h" />
     <ClInclude Include="src\panels\EditorContext.h" />
     <ClInclude Include="src\panels\InspectorPanel.h" />
     <ClInclude Include="src\panels\NodeEditor.h" />
@@ -143,11 +145,12 @@
     <ClInclude Include="src\transactions\Transaction.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\camera\EditorCamera.cpp" />
     <ClCompile Include="src\EditorApplication.cpp" />
     <ClCompile Include="src\EditorGuiLayer.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\ImNodesImplementation.cpp" />
+    <ClCompile Include="src\camera\EditorCamera.cpp" />
+    <ClCompile Include="src\gizmos\TransformationGizmo.cpp" />
     <ClCompile Include="src\panels\InspectorPanel.cpp" />
     <ClCompile Include="src\panels\NodeEditor.cpp" />
     <ClCompile Include="src\panels\SceneHierarchyPanel.cpp" />
@@ -160,6 +163,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Assec\vendor\implot\Implot.vcxproj">
       <Project>{3A4E1BBA-26F0-4590-0FAB-59E4FBEBCCE0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Assec\vendor\imguizmo\ImGuizmo.vcxproj">
+      <Project>{36FD234F-22CA-7E5A-4BE3-6C02370FB4E8}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -22,6 +22,8 @@ workspace "Assec"
 	IncludeDir["yaml_cpp"] = "Assec/vendor/yaml-cpp/include"
 	IncludeDir["imnodes"] = "Assec/vendor/imnodes"
 	IncludeDir["implot"] = "Assec/vendor/implot"
+	IncludeDir["imguizmo"] = "Assec/vendor/imguizmo"
+
 
 
 	group "Dependencies"
@@ -30,6 +32,7 @@ workspace "Assec"
 		include "Assec/vendor/imgui"
 		include "Assec/vendor/yaml-cpp"
 		include "Assec/vendor/implot"
+		include "Assec/vendor/imguizmo"
 	group ""
 
 	project "Assec"
@@ -183,12 +186,14 @@ workspace "Assec"
 				"%{IncludeDir.imnodes}",
 				"%{IncludeDir.implot}",
 				"%{IncludeDir.entt}",
+				"%{IncludeDir.imguizmo}"
 			}
 
 			links
 			{
 				"Assec",
-				"Implot"
+				"Implot",
+				"ImGuizmo"
 			}
 
 			filter "system:windows"

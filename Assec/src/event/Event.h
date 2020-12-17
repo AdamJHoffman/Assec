@@ -20,7 +20,7 @@ namespace assec::events
 	class Event
 	{
 	public:
-		Event(const void* window) : m_Window(window), handled(true) { TIME_FUNCTION; }
+		Event(const void* window) : m_Window(window), handled(false) { TIME_FUNCTION; }
 		virtual ~Event() { TIME_FUNCTION; }
 		inline const void* getWindow() { TIME_FUNCTION; return this->m_Window; }
 		CONST_REF(std::string) toString() const { TIME_FUNCTION; return typeid(this).name(); }

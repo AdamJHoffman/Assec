@@ -1,5 +1,4 @@
-﻿
-#include "InspectorPanel.h"
+﻿#include "InspectorPanel.h"
 
 #define NOMINMAX
 #include <windows.h>

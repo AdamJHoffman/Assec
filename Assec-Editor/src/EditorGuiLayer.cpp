@@ -1,6 +1,7 @@
 ﻿#include "EditorGuiLayer.h"
 
 #include <imgui.h>
+#include <ImGuizmo.h>
 #include <imnodes.h>
 #include <implot.h>
 
@@ -38,9 +39,10 @@ namespace assec::editor
 	}
 	void EditorGuiLayer::onEvent0(const events::Event& event)
 	{
-		util::Dispatcher dispatcher = util::Dispatcher(event);
+		util::EventDispatcher dispatcher = util::EventDispatcher(event);
 		dispatcher.dispatch<events::AppRenderEvent>([this](const events::AppRenderEvent& event)
 			{
+				ImGuizmo::BeginFrame();
 				TIME_FUNCTION;
 				this->m_OpenContexts.erase(std::remove_if(this->m_OpenContexts.begin(), this->m_OpenContexts.end(),
 					[](CONST_REF(ref<EditorContext>) context) 
@@ -91,9 +93,9 @@ namespace assec::editor
 				{
 					context->renderImGUI();
 				}
-				//bool open = true;
+				bool open = true;
 				//ImGui::ShowDemoWindow(&open);
-				//ImGui::ShowMetricsWindow(&open);
+				ImGui::ShowMetricsWindow(&open);
 				//ImPlot::ShowDemoWindow(&open);
 
 				if (ImGui::BeginMenuBar())

@@ -8,6 +8,8 @@
 #include "panels/NodeEditor.h"
 #include "panels/ViewportPanel.h"
 
+#include "gizmos/TransformationGizmo.h"
+
 namespace assec::editor
 {
 	class EditorGuiLayer : public ImGuiLayer

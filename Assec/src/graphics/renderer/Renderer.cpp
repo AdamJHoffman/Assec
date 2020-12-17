@@ -4,6 +4,7 @@
 
 #include "graphics/renderer/Renderer.h"
 #include "graphics/renderer/Batch.h"
+#include "graphics/WindowManager.h"
 
 #include "util/misc.h"
 

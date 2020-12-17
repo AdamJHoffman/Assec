@@ -28,3 +28,6 @@
 [submodule "Assec/vendor/imnodes"]
 	path = Assec/vendor/imnodes
 	url = https://github.com/Nelarius/imnodes
+[submodule "Assec/vendor/imguizmo"]
+	path = Assec/vendor/imguizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo

@@ -144,7 +144,6 @@
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\core\Assert.h" />
     <ClInclude Include="src\core\Base.h" />
-    <ClInclude Include="src\input\Input.h" />
     <ClInclude Include="src\core\KeyCode.h" />
     <ClInclude Include="src\core\PlatformDetection.h" />
     <ClInclude Include="src\event\EngineEvents.h" />
@@ -168,11 +167,13 @@
     <ClInclude Include="src\graphics\renderer\Renderable.h" />
     <ClInclude Include="src\graphics\renderer\Renderer.h" />
     <ClInclude Include="src\include\Assec.h" />
+    <ClInclude Include="src\input\Input.h" />
     <ClInclude Include="src\input\Joystick.h" />
     <ClInclude Include="src\layers\ImguiLayer.h" />
     <ClInclude Include="src\layers\Layer.h" />
     <ClInclude Include="src\layers\LayerStack.h" />
     <ClInclude Include="src\log\Logger.h" />
+    <ClInclude Include="src\math\Math.h" />
     <ClInclude Include="src\platform\glfw\GLFWInput.h" />
     <ClInclude Include="src\platform\glfw\GLFWMonitor.h" />
     <ClInclude Include="src\platform\glfw\GLFWWindow.h" />
@@ -610,7 +611,6 @@
     </ClCompile>
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\core\ImGuiImplmentation.cpp" />
-    <ClCompile Include="src\input\Input.cpp" />
     <ClCompile Include="src\core\StbImageImplementation.cpp" />
     <ClCompile Include="src\core\TinyGLTFImplementation.cpp" />
     <ClCompile Include="src\event\EventQueue.cpp" />
@@ -620,9 +620,11 @@
     <ClCompile Include="src\graphics\renderer\Mesh.cpp" />
     <ClCompile Include="src\graphics\renderer\Renderable.cpp" />
     <ClCompile Include="src\graphics\renderer\Renderer.cpp" />
+    <ClCompile Include="src\input\Input.cpp" />
     <ClCompile Include="src\layers\ImguiLayer.cpp" />
     <ClCompile Include="src\layers\LayerStack.cpp" />
     <ClCompile Include="src\log\Logger.cpp" />
+    <ClCompile Include="src\math\Math.cpp" />
     <ClCompile Include="src\platform\glfw\GLFWInput.cpp" />
     <ClCompile Include="src\platform\glfw\GLFWMonitor.cpp" />
     <ClCompile Include="src\platform\glfw\GLFWWindow.cpp" />
