@@ -29,8 +29,7 @@ namespace assec::editor
 			glm::mat4 view = this->m_Application->m_Camera.getViewMatrix();
 			const glm::mat4& projection = this->m_Application->m_Camera.m_Projection;
 
-			auto& transformComponent = this->m_Application->m_SelectedEntity.getComponent<scene::TransformComponent>();
-			glm::mat4& transform = transformComponent.toMatrix();
+			glm::mat4& transform = this->m_Application->m_SelectedEntity.getComponent<scene::TransformComponent>().toMatrix();
 
 			bool snap = input::Input::isKeyDown(KEY::KEY_LEFT_CONTROL);
 			float snapValue = 0.5f; // Snap to 0.5m for translation/scale
@@ -49,10 +48,10 @@ namespace assec::editor
 				glm::vec3 translation, rotation, scale;
 				math::decomposeTransform(transform, translation, rotation, scale);
 
-				glm::vec3 deltaRotation = rotation - transformComponent.rotation;
-				transformComponent.translation = translation;
-				transformComponent.rotation += deltaRotation;
-				transformComponent.scale = scale;
+				glm::vec3 deltaRotation = glm::degrees(rotation) - this->m_Application->m_SelectedEntity.getComponent<scene::TransformComponent>().rotation;
+				this->m_Application->m_SelectedEntity.getComponent<scene::TransformComponent>().translation = translation;
+				this->m_Application->m_SelectedEntity.getComponent<scene::TransformComponent>().rotation += deltaRotation;
+				this->m_Application->m_SelectedEntity.getComponent<scene::TransformComponent>().scale = scale;
 			}
 		}
 	}

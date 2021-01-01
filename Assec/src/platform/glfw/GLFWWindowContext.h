@@ -46,7 +46,7 @@ namespace assec::graphics
 		virtual uint64_t getTimerFrequency() const override;
 
 		virtual CONST_REF(Window) getCurrentContext() const override;
-		virtual CONST_REF(bool) isExtensionSupported(CONST_REF(std::string)) const override;
+		virtual bool isExtensionSupported(CONST_REF(std::string)) const override;
 	};
 
 	const uint32_t toGLFWType(CONST_REF(KEY) key);

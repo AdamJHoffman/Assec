@@ -33,6 +33,7 @@ namespace assec::scene
 
 	struct TransformComponent
 	{
+
 		glm::vec3 translation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
@@ -65,19 +66,6 @@ namespace assec::scene
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 		CameraComponent(const Camera& camera, const Camera::projectionType& type) : m_Camera(camera), m_Type(type) {}
-
-		void onEvent(const events::Event& event)
-		{
-			util::Dispatcher dispatcher = util::Dispatcher(event);
-			dispatcher.dispatch<events::WindowResizeEvent>([this](const events::WindowResizeEvent& event)
-				{
-					if (!this->m_FixedAspectRatio)
-					{
-						this->setViewportSize(event.getSize().x, event.getSize().y);
-					}
-					return false;
-				});
-		}
 
 		void orthographic(float size, float nearClip, float farClip)
 		{
@@ -144,7 +132,7 @@ namespace assec::scene
 
 		MeshComponent() = default;
 		~MeshComponent() {}
-		MeshComponent(const std::vector<graphics::Vertex>& vertices, const std::vector<int>& indices)
+		MeshComponent(const std::vector<graphics::Vertex>& vertices, const std::vector<uint32_t>& indices)
 			: m_Mesh(std::make_shared<graphics::Mesh>(vertices, indices)) {}
 		MeshComponent(const MeshComponent& other)
 			: m_Mesh(std::make_shared<graphics::Mesh>(other.m_Mesh->getVertices(), other.m_Mesh->getIndices())), m_Path(other.m_Path) {}

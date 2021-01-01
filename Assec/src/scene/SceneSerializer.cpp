@@ -275,6 +275,7 @@ namespace assec::scene
 					auto& component = deserializedEntity.addComponent<MeshComponent>();
 					component.m_Path = meshComponent["Path"].as<std::string>();
 					*component.m_Mesh = util::Loader::loadgltfMesh(component.m_Path.c_str())[0];
+					component.m_Mesh->setID(uuid);
 				}
 
 				auto materialComponent = entity["MaterialComponent"];

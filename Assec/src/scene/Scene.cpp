@@ -29,7 +29,6 @@ namespace assec::scene
 	{
 		this->m_Registry.view<scene::CameraComponent>().each([&](auto entityID, auto& udc)
 			{
-				udc.onEvent(event);
 				udc.setViewMatrix(Entity(entityID, this).getComponent<scene::TransformComponent>().toMatrix());
 				if (udc.m_Primary)
 				{
@@ -44,6 +43,13 @@ namespace assec::scene
 				}
 			});
 	}
+	void Scene::onViewportResized(float width, float height)
+	{
+		this->m_Registry.view<scene::CameraComponent>().each([&](auto entityID, auto& udc)
+			{
+				udc.setViewportSize(width, height);
+			});
+	}
 	template<typename T>
 	void Scene::onComponentAdded(const Entity&, T& component)
 	{
@@ -54,11 +60,7 @@ namespace assec::scene
 	template<>
 	void Scene::onComponentAdded<TransformComponent>(const Entity&, TransformComponent& component) {}
 	template<>
-	void Scene::onComponentAdded<CameraComponent>(const Entity&, CameraComponent& component)
-	{
-		auto& size = graphics::WindowManager::getMainWindow().getSize();
-		component.setViewportSize(size.x, size.y);
-	}
+	void Scene::onComponentAdded<CameraComponent>(const Entity&, CameraComponent& component) {}
 	template<>
 	void Scene::onComponentAdded<MeshComponent>(const Entity&, MeshComponent& component) {}
 	template<>

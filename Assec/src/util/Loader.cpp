@@ -53,7 +53,7 @@ namespace assec::util
 		for (auto& mesh : model.meshes)
 		{
 			std::vector<graphics::Vertex> vertices = std::vector<graphics::Vertex>(model.accessors[mesh.primitives[0].attributes["POSITION"]].count);
-			std::vector<int> indices = std::vector<int>(model.accessors[mesh.primitives[0].indices].count);
+			std::vector<uint32_t> indices = std::vector<uint32_t>(model.accessors[mesh.primitives[0].indices].count);
 			for (auto& primitive : mesh.primitives)
 			{
 				if (primitive.mode == TINYGLTF_MODE_TRIANGLES)

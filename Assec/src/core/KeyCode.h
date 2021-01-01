@@ -140,6 +140,32 @@ namespace assec
 		MOUSE_BUTTON_8,		
 	};
 
+	enum class Usage
+	{
+		NONE = 0,
+		STREAM_DRAW,
+		STATIC_DRAW,
+		DYNAMIC_DRAW,
+		STREAM_READ,
+		STATIC_READ,
+		DYNAMIC_READ
+	};
+
+	enum class Access
+	{
+		NONE = 0,
+		READ_ONLY,
+		WRITE_ONLY, 
+		READ_WRITE 
+	};
+
+	enum class BufferTarget
+	{
+		NONE = 0,
+		ARRAY_BUFFER,
+		ELEMENT_ARRAY_BUFFER
+	};
+
 	enum class Type
 	{
 		NONE = 0,
@@ -153,6 +179,9 @@ namespace assec
 
 		DEPTH_TEST,
 		LESS,
+		BLEND,
+		SRC_ALPHA, 
+		ONE_MINUS_SRC_ALPHA,
 
 		STATIC_DRAW,
 		DYNAMIC_DRAW,
@@ -171,7 +200,10 @@ namespace assec
 		LINEAR_MIPMAP_LINEAR,
 
 		RED,
+		RED_INTEGER,
 		R8,
+		R32UI,
+		R32I,
 		RG,
 		RG8,
 		RGB,
@@ -182,6 +214,7 @@ namespace assec
 		DEPTH_STENCIL,
 
 		COLOR_ATTACHMENT0,
+		COLOR_ATTACHMENT1,
 		DEPTH_STENCIL_ATTACHMENT
 	};
 

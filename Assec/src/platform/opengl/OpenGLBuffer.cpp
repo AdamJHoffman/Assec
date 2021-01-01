@@ -7,88 +7,10 @@
 #include "OpenGLGraphicsContext.h"
 #include "OpenGLTexture.h"
 
+#include "graphics/WindowManager.h"
+
 namespace assec::graphics
 {
-	OpenGLVertexBuffer::OpenGLVertexBuffer(const void* vertices, const size_t& size, const int& usage) : VertexBuffer::VertexBuffer(this->genBuffer())
-	{
-		TIME_FUNCTION;
-		this->addData(vertices, size, usage);
-	}
-	OpenGLVertexBuffer::OpenGLVertexBuffer(const int& usage, const size_t& size) : VertexBuffer::VertexBuffer(this->genBuffer())
-	{
-		TIME_FUNCTION;
-		this->addData(nullptr, size, usage);
-	}
-	OpenGLVertexBuffer::~OpenGLVertexBuffer() 
-	{
-		TIME_FUNCTION;
-		GLCall(glDeleteBuffers(1, &this->m_RendererID));
-	}
-	void OpenGLVertexBuffer::addData(const void* vertices, const size_t& size, const int& usage) const
-	{
-		TIME_FUNCTION;
-		this->bind();
-		GLCall(glBufferData(GL_ARRAY_BUFFER, size, vertices, usage));
-	}
-	void OpenGLVertexBuffer::addSubData(const void* data, const size_t& size, const int& offset) const
-	{
-		TIME_FUNCTION;
-		this->bind();
-		GLCall(glBufferSubData(GL_ARRAY_BUFFER, offset, size, data));
-	}
-	void OpenGLVertexBuffer::bind() const
-	{
-		TIME_FUNCTION;
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, this->m_RendererID));
-	}
-	const uint32_t OpenGLVertexBuffer::genBuffer() const
-	{
-		TIME_FUNCTION;
-		uint32_t ID;
-		GLCall(glCreateBuffers(1, &ID));
-		return ID;
-	}
-	OpenGLIndexBuffer::OpenGLIndexBuffer(const void* indices, const size_t& size, const int& usage) : IndexBuffer::IndexBuffer(this->genBuffer(), (size / sizeof(uint32_t)))
-	{
-		TIME_FUNCTION;
-		this->addData(indices, size, usage);
-	}
-	OpenGLIndexBuffer::OpenGLIndexBuffer(const int& usage, const size_t& size) : IndexBuffer::IndexBuffer(this->genBuffer(), 0)
-	{
-		TIME_FUNCTION;
-		this->addData(nullptr, size, usage);
-	}
-	OpenGLIndexBuffer::~OpenGLIndexBuffer() 
-	{ 
-		TIME_FUNCTION; 
-		GLCall(glDeleteBuffers(1, &this->m_RendererID));
-	}
-	void OpenGLIndexBuffer::addData(const void* indices, const size_t& size, const int& usage)
-	{
-		TIME_FUNCTION;
-		this->bind();
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, usage));
-		this->m_Count = indices == nullptr ? 0 : (size / sizeof(uint32_t));
-	}
-	void OpenGLIndexBuffer::addSubData(const void* data, const size_t& size, const int& offset)
-	{
-		TIME_FUNCTION;
-		this->bind();
-		GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data));
-		this->m_Count = data == nullptr ? 0 : (size / sizeof(uint32_t));
-	}
-	void OpenGLIndexBuffer::bind() const
-	{
-		TIME_FUNCTION;
-		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_RendererID));
-	}
-	const uint32_t OpenGLIndexBuffer::genBuffer() const
-	{
-		TIME_FUNCTION;
-		uint32_t ID;
-		GLCall(glCreateBuffers(1, &ID));
-		return ID;
-	}
 	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferProps& frameBufferProps) : FrameBuffer(this->genBuffer(frameBufferProps), frameBufferProps) {}
 	OpenGLFrameBuffer::~OpenGLFrameBuffer() 
 	{ 
@@ -100,11 +22,33 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, this->m_RendererID));
+
+		int drawTargetCount = 0;
+		std::vector<GLenum> buffers;
+		for (auto& key : util::Keys(this->m_TextureAttachments))
+		{
+			if (key != Type::DEPTH_STENCIL_ATTACHMENT)
+			{
+				++drawTargetCount;
+				buffers.push_back(toOpenGLType(key));
+			}
+		}
+		if (!buffers.empty())
+		{
+			glDrawBuffers(drawTargetCount, &buffers[0]);
+		}
+
+		int viewportsize[4];
+		GLCall(glGetIntegerv(GL_VIEWPORT, viewportsize));
+		this->m_PreviousViewportSize.x = viewportsize[2];
+		this->m_PreviousViewportSize.y = viewportsize[3];
+		GLCall(glViewport(0, 0, this->m_FrameBufferProps.m_Width, this->m_FrameBufferProps.m_Height));
 	}
 	void OpenGLFrameBuffer::unbind() const
 	{
 		TIME_FUNCTION;
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		GLCall(glViewport(0, 0, this->m_PreviousViewportSize.x, this->m_PreviousViewportSize.y));
 	}
 	void OpenGLFrameBuffer::resize()
 	{
@@ -135,6 +79,28 @@ namespace assec::graphics
 		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, toOpenGLType(attachment), GL_TEXTURE_2D, this->m_TextureAttachments[attachment]->getNativeTexture(), 0));
 		this->unbind();
 	}
+	void OpenGLFrameBuffer::clear(glm::vec4 color) const
+	{
+		this->bind();
+		glClearColor(color.r, color.g, color.g, color.a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		this->unbind();
+	}
+
+
+
+	uint32_t OpenGLFrameBuffer::pixelData(CONST_REF(glm::vec2) pos) const
+	{
+		this->bind();
+		glReadBuffer(GL_COLOR_ATTACHMENT1);
+		uint32_t result = 0;
+		glReadPixels(pos.x, pos.y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &result);
+		this->unbind();
+		return result;
+	}
+
+
+
 	const uint32_t OpenGLFrameBuffer::genBuffer(const FrameBufferProps& frameBufferProps) const
 	{
 		TIME_FUNCTION;

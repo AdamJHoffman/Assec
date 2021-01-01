@@ -5,8 +5,9 @@
 namespace assec::editor
 {
 	SceneHierarchyPanel::SceneHierarchyPanel(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
+		std::function<void(CONST_REF(bool))> blockCallback,
 		REF(EditorApplication) application)
-		: EditorContext(callback, application, "Scene Hierarchy") {}
+		: EditorContext(callback, blockCallback, application, "Scene Hierarchy") {}
 	SceneHierarchyPanel::~SceneHierarchyPanel() {}
 	void SceneHierarchyPanel::render()
 	{

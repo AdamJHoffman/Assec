@@ -22,7 +22,7 @@ namespace assec::graphics
 		Material m_Material = Material();
 		std::vector<ref<Texture>> m_Textures = std::vector<ref<Texture>>();
 		std::vector<Vertex> m_Vertices = std::vector<Vertex>();
-		std::vector<int> m_Indices = std::vector<int>();
+		std::vector<uint32_t> m_Indices = std::vector<uint32_t>();
 
 		friend class BatchManager;
 	};

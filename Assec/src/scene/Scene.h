@@ -17,6 +17,7 @@ namespace assec::scene
 		Scene() = default;
 		~Scene() = default;
 		void onEvent(const events::Event& event);
+		void onViewportResized(float width, float height);
 		INLINE const glm::mat4& getActiveCamera() const { return this->m_ActiveCamera; }
 		INLINE void setActiveCamera(CONST_REF(glm::mat4) camera) { this->m_ActiveCamera = camera; }
 		INLINE std::string& getSaveFilePath() { return this->m_SaveFilePath; }

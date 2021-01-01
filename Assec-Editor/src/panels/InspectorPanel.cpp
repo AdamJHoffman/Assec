@@ -17,8 +17,9 @@
 namespace assec::editor
 {
 	InspectorPanel::InspectorPanel(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
+		std::function<void(CONST_REF(bool))> blockCallback,
 		REF(EditorApplication) application)
-	: EditorContext(callback, application, "Inspector") {}
+	: EditorContext(callback, blockCallback, application, "Inspector") {}
 	InspectorPanel::~InspectorPanel() {}
 	template<typename UIFunction>
 	void drawUIColumned(const char* label, int numOfElements, UIFunction uiFunction, float columnWidth = 150.0f)
@@ -92,6 +93,10 @@ namespace assec::editor
 							{
 								this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_Tag, std::string(buffer)));
 							}
+						});
+					drawUIColumned("UUID", 1, [&](auto& numOfElements) 
+						{
+							ImGui::Text(std::to_string(this->m_Application->m_SelectedEntity.getNative()).c_str());
 						});
 				});
 			drawComponent<scene::TransformComponent>("Transform Component", this->m_Application->m_SelectedEntity, [&](auto& component)
@@ -264,6 +269,7 @@ namespace assec::editor
 												}));
 										}
 									});
+								component.m_Mesh->setID(this->m_Application->m_SelectedEntity.getNative());
 							}
 						});
 				});
@@ -278,7 +284,7 @@ namespace assec::editor
 											this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_TexturePath, std::string(filepath), [&](std::string& path)
 												{
 													std::replace(path.begin(), path.end(), '\\', '/');
-													assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, Type::RGB8, Type::RGB, Type::UNSIGNED_BYTE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
+													assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, Type::RGBA8, Type::RGBA, Type::UNSIGNED_BYTE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
 													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<ref<graphics::Texture>>>(&component.m_Material->getRawTexture(), graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->createTexture2D(path, props)));
 												}));
 										}

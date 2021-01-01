@@ -222,7 +222,7 @@ namespace assec::graphics
 		return *((GLFWWindow*)glfwGetWindowUserPointer(glfwGetCurrentContext()));
 	}
 
-	CONST_REF(bool) GLFWWindowContext::isExtensionSupported(CONST_REF(std::string) extension) const
+	bool GLFWWindowContext::isExtensionSupported(CONST_REF(std::string) extension) const
 	{
 		TIME_FUNCTION;
 		return glfwExtensionSupported(extension.c_str());

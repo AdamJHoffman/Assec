@@ -19,7 +19,8 @@ namespace assec::graphics
 			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
 			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
 			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 1, false) });
+			VertexBufferAttribute(assec::Type::FLOAT, 1, false),
+			VertexBufferAttribute(assec::Type::UNSIGNED_INT, 1, false) });
 			return s_Layout;
 		}
 		glm::vec3 position = glm::vec3(1.0f);
@@ -28,23 +29,25 @@ namespace assec::graphics
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::mat4 transformationMatrix = glm::mat4(1.0f);
 		float texID = 0;
+		uint32_t ID = 0;
 	};
 	class Mesh
 	{
 	public:
-		Mesh(CONST_REF(std::vector<Vertex>) vertices, CONST_REF(std::vector<int>) indices);
+		Mesh(CONST_REF(std::vector<Vertex>) vertices, CONST_REF(std::vector<uint32_t>) indices);
 		Mesh() { TIME_FUNCTION; }
 		~Mesh() { TIME_FUNCTION; }
-		const std::vector<float> createVerticesData();
+		const std::vector<unsigned char> createVerticesData();
 		const size_t calculateSize();
 		const inline std::vector<Vertex>& getVertices() const { TIME_FUNCTION;  return this->m_Vertices; }
-		const inline std::vector<int>& getIndices() const { TIME_FUNCTION; return this->m_Indices; }
+		const inline std::vector<uint32_t>& getIndices() const { TIME_FUNCTION; return this->m_Indices; }
 		inline std::vector<Vertex>& getVertices() { TIME_FUNCTION; return this->m_Vertices; }
-		inline std::vector<int>& getIndices() { TIME_FUNCTION; return this->m_Indices; }
+		inline std::vector<uint32_t>& getIndices() { TIME_FUNCTION; return this->m_Indices; }
 		void setTransformationMatrix(const glm::mat4&);
 		void setTextureIndex(const float&);
+		void setID(const uint32_t&);
 	private:
-		std::vector<int> m_Indices = std::vector<int>();
+		std::vector<uint32_t> m_Indices = std::vector<uint32_t>();
 		std::vector<Vertex> m_Vertices = std::vector<Vertex>();
 	};
 } // namespace assec::graphics

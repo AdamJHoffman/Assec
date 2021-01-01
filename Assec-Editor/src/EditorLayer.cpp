@@ -55,11 +55,15 @@ namespace assec::editor
 				TIME_FUNCTION;
 				if (this->m_ViewportSize.x != this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width || this->m_ViewportSize.y != this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height)
 				{
+					this->m_ViewportSize = { this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width, this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height };
+					this->m_Application->m_Camera.setViewportSize(this->m_ViewportSize.x, this->m_ViewportSize.y);
+					this->m_Application->getActiveScene().onViewportResized(this->m_ViewportSize.x, this->m_ViewportSize.y);
 					this->m_Application->m_FrameBuffer->resize();
 				}
 
 				this->m_Application->m_FrameBuffer->bind();
 				graphics::WindowManager::clear();
+				this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT1).clear();
 				graphics::Renderer::beginScene(this->m_Application->m_CurrentState == ApplicationState::EDITOR ? this->m_Application->m_Camera.getViewProjection() : this->m_Application->getActiveScene().getActiveCamera());
 				this->m_Application->getActiveScene().reg().view<scene::MeshComponent, scene::MaterialComponent, scene::TransformComponent>().each([&](auto entityID, auto& mesh, auto& material, auto& transform)
 					{
@@ -69,7 +73,6 @@ namespace assec::editor
 				graphics::Renderer::endScene();
 				this->m_Application->m_FrameBuffer->unbind();
 
-				this->m_ViewportSize = { this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width, this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height };
 				return false;
 			});
 	}

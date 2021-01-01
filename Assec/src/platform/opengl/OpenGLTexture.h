@@ -15,6 +15,7 @@ namespace assec::graphics
 		virtual void bind() const override;
 		virtual void setData(const void*, const uint32_t&) const override;
 		virtual void* getData() const override;
+		virtual void clear() const override;
 	protected:
 		virtual const uint32_t genTexture() const override;
 	};

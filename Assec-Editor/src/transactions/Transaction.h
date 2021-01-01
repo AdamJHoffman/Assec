@@ -7,6 +7,8 @@
 
 #include "core/Base.h"
 
+#include "util/UUID.h"
+
 namespace assec::transactions
 {
 	class Transaction
@@ -106,7 +108,7 @@ namespace assec::transactions
 
 		ref<Transaction> generateInverse() override;
 	private:
-		scene::Entity m_Hint = scene::Entity(static_cast<entt::entity>(0), nullptr);
+		scene::Entity m_Hint = scene::Entity(static_cast<entt::entity>(uuid::generateUUID()), nullptr);
 	};
 
 	template<typename T>

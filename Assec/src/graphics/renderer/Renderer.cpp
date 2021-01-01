@@ -34,11 +34,14 @@ namespace assec::graphics
 			}
 			for (auto& b : (m_BatchManager.getBatches())[key])
 			{
-				b.prepare(m_ViewProjectionMatrix, *key->getWindowData().graphicsContext);
-				m_VertexArray->getVertexBuffer().addSubData(&b.createMesh()->createVerticesData()[0], sizeof(float) * b.createMesh()->createVerticesData().size(), 0);
-				m_VertexArray->getIndexBuffer().addSubData(&b.createMesh()->getIndices()[0], sizeof(uint32_t) * b.createMesh()->getIndices().size(), 0);
-				m_VertexArray->mapVertexAttributes(b.createMesh()->calculateSize(), Vertex::getLayout());
-				m_VertexArray->render();
+				if (b.createMesh()->calculateSize() > 0)
+				{
+					b.prepare(m_ViewProjectionMatrix, *key->getWindowData().graphicsContext);
+					m_VertexArray->getVertexBuffer().subData(b.createMesh()->createVerticesData(), 0);
+					m_VertexArray->getIndexBuffer().subData(b.createMesh()->getIndices(), 0);
+					m_VertexArray->mapVertexAttributes(b.createMesh()->calculateSize(), Vertex::getLayout());
+					m_VertexArray->render();
+				}
 			}
 		}
 		m_BatchManager.clear();

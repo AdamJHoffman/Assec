@@ -12,7 +12,7 @@ namespace assec::graphics
 		TIME_FUNCTION;
 
 		this->bind();
-		GLCall(glTextureStorage2D(this->m_RendererID, 1, toOpenGLType(this->m_Props.internalFormat), this->m_Width, this->m_Height));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, toOpenGLType(this->m_Props.internalFormat), this->m_Width, this->m_Height, 0, toOpenGLType(this->m_Props.dataFormat), toOpenGLType(this->m_Props.dataType), nullptr));
 
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, toOpenGLType(this->m_Props.wrapType)));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, toOpenGLType(this->m_Props.wrapType)));
@@ -116,30 +116,51 @@ namespace assec::graphics
 		{
 			channels = 1;
 		}
-		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGB))
+		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RG))
 		{
-			channels = 3;
+			channels = 2;
 		}
 		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGB))
 		{
 			channels = 3;
 		}
-		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RED))
+		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGBA))
 		{
 			channels = 4;
 		}
 		AC_CORE_ASSERT(size == m_Width * m_Height * channels, "Data must be entire texture!");
-		GLCall(glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, toOpenGLType(this->m_Props.dataFormat), GL_UNSIGNED_BYTE, data));
+		GLCall(glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, toOpenGLType(this->m_Props.dataFormat), toOpenGLType(this->m_Props.dataType), data));
 	}
 	void* OpenGLTexture2D::getData() const
 	{
 		this->bind();
-		uint32_t bpp = this->m_Props.dataFormat == fromOpenGLType(GL_RGBA) ? 4 : 3;
-		uint32_t size = this->m_Width * this->m_Height * bpp;
+		uint32_t channels = 0;
+		if (this->m_Props.dataFormat == fromOpenGLType(GL_RED))
+		{
+			channels = 1;
+		}
+		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RG))
+		{
+			channels = 2;
+		}
+		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGB))
+		{
+			channels = 3;
+		}
+		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGBA) || this->m_Props.dataFormat == fromOpenGLType(GL_RED_INTEGER))
+		{
+			channels = 4;
+		}
+		uint32_t size = this->m_Width * this->m_Height * channels;
 		unsigned char* result = new unsigned char[size];
-		glGetTextureImage(this->m_RendererID, 0, toOpenGLType(this->m_Props.dataFormat), toOpenGLType(this->m_Props.dataType), static_cast<uint32_t>(size), result);
+		glGetTextureImage(this->m_RendererID, 0, toOpenGLType(this->m_Props.dataFormat), toOpenGLType(this->m_Props.dataType), size, result);
 		return result;
 	}
+	void OpenGLTexture2D::clear() const 
+	{
+		GLCall(glClearTexImage(this->m_RendererID, 0, toOpenGLType(this->m_Props.dataFormat), toOpenGLType(this->m_Props.dataType), 0));
+	}
+
 	const uint32_t OpenGLTexture2D::genTexture() const
 	{
 		TIME_FUNCTION;

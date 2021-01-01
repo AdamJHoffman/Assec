@@ -14,17 +14,27 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		this->bind();
-		this->m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(vertexArrayData.vertices, vertexArrayData.verticesSize, vertexArrayData.usage);
+		this->m_VertexBuffer = makeScope<OpenGLBuffer<unsigned char>>(BufferTarget::ARRAY_BUFFER);
+		this->m_VertexBuffer->data(std::vector<unsigned char>((unsigned char*)vertexArrayData.vertices, (unsigned char*)vertexArrayData.vertices + (vertexArrayData.verticesSize / sizeof(unsigned char))), Usage::DYNAMIC_DRAW);
+		this->m_VertexBuffer->bind();
 		this->mapVertexAttributes(vertexArrayData.verticesSize, vertexArrayData.layout);
-		this->m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(vertexArrayData.indices, vertexArrayData.indicesSize, vertexArrayData.usage);
+		this->m_IndexBuffer = std::make_unique<OpenGLBuffer<uint32_t>>(BufferTarget::ELEMENT_ARRAY_BUFFER);
+		this->m_IndexBuffer->data(std::vector<uint32_t>((uint32_t*)vertexArrayData.indices, (uint32_t*)vertexArrayData.indices + (vertexArrayData.indicesSize / sizeof(uint32_t))), Usage::DYNAMIC_DRAW);
+		this->m_IndexBuffer->bind();
 	}
 	OpenGLVertexArray::OpenGLVertexArray(const int& usage, const size_t& size)
 		: VertexArray::VertexArray(this->genVertexArray())
 	{
 		TIME_FUNCTION;
 		this->bind();
-		this->m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(usage, size);
-		this->m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(usage, size);
+		this->m_VertexBuffer = makeScope<OpenGLBuffer<unsigned char>>(BufferTarget::ARRAY_BUFFER);
+		this->m_VertexBuffer->data(std::vector<unsigned char>(size/sizeof(unsigned char)), Usage::DYNAMIC_DRAW);
+		this->m_VertexBuffer->bind();
+		this->m_IndexBuffer = std::make_unique<OpenGLBuffer<uint32_t>>(BufferTarget::ELEMENT_ARRAY_BUFFER);
+		this->m_IndexBuffer->data(std::vector<uint32_t>(size/sizeof(uint32_t)), Usage::DYNAMIC_DRAW);
+		this->m_IndexBuffer->bind();
+		//this->m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(usage, size);
+		//this->m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(usage, size);
 	}
 	OpenGLVertexArray::~OpenGLVertexArray() 
 	{ 
@@ -40,18 +50,29 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 		this->bind();
-		GLCall(glDrawElements(GL_TRIANGLES, (int)this->m_IndexBuffer->getCount(), GL_UNSIGNED_INT, nullptr));
+		this->m_VertexBuffer->bind();
+		this->m_IndexBuffer->bind();
+		GLCall(glDrawElements(GL_TRIANGLES, (int)this->m_IndexBuffer->count(), GL_UNSIGNED_INT, nullptr));
 	}
 	void OpenGLVertexArray::mapVertexAttributes(const size_t& verticesSize, const VertexBufferLayout& layout) const
 	{
 		TIME_FUNCTION;
 		this->bind();
+		this->m_VertexBuffer->bind();
+		this->m_IndexBuffer->bind();
 		void* pointer = 0;
 		for (int i = 0; i < layout.m_Attributes.size(); i++)
 		{
 			auto& attrib = layout.m_Attributes[i];
 			GLCall(glEnableVertexAttribArray(i));
-			GLCall(glVertexAttribPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), attrib.m_Normalized, static_cast<GLsizei>(attrib.getSize()), pointer));
+			if (attrib.m_Type == Type::UNSIGNED_INT)
+			{
+				GLCall(glVertexAttribIPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), static_cast<GLsizei>(attrib.getSize()), pointer));
+			}
+			else
+			{
+				GLCall(glVertexAttribPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), attrib.m_Normalized, static_cast<GLsizei>(attrib.getSize()), pointer));
+			}
 			pointer = static_cast<char*>(pointer) + (verticesSize / layout.calculateVertexSize() * attrib.getSize());
 		}
 	}

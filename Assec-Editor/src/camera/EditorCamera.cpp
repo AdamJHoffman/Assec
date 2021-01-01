@@ -29,7 +29,7 @@ namespace assec::editor
 		util::Dispatcher dispatcher = util::Dispatcher(event);
 		dispatcher.dispatch<events::WindowResizeEvent>([this](const events::WindowResizeEvent& event)
 			{
-				this->setViewportSize(event.getSize().x, event.getSize().y);
+				//this->setViewportSize(event.getSize().x, event.getSize().y);
 				return false;
 			});
 		dispatcher.dispatch<events::MouseScrolledEvent>([this](const events::MouseScrolledEvent& event)

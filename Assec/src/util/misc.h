@@ -25,4 +25,20 @@ namespace assec::util
 		}
 		return r;
 	}
+
+	template<typename T> std::vector<unsigned char> toVector(T t)
+	{
+		std::vector<unsigned char> data(sizeof(t));
+		std::memcpy(data.data(), &t, sizeof(t));
+		return data;
+	}
+
+	//float fromVector(const std::vector<unsigned char>& data)
+	//{
+	//	float f;
+	//	if (data.size() != sizeof(f))
+	//		throw std::runtime_error{ "Size of data in vector and float do not match" };
+	//	std::memcpy(&f, data.data(), sizeof(f));
+	//	return f;
+	//}
 }

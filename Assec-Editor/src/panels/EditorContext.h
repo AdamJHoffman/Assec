@@ -12,8 +12,10 @@ namespace assec::editor
 	{
 	public:
 		EditorContext(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
+			std::function<void(CONST_REF(bool))> blockCallback,
 			REF(EditorApplication) application,
-			CONST_REF(std::string) name = "Context") : m_TransactionCallback(callback), 
+			CONST_REF(std::string) name = "Context") : m_TransactionCallback(callback),
+			m_BlockEventsCallback(blockCallback),
 			m_Name(name), 
 			m_Application(&application){}
 		virtual ~EditorContext() = default;
@@ -28,6 +30,7 @@ namespace assec::editor
 
 		bool m_Open = true;
 		std::function<void(ref<transactions::Transaction>)> m_TransactionCallback;
+		std::function<void(CONST_REF(bool))> m_BlockEventsCallback;
 		std::string m_Name = "Context";
 		EditorApplication* m_Application = nullptr;
 	private:

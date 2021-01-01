@@ -13,13 +13,17 @@ namespace assec::editor
 	{
 		this->m_FrameBuffer = graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->createFrameBuffer({ {}, 1920, 1080, 1, false, });
 		this->m_FrameBuffer->addTextureAttachment(Type::COLOR_ATTACHMENT0, Type::RGBA8, Type::RGBA, Type::UNSIGNED_BYTE);
+		this->m_FrameBuffer->addTextureAttachment(Type::COLOR_ATTACHMENT1, Type::R32UI, Type::RED_INTEGER, Type::UNSIGNED_BYTE);
 		this->m_FrameBuffer->addTextureAttachment(Type::DEPTH_STENCIL_ATTACHMENT, Type::DEPTH24_STENCIL8, Type::DEPTH_STENCIL, Type::UNSIGNED_INT_24_8);
 		this->m_FrameBuffer->validate();
+
 		this->m_LayerStack->addLayer(std::make_shared<EditorLayer>(*this));
 		this->m_LayerStack->addOverlay(std::make_shared<EditorGuiLayer>(*this));
 		graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->setClearColor(glm::vec4(0.09803921568, 0.09803921568, 0.11764705882, 1.0f));
 		graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->enable(Type::DEPTH_TEST);
 		graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->setDepthFunction(Type::LESS);
+		graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->enable(Type::BLEND);
+		graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->setBlendFunction(Type::SRC_ALPHA, Type::ONE_MINUS_SRC_ALPHA);
 		this->m_Camera.setViewportSize(graphics::WindowManager::getMainWindow().getSize().x, graphics::WindowManager::getMainWindow().getSize().y);
 	}
 	void EditorApplication::run0()

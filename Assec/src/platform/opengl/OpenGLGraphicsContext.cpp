@@ -70,15 +70,20 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		GLCall(glDepthFunc(toOpenGLType(type)));
 	}
+	void OpenGLGraphicsContext::setBlendFunction(const Type& sfactor, const Type& dfactor) const
+	{
+		TIME_FUNCTION;
+		GLCall(glBlendFunc(toOpenGLType(sfactor), toOpenGLType(dfactor)));
+	}
 	ref<VertexBuffer> OpenGLGraphicsContext::createVertexBuffer(const void* vertices, const size_t& size, const int& usage) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLVertexBuffer>(vertices, size, usage);
+		return nullptr;
 	}
-	ref<IndexBuffer> OpenGLGraphicsContext::createIndexBuffer(const void* indices, const size_t& size, const int& usage) const
+	ref<IndexBuffer> OpenGLGraphicsContext::createIndexBuffer(CONST_REF(std::vector<uint32_t>) data, const int& usage) const
 	{
 		TIME_FUNCTION;
-		return std::make_shared<OpenGLIndexBuffer>(indices, size, usage);
+		return nullptr;
 	}
 	ref<VertexArray> OpenGLGraphicsContext::createVertexArray(const VertexArray::VertexArrayProps& vertexArrayData) const
 	{
@@ -149,6 +154,15 @@ namespace assec::graphics
 		case Type::LESS:
 			return GL_LESS;
 			break;
+		case Type::BLEND:
+			return GL_BLEND;
+			break;
+		case Type::SRC_ALPHA:
+			return GL_SRC_ALPHA;
+			break;
+		case Type::ONE_MINUS_SRC_ALPHA:
+			return GL_ONE_MINUS_SRC_ALPHA;
+			break;
 		case Type::STATIC_DRAW:
 			return GL_STATIC_DRAW;
 			break;
@@ -188,8 +202,16 @@ namespace assec::graphics
 		case Type::RED:
 			return GL_RED;
 			break;
+		case Type::RED_INTEGER:
+			return GL_RED_INTEGER;
+			break;
 		case Type::R8:
 			return GL_R8;
+			break;
+		case Type::R32UI:
+			return GL_R32UI;
+		case Type::R32I:
+			return GL_R32I;
 			break;
 		case Type::RG:
 			return GL_RG;
@@ -218,14 +240,97 @@ namespace assec::graphics
 		case Type::COLOR_ATTACHMENT0:
 			return GL_COLOR_ATTACHMENT0;
 			break;
+		case Type::COLOR_ATTACHMENT1:
+			return GL_COLOR_ATTACHMENT1;
+			break;
 		case Type::DEPTH_STENCIL_ATTACHMENT:
 			return GL_DEPTH_STENCIL_ATTACHMENT;
 			break;
 		default:
+			AC_CORE_ASSERT(false, "no proper conversion to opengl set up!");
 			return NULL;
 			break;
 		}
 	}
+
+	uint32_t toOpenGLType(const Usage& usage)
+	{
+		switch (usage)
+		{
+		case Usage::NONE:
+			AC_CORE_ASSERT(false, "Data usage cannot be none!");
+			return NULL;
+			break;
+		case Usage::STREAM_DRAW:
+			return GL_STREAM_DRAW;
+			break;
+		case Usage::STATIC_DRAW:
+			return GL_STATIC_DRAW;
+			break;
+		case Usage::DYNAMIC_DRAW:
+			return GL_DYNAMIC_DRAW;
+			break;
+		case Usage::STREAM_READ:
+			return GL_STREAM_READ;
+			break;
+		case Usage::STATIC_READ:
+			return GL_STATIC_READ;
+			break;
+		case Usage::DYNAMIC_READ:
+			return GL_DYNAMIC_READ;
+			break;
+		default:
+			AC_CORE_ASSERT(false, "no proper conversion to opengl set up!");
+			return NULL;
+			break;
+		}
+	}
+
+	uint32_t toOpenGLType(const Access& access)
+	{
+		switch (access)
+		{
+		case Access::NONE:
+			AC_CORE_ASSERT(false, "Data usage cannot be none!");
+			return NULL;
+			break;
+		case Access::READ_ONLY:
+			return GL_READ_ONLY;
+			break;
+		case Access::WRITE_ONLY:
+			return GL_WRITE_ONLY;
+			break;
+		case Access::READ_WRITE:
+			return GL_READ_WRITE;
+			break;
+		default:
+			AC_CORE_ASSERT(false, "no proper conversion to opengl set up!");
+			return NULL;
+			break;
+		}
+	}
+
+	uint32_t toOpenGLType(const BufferTarget& target)
+	{
+		switch (target)
+		{
+		case BufferTarget::NONE:
+			AC_CORE_ASSERT(false, "Data usage cannot be none!");
+			return NULL;
+			break;
+		case BufferTarget::ARRAY_BUFFER:
+			return GL_ARRAY_BUFFER;
+			break;
+		case BufferTarget::ELEMENT_ARRAY_BUFFER:
+			return GL_ELEMENT_ARRAY_BUFFER;
+			break;
+		default:
+			AC_CORE_ASSERT(false, "no proper conversion to opengl set up!");
+			return NULL;
+			break;
+		}
+	}
+
 	Type fromOpenGLType(const uint32_t& type)
 	{
 		switch (type)
@@ -293,6 +398,9 @@ namespace assec::graphics
 		case GL_RED:
 			return Type::RED;
 			break;
+		case GL_RED_INTEGER:
+			return Type::RED_INTEGER;
+			break;
 		case GL_R8:
 			return Type::R8;
 			break;
@@ -327,6 +435,7 @@ namespace assec::graphics
 			return Type::DEPTH_STENCIL_ATTACHMENT;
 			break;
 		default:
+			AC_CORE_ASSERT(false, "no proper conversion from opengl setup!");
 			return Type::NONE;
 			break;
 		}

@@ -507,7 +507,8 @@ namespace assec::editor
 	{
 	public:
 		NodeEditor(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
-			REF(EditorApplication) application) : EditorContext(callback, application, "Node Editor")
+			std::function<void(CONST_REF(bool))> blockCallback,
+			REF(EditorApplication) application) : EditorContext(callback, blockCallback, application, "Node Editor")
 		{
 			// TEMP
 

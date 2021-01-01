@@ -6,6 +6,46 @@
 
 namespace assec::graphics
 {
+	template<typename T> class Buffer
+	{
+	public:
+		virtual ~Buffer() { TIME_FUNCTION; }
+
+		virtual void bind() const = 0;
+
+		virtual void data(CONST_REF(std::vector<T>) data, CONST_REF(Usage) usage) const = 0;
+		// Immutable
+		virtual void storage(CONST_REF(std::vector<T>) data, CONST_REF(Usage) usage) const = 0;
+		virtual void subData(CONST_REF(std::vector<T>) data, CONST_REF(uint32_t) offset) const = 0;
+		virtual void clearData(CONST_REF(std::vector<T>) data, CONST_REF(Type) internalFormat, CONST_REF(Type) format, CONST_REF(Type) type) const = 0;
+		virtual void clearSubData(CONST_REF(std::vector<T>) data, CONST_REF(Type) internalFormat, CONST_REF(Type) format, CONST_REF(Type) type, CONST_REF(uint32_t) offset) const = 0;
+		virtual void copySubData(CONST_REF(Buffer<T>) target, CONST_REF(uint32_t) readOffset, CONST_REF(uint32_t) writeOffset, CONST_REF(uint32_t) count) const = 0;
+
+		virtual uint32_t count() const = 0;
+
+		virtual std::vector<T> getSubData(CONST_REF(uint32_t) offset, CONST_REF(uint32_t) count) const = 0;
+		virtual void invalidateData() const = 0;
+		virtual void invalidateSubData(CONST_REF(uint32_t) offset, CONST_REF(uint32_t) count) const = 0;
+		virtual void* map(CONST_REF(Access) access) const = 0;
+		virtual void* mapRange(CONST_REF(uint32_t) offset, CONST_REF(uint32_t) count, CONST_REF(Access) access) const = 0;
+		virtual bool unmap() const = 0;
+
+		CONST_REF(uint32_t) native() const { return this->m_RendererID; }
+	protected:
+
+		typedef T value;
+
+		Buffer(CONST_REF(uint32_t) rendererID, CONST_REF(BufferTarget) target) : m_RendererID(rendererID), m_Target(target) { TIME_FUNCTION; }
+		virtual const uint32_t createBuffer() const = 0;
+		virtual void deleteBuffer() const = 0;
+
+		uint32_t m_RendererID;
+		BufferTarget m_Target;
+	};
+
+	typedef Buffer<unsigned char> VertexBuffer;
+	typedef Buffer<uint32_t> IndexBuffer;
+
 	struct VertexBufferAttribute
 	{
 		VertexBufferAttribute(CONST_REF(Type) type, CONST_REF(int) count, CONST_REF(bool) normalized) : m_Type(type), m_Count(count), m_Normalized(normalized) { TIME_FUNCTION; }
@@ -47,36 +87,7 @@ namespace assec::graphics
 		}
 		std::vector<VertexBufferAttribute> m_Attributes = std::vector<VertexBufferAttribute>();
 	};
-	class VertexBuffer
-	{
-	public:
-		virtual ~VertexBuffer() { TIME_FUNCTION; }
-		virtual void addData(const void* data, CONST_REF(size_t) size, CONST_REF(int) usage) const = 0;
-		virtual void addSubData(const void* data, CONST_REF(size_t) size, CONST_REF(int) offset) const = 0;
-		virtual void bind() const = 0;
-	protected:
-		VertexBuffer(CONST_REF(uint32_t) ID) : m_RendererID(ID) { TIME_FUNCTION; }
-		virtual const uint32_t genBuffer() const = 0;
-
-		uint32_t m_RendererID;
-	};
-
-	class IndexBuffer
-	{
-	public:
-		virtual ~IndexBuffer() { TIME_FUNCTION; }
-		virtual void addData(const void* vertices, CONST_REF(size_t) size, CONST_REF(int) usage) = 0;
-		virtual void addSubData(const void* data, CONST_REF(size_t) size, CONST_REF(int) offset) = 0;
-		virtual void bind() const = 0;
-		CONST_REF(size_t) getCount() const { return this->m_Count; }
-	protected:
-		IndexBuffer(CONST_REF(uint32_t) ID, CONST_REF(size_t) count) : m_RendererID(ID), m_Count(count) { TIME_FUNCTION; }
-		virtual const uint32_t genBuffer() const = 0;
-
-		uint32_t m_RendererID;
-		size_t m_Count;
-	};
-
+	
 	class FrameBuffer
 	{
 	public:
@@ -99,6 +110,11 @@ namespace assec::graphics
 		virtual void resize() = 0;
 		virtual void validate() const = 0;
 		virtual void addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type) = 0;
+		virtual void clear(glm::vec4 color) const = 0;
+
+
+		virtual uint32_t pixelData(CONST_REF(glm::vec2) pos) const = 0;
+
 		uint32_t m_RendererID;
 	protected:
 		FrameBuffer(const uint32_t& ID, const FrameBufferProps& frameBufferProps) : m_RendererID(ID), m_FrameBufferProps(frameBufferProps) { TIME_FUNCTION; }

@@ -53,7 +53,7 @@ namespace assec::graphics
 		virtual uint64_t getTimerFrequency() const = 0;
 		 
 		virtual CONST_REF(Window) getCurrentContext() const = 0;
-		virtual CONST_REF(bool) isExtensionSupported(CONST_REF(std::string)) const = 0;
+		virtual bool isExtensionSupported(CONST_REF(std::string)) const = 0;
 		
 		INLINE CONST_REF(bool) initialized() const { TIME_FUNCTION; return this->m_Initialized; }
 	protected:

@@ -11,6 +11,7 @@ namespace assec::editor
 	{
 	public:
 		InspectorPanel(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
+			std::function<void(CONST_REF(bool))> blockCallback,
 			REF(EditorApplication) application);
 		~InspectorPanel();
 	private:

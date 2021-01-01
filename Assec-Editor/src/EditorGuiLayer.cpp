@@ -24,13 +24,17 @@ namespace assec::editor
 		ImPlot::CreateContext();
 		this->setDarkThemecolors();
 		this->m_OpenContexts.push_back(makeRef<InspectorPanel>([&](ref<transactions::Transaction> transaction)
-			{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+			{ this->m_Application->onTransaction(transaction); },
+			[&](CONST_REF(bool) block) { this->BlockEvents(block); }, *this->m_Application));
 		this->m_OpenContexts.push_back(makeRef<SceneHierarchyPanel>([&](ref<transactions::Transaction> transaction)
-			{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+			{ this->m_Application->onTransaction(transaction); },
+			[&](CONST_REF(bool) block) { this->BlockEvents(block); }, *this->m_Application));
 		this->m_OpenContexts.push_back(makeRef<NodeEditor>([&](ref<transactions::Transaction> transaction)
-			{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+			{ this->m_Application->onTransaction(transaction); },
+			[&](CONST_REF(bool) block) { this->BlockEvents(block); }, *this->m_Application));
 		this->m_OpenContexts.push_back(makeRef<ViewportPanel>([&](ref<transactions::Transaction> transaction)
-			{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+			{ this->m_Application->onTransaction(transaction); },
+			[&](CONST_REF(bool) block) { this->BlockEvents(block); }, *this->m_Application));
 	}
 	void EditorGuiLayer::onDetach0()
 	{
@@ -120,7 +124,9 @@ namespace assec::editor
 								{ return context->getName() == "Inspector"; }) == this->m_OpenContexts.end()))
 							{
 								this->m_OpenContexts.push_back(makeRef<InspectorPanel>([&](ref<transactions::Transaction> transaction)
-									{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+									{ this->m_Application->onTransaction(transaction); },
+									[&](CONST_REF(bool) block)
+									{ this->BlockEvents(block); }, *this->m_Application));
 							}
 							if (ImGui::MenuItem("Scene Hierarchy", 0, false, std::find_if(this->m_OpenContexts.begin(),
 								this->m_OpenContexts.end(), [](CONST_REF(ref<EditorContext>) context)
@@ -128,7 +134,9 @@ namespace assec::editor
 							{
 								this->m_OpenContexts.push_back(makeRef<SceneHierarchyPanel>(
 									[&](ref<transactions::Transaction> transaction)
-									{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+									{ this->m_Application->onTransaction(transaction); },
+									[&](CONST_REF(bool) block)
+									{ this->BlockEvents(block); }, *this->m_Application));
 							}
 							if (ImGui::MenuItem("Node Editor", 0, false, std::find_if(this->m_OpenContexts.begin(),
 								this->m_OpenContexts.end(), [](CONST_REF(ref<EditorContext>) context)
@@ -136,7 +144,9 @@ namespace assec::editor
 							{
 								this->m_OpenContexts.push_back(makeRef<NodeEditor>(
 									[&](ref<transactions::Transaction> transaction)
-									{ this->m_Application->onTransaction(transaction); }, *this->m_Application));
+									{ this->m_Application->onTransaction(transaction); }, 
+									[&](CONST_REF(bool) block)
+									{ this->BlockEvents(block); }, *this->m_Application));
 							}
 							if (ImGui::MenuItem("Viewport", 0, false, std::find_if(this->m_OpenContexts.begin(),
 								this->m_OpenContexts.end(), [](CONST_REF(ref<EditorContext>) context)
@@ -144,7 +154,9 @@ namespace assec::editor
 							{
 								this->m_OpenContexts.push_back(makeRef<ViewportPanel>(
 									[&](ref<transactions::Transaction> transaction)
-									{ this->m_Application->onTransaction(transaction);}, *this->m_Application));
+									{ this->m_Application->onTransaction(transaction);},
+									[&](CONST_REF(bool) block)
+									{ this->BlockEvents(block); }, *this->m_Application));
 							}
 							ImGui::EndMenu();
 						}
@@ -248,6 +260,7 @@ namespace assec::editor
 	void EditorGuiLayer::newScene()
 	{
 		this->m_Application->setActiveScene(std::make_shared<scene::Scene>());
+		this->m_Application->m_SelectedEntity = scene::Entity();
 	}
 	void EditorGuiLayer::loadScene()
 	{

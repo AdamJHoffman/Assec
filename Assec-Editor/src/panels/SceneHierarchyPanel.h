@@ -10,6 +10,7 @@ namespace assec::editor
 	{
 	public:
 		SceneHierarchyPanel(CONST_REF(std::function<void(ref<transactions::Transaction>)>) callback,
+			std::function<void(CONST_REF(bool))> blockCallback,
 			REF(EditorApplication) application);
 		~SceneHierarchyPanel();
 	private:

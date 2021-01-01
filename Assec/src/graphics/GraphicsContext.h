@@ -24,9 +24,10 @@ namespace assec::graphics
 		virtual void setClearColor(CONST_REF(glm::vec4) color) const = 0;
 		virtual void enable(CONST_REF(Type) type) const = 0;
 		virtual void setDepthFunction(CONST_REF(Type) type) const = 0;
+		virtual void setBlendFunction(const Type& sfactor, const Type& dfactor) const = 0;
 		inline const ContextData& getContextData() const { return this->m_ContextData; }
 		virtual ref<VertexBuffer> createVertexBuffer(const void* vertices, CONST_REF(size_t) size, CONST_REF(int) usage) const = 0;
-		virtual ref<IndexBuffer> createIndexBuffer(const void* indices, CONST_REF(size_t) size, CONST_REF(int) usage) const = 0;
+		virtual ref<IndexBuffer> createIndexBuffer(CONST_REF(std::vector<uint32_t>) data, CONST_REF(int) usage) const = 0;
 		virtual ref<VertexArray> createVertexArray(CONST_REF(VertexArray::VertexArrayProps) vertexArrayData) const = 0;
 		virtual ref<VertexArray> createVertexArray(CONST_REF(Type), CONST_REF(size_t) size = 0) const = 0;
 		virtual ref<Shader> createShader(CONST_REF(std::string) source, CONST_REF(Type) type) const = 0;
