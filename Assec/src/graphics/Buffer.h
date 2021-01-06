@@ -14,8 +14,7 @@ namespace assec::graphics
 		virtual void bind() const = 0;
 
 		virtual void data(CONST_REF(std::vector<T>) data, CONST_REF(Usage) usage) const = 0;
-		// Immutable
-		virtual void storage(CONST_REF(std::vector<T>) data, CONST_REF(Usage) usage) const = 0;
+		virtual void storage(CONST_REF(std::vector<T>) data, CONST_REF(Usage) usage, CONST_REF(std::vector<BufferStorageFlag>)) const = 0;
 		virtual void subData(CONST_REF(std::vector<T>) data, CONST_REF(uint32_t) offset) const = 0;
 		virtual void clearData(CONST_REF(std::vector<T>) data, CONST_REF(Type) internalFormat, CONST_REF(Type) format, CONST_REF(Type) type) const = 0;
 		virtual void clearSubData(CONST_REF(std::vector<T>) data, CONST_REF(Type) internalFormat, CONST_REF(Type) format, CONST_REF(Type) type, CONST_REF(uint32_t) offset) const = 0;
@@ -36,8 +35,8 @@ namespace assec::graphics
 		typedef T value;
 
 		Buffer(CONST_REF(uint32_t) rendererID, CONST_REF(BufferTarget) target) : m_RendererID(rendererID), m_Target(target) { TIME_FUNCTION; }
-		virtual const uint32_t createBuffer() const = 0;
-		virtual void deleteBuffer() const = 0;
+		virtual uint32_t create() const = 0;
+		virtual void destroy() const = 0;
 
 		uint32_t m_RendererID;
 		BufferTarget m_Target;
@@ -48,78 +47,55 @@ namespace assec::graphics
 
 	struct VertexBufferAttribute
 	{
-		VertexBufferAttribute(CONST_REF(Type) type, CONST_REF(int) count, CONST_REF(bool) normalized) : m_Type(type), m_Count(count), m_Normalized(normalized) { TIME_FUNCTION; }
-		const size_t getSize() const
+		const size_t size() const
 		{
 			TIME_FUNCTION;
 			size_t result = 0;
-			switch (this->m_Type)
+			switch (this->type)
 			{
-			case Type::FLOAT:
-				result = sizeof(float);
+			case DataType::BYTE:
+				result = sizeof(char);
 				break;
-			case Type::UNSIGNED_INT:
-				result = sizeof(uint32_t);
+			case DataType::UNSIGNED_BYTE:
+				result = sizeof(unsigned char);
+				break;
+			case DataType::SHORT:
+				result = sizeof(short);
+				break;
+			case DataType::UNSIGNED_SHORT:
+				result = sizeof(unsigned short);
+				break;
+			case DataType::INT:
+				result = sizeof(int);
+				break;
+			case DataType::UNSIGNED_INT:
+				result = sizeof(unsigned int);
+				break;
+			case DataType::FLOAT:
+				result = sizeof(float);
 				break;
 			default:
 				result = 0;
 				break;
 			}
-			return result * this->m_Count;
+			return result * this->count;
 		}
-		Type m_Type;
-		bool m_Normalized;
-		int m_Count;
+		DataType type;
+		bool normalized;
+		int count;
 	};
 	struct VertexBufferLayout
 	{
-		VertexBufferLayout() { TIME_FUNCTION; }
-		VertexBufferLayout(CONST_REF(std::vector<VertexBufferAttribute>) attributes) : m_Attributes(attributes) { TIME_FUNCTION; }
 		const size_t calculateVertexSize() const
 		{
 			TIME_FUNCTION;
 			size_t result = 0;
 			for (auto attrib : this->m_Attributes)
 			{
-				result += attrib.getSize();
+				result += attrib.size();
 			}
 			return result;
 		}
 		std::vector<VertexBufferAttribute> m_Attributes = std::vector<VertexBufferAttribute>();
-	};
-	
-	class FrameBuffer
-	{
-	public:
-		struct FrameBufferFormat
-		{
-
-		};
-		struct FrameBufferProps
-		{
-			FrameBufferFormat format;
-			uint32_t m_Width, m_Height, m_Samples = 1;
-			bool swapChainTarget = false;
-		};
-		virtual ~FrameBuffer() { TIME_FUNCTION; }
-		inline const FrameBufferProps& getFrameBufferProps() const { TIME_FUNCTION; return this->m_FrameBufferProps; }
-		inline FrameBufferProps& getFrameBufferProps() { TIME_FUNCTION; return this->m_FrameBufferProps; }
-		inline const Texture& getTextureAttachment(const Type& attachment) { TIME_FUNCTION; return *this->m_TextureAttachments[attachment]; }
-		virtual void bind() const = 0;
-		virtual void unbind() const = 0;
-		virtual void resize() = 0;
-		virtual void validate() const = 0;
-		virtual void addTextureAttachment(const Type& attachment, const Type& internalFormat, const Type& format, const Type& type) = 0;
-		virtual void clear(glm::vec4 color) const = 0;
-
-
-		virtual uint32_t pixelData(CONST_REF(glm::vec2) pos) const = 0;
-
-		uint32_t m_RendererID;
-	protected:
-		FrameBuffer(const uint32_t& ID, const FrameBufferProps& frameBufferProps) : m_RendererID(ID), m_FrameBufferProps(frameBufferProps) { TIME_FUNCTION; }
-		virtual const uint32_t genBuffer(const FrameBufferProps& frameBufferProps) const = 0;
-		FrameBufferProps m_FrameBufferProps;
-		std::unordered_map<Type, std::shared_ptr<Texture>> m_TextureAttachments = std::unordered_map<Type, std::shared_ptr<Texture>>();
 	};
 } // namespace assec::graphics

@@ -28,7 +28,7 @@ namespace assec::editor
 
 		ApplicationState m_CurrentState = ApplicationState::EDITOR;
 		EditorCamera m_Camera = EditorCamera();
-		ref<graphics::FrameBuffer> m_FrameBuffer = nullptr;
+		ref<graphics::Framebuffer> m_FrameBuffer = nullptr;
 		ref<transactions::TransactionQueue> AC_TRANSACTION_QUEUE = std::make_shared<transactions::TransactionQueue>();
 		ref<transactions::TransactionQueue> AC_TRANSACTION_REDO_ARCHIVE = std::make_shared<transactions::TransactionQueue>();
 		ref<transactions::TransactionQueue> AC_TRANSACTION_ARCHIVE = std::make_shared<transactions::TransactionQueue>();

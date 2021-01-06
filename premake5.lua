@@ -63,6 +63,7 @@ workspace "Assec"
 
 		includedirs
 		{
+			"C:/VulkanSDK/1.2.162.0/Include",
 			"%{prj.name}/src",
 			"%{prj.name}/vendor/spdlog/include",
 			"%{prj.name}/vendor/stb",
@@ -72,7 +73,12 @@ workspace "Assec"
 			"%{IncludeDir.glm}",
 			"%{IncludeDir.entt}",
 			"%{IncludeDir.tinygltf}",
-			"%{IncludeDir.yaml_cpp}",
+			"%{IncludeDir.yaml_cpp}"
+		}
+
+		libdirs
+		{
+			"C:/VulkanSDK/1.2.162.0/Lib"
 		}
 
 		links
@@ -82,6 +88,7 @@ workspace "Assec"
 			"imgui",
 			"yaml-cpp",
 			"opengl32.lib",
+			"vulkan-1"
 		}
 
 		filter "system:windows"
@@ -140,10 +147,10 @@ workspace "Assec"
 		filter "system:windows"
 			systemversion "latest"
 
-		defines
-		{
-			"PLATFORM_WINDOWS"
-		}
+			defines
+			{
+				"PLATFORM_WINDOWS"
+			}
 
 		filter "configurations:Debug"
 			defines "AC_DEBUG"
@@ -198,11 +205,6 @@ workspace "Assec"
 
 			filter "system:windows"
 				systemversion "latest"
-
-			defines
-			{
-
-			}
 
 			filter "configurations:Debug"
 				defines "AC_DEBUG"

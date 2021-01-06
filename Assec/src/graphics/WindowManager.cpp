@@ -29,11 +29,7 @@ namespace assec::graphics
 	void WindowManager::prepare()
 	{
 		TIME_FUNCTION;
-		for (auto window : m_Windows)
-		{
-			window->makeContextCurrent();
-			window->clear();
-		}
+		clear();
 		s_WindowContext->pollEvents();
 	}
 	void WindowManager::finish()
@@ -54,7 +50,8 @@ namespace assec::graphics
 		TIME_FUNCTION;
 		for (auto& window : m_Windows)
 		{
-			window->clear();
+			window->makeContextCurrent();
+			window->getWindowData().graphicsContext->clear({ BufferBitMask::COLOR_BUFFER_BIT, BufferBitMask::DEPTH_BUFFER_BIT, BufferBitMask::STENCIL_BUFFER_BIT });
 		}
 	}
 	const Window& WindowManager::addWindow(CONST_REF(uint32_t) width, CONST_REF(uint32_t) height, CONST_REF(std::string) title, const Monitor* monitor, const Window* share)

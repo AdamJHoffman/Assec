@@ -13,7 +13,10 @@ namespace assec::graphics
 	public:
 		struct TextureProps
 		{
-			Type wrapType = Type::CLAMP_TO_EDGE, internalFormat = Type::RGBA8, dataFormat = Type::RGBA, dataType = Type::UNSIGNED_BYTE;
+			Type wrapType = Type::CLAMP_TO_EDGE;
+			InternalFormat internalFormat = InternalFormat::RGBA8;
+			Format dataFormat = Format::RGBA;
+			DataType dataType = DataType::UNSIGNED_BYTE;
 			glm::vec4 borderColor = glm::vec4(1.0f);
 			Type minFilterType = Type::LINEAR_MIPMAP_LINEAR, magFilterType = Type::LINEAR;
 			bool genMipMaps = true, genAnisotropicMaps = true;

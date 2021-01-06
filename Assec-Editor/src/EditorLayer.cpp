@@ -53,9 +53,9 @@ namespace assec::editor
 		dispatcher.dispatch<events::AppRenderEvent>([&](const events::AppRenderEvent& event)
 			{
 				TIME_FUNCTION;
-				if (this->m_ViewportSize.x != this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width || this->m_ViewportSize.y != this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height)
+				if (this->m_ViewportSize.x != this->m_Application->m_FrameBuffer->getFrameBufferProps().width || this->m_ViewportSize.y != this->m_Application->m_FrameBuffer->getFrameBufferProps().height)
 				{
-					this->m_ViewportSize = { this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width, this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height };
+					this->m_ViewportSize = { this->m_Application->m_FrameBuffer->getFrameBufferProps().width, this->m_Application->m_FrameBuffer->getFrameBufferProps().height };
 					this->m_Application->m_Camera.setViewportSize(this->m_ViewportSize.x, this->m_ViewportSize.y);
 					this->m_Application->getActiveScene().onViewportResized(this->m_ViewportSize.x, this->m_ViewportSize.y);
 					this->m_Application->m_FrameBuffer->resize();
@@ -63,7 +63,7 @@ namespace assec::editor
 
 				this->m_Application->m_FrameBuffer->bind();
 				graphics::WindowManager::clear();
-				this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT1).clear();
+				this->m_Application->m_FrameBuffer->getTextureAttachment(FrameBufferAttachment::COLOR_ATTACHMENT1).clear();
 				graphics::Renderer::beginScene(this->m_Application->m_CurrentState == ApplicationState::EDITOR ? this->m_Application->m_Camera.getViewProjection() : this->m_Application->getActiveScene().getActiveCamera());
 				this->m_Application->getActiveScene().reg().view<scene::MeshComponent, scene::MaterialComponent, scene::TransformComponent>().each([&](auto entityID, auto& mesh, auto& material, auto& transform)
 					{

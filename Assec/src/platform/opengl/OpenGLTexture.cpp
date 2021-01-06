@@ -44,16 +44,16 @@ namespace assec::graphics
 		int desired_channels = 0;
 		switch (this->m_Props.dataFormat)
 		{
-		case Type::RED:
+		case Format::RED:
 			desired_channels = STBI_grey;
 			break;
-		case Type::RG:
+		case Format::RG:
 			desired_channels = STBI_grey_alpha;
 			break;
-		case Type::RGB:
+		case Format::RGB:
 			desired_channels = STBI_rgb;
 			break;
-		case Type::RGBA:
+		case Format::RGBA:
 			desired_channels = STBI_rgb_alpha;
 			break;
 		}
@@ -69,8 +69,6 @@ namespace assec::graphics
 		AC_CORE_ASSERT(data, "Failed to load image!");
 		m_Width = width;
 		m_Height = height;
-
-		AC_CORE_ASSERT((this->m_Props.internalFormat != Type::NONE && this->m_Props.dataFormat != Type::NONE), "Format not supported!");
 
 		GLCall(glTextureStorage2D(this->m_RendererID, 1, toOpenGLType(this->m_Props.internalFormat), this->m_Width, this->m_Height));
 
@@ -112,19 +110,19 @@ namespace assec::graphics
 	{
 		this->bind();
 		uint32_t channels = 0;
-		if (this->m_Props.dataFormat == fromOpenGLType(GL_RED))
+		if (this->m_Props.dataFormat == formatFromOpenGLType(GL_RED))
 		{
 			channels = 1;
 		}
-		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RG))
+		else if (this->m_Props.dataFormat == formatFromOpenGLType(GL_RG))
 		{
 			channels = 2;
 		}
-		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGB))
+		else if (this->m_Props.dataFormat == formatFromOpenGLType(GL_RGB))
 		{
 			channels = 3;
 		}
-		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGBA))
+		else if (this->m_Props.dataFormat == formatFromOpenGLType(GL_RGBA))
 		{
 			channels = 4;
 		}
@@ -135,19 +133,19 @@ namespace assec::graphics
 	{
 		this->bind();
 		uint32_t channels = 0;
-		if (this->m_Props.dataFormat == fromOpenGLType(GL_RED))
+		if (this->m_Props.dataFormat == formatFromOpenGLType(GL_RED))
 		{
 			channels = 1;
 		}
-		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RG))
+		else if (this->m_Props.dataFormat == formatFromOpenGLType(GL_RG))
 		{
 			channels = 2;
 		}
-		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGB))
+		else if (this->m_Props.dataFormat == formatFromOpenGLType(GL_RGB))
 		{
 			channels = 3;
 		}
-		else if (this->m_Props.dataFormat == fromOpenGLType(GL_RGBA) || this->m_Props.dataFormat == fromOpenGLType(GL_RED_INTEGER))
+		else if (this->m_Props.dataFormat == formatFromOpenGLType(GL_RGBA) || this->m_Props.dataFormat == formatFromOpenGLType(GL_RED_INTEGER))
 		{
 			channels = 4;
 		}

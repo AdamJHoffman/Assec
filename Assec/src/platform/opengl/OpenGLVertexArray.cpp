@@ -65,15 +65,35 @@ namespace assec::graphics
 		{
 			auto& attrib = layout.m_Attributes[i];
 			GLCall(glEnableVertexAttribArray(i));
-			if (attrib.m_Type == Type::UNSIGNED_INT)
+			switch (attrib.type)
 			{
-				GLCall(glVertexAttribIPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), static_cast<GLsizei>(attrib.getSize()), pointer));
+			case DataType::BYTE:
+			case DataType::UNSIGNED_BYTE:
+			case DataType::SHORT:
+			case DataType::UNSIGNED_SHORT:
+			case DataType::INT:
+			case DataType::UNSIGNED_INT:
+				if (attrib.normalized)
+				{
+					GLCall(glVertexAttribPointer(i, attrib.count, toOpenGLType(attrib.type), 
+						attrib.normalized, static_cast<GLsizei>(attrib.size()), pointer));
+				}
+				else
+				{
+					GLCall(glVertexAttribIPointer(i, attrib.count, toOpenGLType(attrib.type),
+						static_cast<GLsizei>(attrib.size()), pointer));
+				}
+				break;
+			case DataType::FLOAT:
+				GLCall(glVertexAttribPointer(i, attrib.count, toOpenGLType(attrib.type),
+					attrib.normalized, static_cast<GLsizei>(attrib.size()), pointer));
+				break;
+			case DataType::DOUBLE:
+				GLCall(glVertexAttribLPointer(i, attrib.count, toOpenGLType(attrib.type),
+					static_cast<GLsizei>(attrib.size()), pointer));
+				break;
 			}
-			else
-			{
-				GLCall(glVertexAttribPointer(i, attrib.m_Count, toOpenGLType(attrib.m_Type), attrib.m_Normalized, static_cast<GLsizei>(attrib.getSize()), pointer));
-			}
-			pointer = static_cast<char*>(pointer) + (verticesSize / layout.calculateVertexSize() * attrib.getSize());
+			pointer = static_cast<char*>(pointer) + (verticesSize / layout.calculateVertexSize() * attrib.size());
 		}
 	}
 	const uint32_t OpenGLVertexArray::genVertexArray() const

@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include <GLFW/glfw3.h>
-
 #include "graphics/Monitor.h"
+
+#include "GLFWWindowContext.h"
 
 namespace assec::graphics
 {

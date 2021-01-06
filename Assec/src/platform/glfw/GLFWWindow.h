@@ -2,9 +2,6 @@
 
 #include "graphics/Window.h"
 
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
-
 #include "GLFWWindowContext.h"
 
 #include "graphics/Monitor.h"
@@ -17,10 +14,6 @@ namespace assec::graphics
 	public:
 		GLFWWindow(const uint32_t& width, const uint32_t& height, const std::string& title, const Monitor* monitor, const Window* share, const EventCallBackFn eventCallBack);
 		virtual ~GLFWWindow();
-
-
-		virtual void clear() const override;
-
 
 		virtual void destroy() const override;
 		virtual bool ShouldClose() const override;

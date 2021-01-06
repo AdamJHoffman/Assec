@@ -1,7 +1,5 @@
 ﻿#include "acpch.h"
 
-#include <GLFW/glfw3.h>
-
 #include "GLFWMonitor.h"
 
 namespace assec::graphics

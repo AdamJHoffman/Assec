@@ -30,7 +30,7 @@ namespace assec::graphics
 			key->makeContextCurrent();
 			if (m_VertexArray == nullptr)
 			{
-				m_VertexArray = key->getWindowData().graphicsContext->createVertexArray(Type::DYNAMIC_DRAW, sizeof(Vertex) * 1000);
+				m_VertexArray = key->getWindowData().graphicsContext->createVertexArray(Usage::DYNAMIC_DRAW, sizeof(Vertex) * 1000);
 			}
 			for (auto& b : (m_BatchManager.getBatches())[key])
 			{

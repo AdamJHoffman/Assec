@@ -16,16 +16,17 @@ namespace assec::editor
 		glm::vec2 pos = { ImGui::GetWindowPos().x, ImGui::GetWindowPos().y};
 		auto& cursorPos = graphics::WindowManager::getMainWindow().getCursorPos();
 		glm::vec2 relativeCursorPos = cursorPos - pos;
-		//ImGui::Text((std::to_string(relativeCursorPos.x) + std::to_string(relativeCursorPos.y)).c_str());
 
-		if (relativeCursorPos.x >= 0 && relativeCursorPos.x <= this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT1).getWidth()
-			&& relativeCursorPos.y >= 0 && relativeCursorPos.y <= this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT1).getHeigth())
+		if (relativeCursorPos.x >= 0 && relativeCursorPos.x <= this->m_Application->m_FrameBuffer->getTextureAttachment(FrameBufferAttachment::COLOR_ATTACHMENT1).getWidth()
+			&& relativeCursorPos.y >= 0 && relativeCursorPos.y <= this->m_Application->m_FrameBuffer->getTextureAttachment(FrameBufferAttachment::COLOR_ATTACHMENT1).getHeigth())
 		{
 			
-			//ImGui::Text(std::to_string(id).c_str());
 			if (input::Input::isMouseButtonDown(MOUSE::MOUSE_BUTTON_LEFT))
 			{
-				uint32_t id = this->m_Application->m_FrameBuffer->pixelData(relativeCursorPos);
+				this->m_Application->m_FrameBuffer->bind();
+				graphics::WindowManager::getMainWindow().getWindowData().graphicsContext->readBuffer(DrawBuffer::COLOR_ATTACHMENT1);
+				uint32_t id = *((uint32_t*)&graphics::WindowManager::getMainWindow().getWindowData().graphicsContext->readPixels(relativeCursorPos, { 1, 1 }, InternalFormat::R32UI).front());
+				this->m_Application->m_FrameBuffer->unbind();
 				if (id > 0)
 				{
 					this->m_Application->m_SelectedEntity = scene::Entity(entt::entity(id), &(*this->m_Application->getRawActiveScene()));
@@ -49,11 +50,11 @@ namespace assec::editor
 		//ImGuizmo::DrawGrid(glm::value_ptr(view), glm::value_ptr(projection), glm::value_ptr(glm::mat4(1.0f)), 10.0f);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Width = static_cast<uint32_t>(viewportPanelSize.x);
-		this->m_Application->m_FrameBuffer->getFrameBufferProps().m_Height = static_cast<uint32_t>(viewportPanelSize.y);
-		ImGui::Image((void*)static_cast<intptr_t>(this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT0).getNativeTexture()), 
-			ImVec2{ static_cast<float>(this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT0).getWidth()), 
-			static_cast<float>(this->m_Application->m_FrameBuffer->getTextureAttachment(Type::COLOR_ATTACHMENT0).getHeigth()) }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		this->m_Application->m_FrameBuffer->getFrameBufferProps().width = static_cast<uint32_t>(viewportPanelSize.x);
+		this->m_Application->m_FrameBuffer->getFrameBufferProps().height = static_cast<uint32_t>(viewportPanelSize.y);
+		ImGui::Image((void*)static_cast<intptr_t>(this->m_Application->m_FrameBuffer->getTextureAttachment(FrameBufferAttachment::COLOR_ATTACHMENT0).getNativeTexture()),
+			ImVec2{ static_cast<float>(this->m_Application->m_FrameBuffer->getTextureAttachment(FrameBufferAttachment::COLOR_ATTACHMENT0).getWidth()),
+			static_cast<float>(this->m_Application->m_FrameBuffer->getTextureAttachment(FrameBufferAttachment::COLOR_ATTACHMENT0).getHeigth()) }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		this->gizmo.render();
 	}
 }

@@ -10,17 +10,17 @@ namespace assec::graphics
 	{
 		static const VertexBufferLayout& getLayout()
 		{
-			static const VertexBufferLayout s_Layout = VertexBufferLayout({
-			VertexBufferAttribute(assec::Type::FLOAT, 3, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 3, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 2, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 3, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 4, false),
-			VertexBufferAttribute(assec::Type::FLOAT, 1, false),
-			VertexBufferAttribute(assec::Type::UNSIGNED_INT, 1, false) });
+			static const VertexBufferLayout s_Layout = VertexBufferLayout{ {
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 3},
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 3},
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 2},
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 3},
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 4},
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 4},
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 4},
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 4},
+			VertexBufferAttribute{assec::DataType::FLOAT, false, 1},
+			VertexBufferAttribute{assec::DataType::UNSIGNED_INT, false, 1} } };
 			return s_Layout;
 		}
 		glm::vec3 position = glm::vec3(1.0f);

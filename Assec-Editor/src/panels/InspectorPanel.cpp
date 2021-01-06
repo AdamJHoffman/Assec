@@ -284,7 +284,7 @@ namespace assec::editor
 											this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<std::string>>(&component.m_TexturePath, std::string(filepath), [&](std::string& path)
 												{
 													std::replace(path.begin(), path.end(), '\\', '/');
-													assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, Type::RGBA8, Type::RGBA, Type::UNSIGNED_BYTE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
+													assec::graphics::Texture::TextureProps props = { assec::Type::CLAMP_TO_EDGE, InternalFormat::RGBA8, Format::RGBA, DataType::UNSIGNED_BYTE, glm::vec4(1.0), assec::Type::LINEAR_MIPMAP_LINEAR, assec::Type::LINEAR, true, true };
 													this->m_TransactionCallback(std::make_shared<transactions::ValueChangedTransaction<ref<graphics::Texture>>>(&component.m_Material->getRawTexture(), graphics::WindowManager::getWindows()[0]->getWindowData().graphicsContext->createTexture2D(path, props)));
 												}));
 										}

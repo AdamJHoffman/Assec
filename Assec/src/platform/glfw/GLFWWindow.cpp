@@ -7,6 +7,8 @@
 #include "platform/glfw/GLFWWindowContext.h"
 #include "platform/opengl/OpenGLGraphicsContext.h"
 
+#include "platform/vulkan/VulkanGraphicsContext.h"
+
 #include "event/WindowEvents.h"
 #include "event/KeyEvents.h"
 #include "event/MouseEvents.h"
@@ -32,14 +34,6 @@ namespace assec::graphics
 	{
 		TIME_FUNCTION;
 	}
-
-
-	void GLFWWindow::clear() const
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-
-
 
 	void GLFWWindow::destroy() const 
 	{

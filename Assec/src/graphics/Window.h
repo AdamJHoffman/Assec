@@ -27,10 +27,10 @@ namespace assec::graphics
 
 	struct WindowData
 	{
-		WindowData(CONST_REF(EventCallBackFn) eventCallBack, CONST_REF(std::string) title, const GraphicsContext* graphicsContext, const void* window) :  eventCallBack(eventCallBack), title(title), graphicsContext(graphicsContext), nativeWindow(window), swapInterval(1) { TIME_FUNCTION; }
+		WindowData(CONST_REF(EventCallBackFn) eventCallBack, CONST_REF(std::string) title, GraphicsContext* graphicsContext, const void* window) :  eventCallBack(eventCallBack), title(title), graphicsContext(graphicsContext), nativeWindow(window), swapInterval(1) { TIME_FUNCTION; }
 		EventCallBackFn eventCallBack;
 		std::string title = "Untitled Window";
-		const GraphicsContext* graphicsContext = nullptr;
+		GraphicsContext* graphicsContext = nullptr;
 		const void* nativeWindow = nullptr;
 		uint32_t swapInterval = 0;
 	};
@@ -38,14 +38,10 @@ namespace assec::graphics
 	class Window
 	{
 	public:
-		Window(CONST_REF(uint32_t) width, CONST_REF(uint32_t) height, CONST_REF(std::string) title, CONST_REF(EventCallBackFn) eventCallBack, const GraphicsContext* graphicsContext, const void* window) : m_WindowData(eventCallBack, title, graphicsContext, window) { TIME_FUNCTION; }
+		Window(CONST_REF(uint32_t) width, CONST_REF(uint32_t) height, CONST_REF(std::string) title, CONST_REF(EventCallBackFn) eventCallBack, GraphicsContext* graphicsContext, const void* window) : m_WindowData(eventCallBack, title, graphicsContext, window) { TIME_FUNCTION; }
 		virtual ~Window() { TIME_FUNCTION; }
 		inline REF(WindowData) getWindowData() { TIME_FUNCTION; return this->m_WindowData; }
-		inline CONST_REF(WindowData) getWindowData() const { TIME_FUNCTION; return this->m_WindowData; }
-		
-
-		virtual void clear() const = 0;
-		
+		inline CONST_REF(WindowData) getWindowData() const { TIME_FUNCTION; return this->m_WindowData; }		
 
 		virtual void destroy() const = 0;
 		virtual bool ShouldClose() const = 0;
