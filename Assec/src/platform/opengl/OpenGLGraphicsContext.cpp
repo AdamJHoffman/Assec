@@ -11,6 +11,29 @@
 #include "OpenGLTexture.h"
 #include "OpenGLFramebuffer.h"
 
+#ifdef AC_DEBUG
+	void glCheckError_(CONST_REF(std::string) file, int line, CONST_REF(std::string) function)
+	{
+		unsigned int errorCode = glGetError();
+		if (errorCode)
+		{
+			std::string error;
+			switch (errorCode)
+			{
+			case GL_INVALID_ENUM:                  error = "GL_INVALID_ENUM"; break;
+			case GL_INVALID_VALUE:                 error = "GL_INVALID_VALUE"; break;
+			case GL_INVALID_OPERATION:             error = "GL_INVALID_OPERATION"; break;
+			case GL_STACK_OVERFLOW:                error = "GL_STACK_OVERFLOW"; break;
+			case GL_STACK_UNDERFLOW:               error = "GL_STACK_UNDERFLOW"; break;
+			case GL_OUT_OF_MEMORY:                 error = "GL_OUT_OF_MEMORY"; break;
+			case GL_INVALID_FRAMEBUFFER_OPERATION: error = "GL_INVALID_FRAMEBUFFER_OPERATION"; break;
+			}
+			AC_CORE_ASSERT(!errorCode, ("Assertion failed: [OPENGL ERROR {1}] in function \"{2}\" on line {3} in file \"{4}\"", error, function, file, line));
+		}
+	}
+
+#endif // AC_DEBUG
+
 namespace assec::graphics
 {
 	OpenGLGraphicsContext::OpenGLGraphicsContext() : GraphicsContext::GraphicsContext() { TIME_FUNCTION; }
