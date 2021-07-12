@@ -292,7 +292,10 @@ namespace assec::graphics
 			AC_CORE_ASSERT(success, "Assertion failed: {0} Could not initialze GLFW!");
 			s_GLFWInitialized = true;
 		}
-	
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 		return glfwCreateWindow(width, height, title.c_str(), (GLFWmonitor*)(monitor == nullptr ? nullptr : monitor->getNativeMonitor()), (GLFWwindow*)(share == nullptr ? nullptr : share->getWindowData().nativeWindow));
 	}
 	void GLFWWindow::setupCallbacks() const

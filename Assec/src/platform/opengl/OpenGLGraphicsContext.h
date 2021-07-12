@@ -6,9 +6,7 @@
 
 #ifdef AC_DEBUG
 
-void glCheckError_(CONST_REF(std::string) file, int line, CONST_REF(std::string) function);
-#define GLClearError() while(glGetError() != GL_NO_ERROR)
-#define GLCall(x)   GLClearError();\
+#define GLCall(x)   while(glGetError() != GL_NO_ERROR);\
                     x;\
 					{\
 						uint32_t errorCode = glGetError();\
